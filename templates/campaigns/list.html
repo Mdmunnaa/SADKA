@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}সকল ক্যাম্পেইন - সহায়{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">সকল ক্যাম্পেইন</span>
+      <h2 class="section-title">সাহায্যের হাত বাড়িয়ে দিন</h2>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label mb-1" style="font-size:0.85rem; font-weight:600;">🔍 খুঁজুন</label>
+          <input type="text" name="q" value="{{ search|default:'' }}" class="form-control" placeholder="ক্যাম্পেইনের নাম লিখুন...">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label mb-1" style="font-size:0.85rem; font-weight:600;">বিভাগ</label>
+          <select name="category" class="form-select">
+            <option value="">সকল বিভাগ</option>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label mb-1" style="font-size:0.85rem; font-weight:600;">অবস্থা</label>
+          <select name="status" class="form-select">
+            <option value="">সব অবস্থা</option>
+            <option value="urgent" {% if selected_status == 'urgent' %}selected{% endif %}>🚨 জরুরি</option>
+            <option value="active" {% if selected_status == 'active' %}selected{% endif %}>✅ চলমান</option>
+            <option value="completed" {% if selected_status == 'completed' %}selected{% endif %}>🏁 সম্পন্ন</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-success w-100">খুঁজুন</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- RESULTS -->
+    {% if campaigns %}
+    <div class="row g-3">
+      {% for campaign in campaigns %}
+      <div class="col-md-6 col-lg-4">
+        <div class="campaign-card h-100">
+          {% if campaign.status == 'urgent' %}
+          <div class="urgent-banner">🚨 জরুরি সাহায্য প্রয়োজন</div>
+          {% endif %}
+          {% if campaign.image %}
+          <img src="{{ campaign.image.url }}" class="campaign-card-img" alt="{{ campaign.title }}">
+          {% else %}
+          <div class="campaign-img-placeholder">
+            {% if campaign.status == 'urgent' %}🆘{% elif campaign.status == 'completed' %}✅{% else %}🤲{% endif %}
+          </div>
+          {% endif %}
+          <div class="campaign-card-body">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              {% if campaign.category %}<span class="campaign-badge badge-active">{{ campaign.category.name }}</span>{% endif %}
+              {% if campaign.status == 'completed' %}<span class="campaign-badge badge-completed">✅ সম্পন্ন</span>{% endif %}
+            </div>
+            <h5 class="campaign-card-title">{{ campaign.title }}</h5>
+            <p class="campaign-desc">{{ campaign.short_description|default:campaign.description }}</p>
+            <div class="progress-wrap">
+              <div class="progress-info">
+                <span class="progress-raised">৳{{ campaign.raised_amount|floatformat:0 }}</span>
+                <span class="progress-target">লক্ষ্য: ৳{{ campaign.target_amount|floatformat:0 }}</span>
+              </div>
+              <div class="progress">
+                <div class="progress-bar" data-width="{{ campaign.progress_percent }}" style="width:0%"></div>
+              </div>
+            </div>
+            <div class="campaign-meta">
+              {% if campaign.location %}<span class="campaign-location"><i class="bi bi-geo-alt"></i>{{ campaign.location }}</span>{% endif %}
+              <span><i class="bi bi-people"></i> {{ campaign.donor_count }} জন</span>
+            </div>
+            <div class="d-flex gap-2">
+              {% if campaign.status != 'completed' %}
+              <a href="{% url 'donate' campaign.slug %}" class="btn-donate" style="flex:1;">
+                <i class="bi bi-heart-fill"></i> দান করুন
+              </a>
+              {% else %}
+              <a href="{% url 'campaign_detail' campaign.slug %}" class="btn-donate" style="flex:1; background:var(--text-mid);">
+                <i class="bi bi-eye"></i> বিস্তারিত
+              </a>
+              {% endif %}
+              <a href="{% url 'campaign_detail' campaign.slug %}" class="btn-share" title="বিস্তারিত">
+                <i class="bi bi-info-circle"></i>
+              </a>
+              <button class="btn-share share-whatsapp" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' campaign.slug %}" data-title="{{ campaign.title }}" title="শেয়ার">
+                <i class="bi bi-whatsapp"></i>
+              </button>
+              <button class="btn-share share-facebook" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' campaign.slug %}" title="শেয়ার">
+                <i class="bi bi-facebook"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+      <div style="font-size:4rem; margin-bottom:1rem;">🔍</div>
+      <h4>কোনো ক্যাম্পেইন পাওয়া যায়নি</h4>
+      <p class="text-muted">অন্য কোনো বিষয় দিয়ে খুঁজুন অথবা <a href="{% url 'campaign_list' %}">সব দেখুন</a></p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

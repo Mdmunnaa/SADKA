@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ campaign.title }} - সহায়{% endblock %}
+
+{% block og_tags %}
+<meta property="og:title" content="{{ campaign.title }} - সহায়">
+<meta property="og:description" content="{{ campaign.short_description|default:campaign.description|truncatewords:30 }}">
+{% if campaign.image %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ campaign.image.url }}">
+{% endif %}
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:type" content="website">
+{% endblock %}
+
+{% block twitter_tags %}
+<meta name="twitter:title" content="{{ campaign.title }} - সহায়">
+<meta name="twitter:description" content="{{ campaign.short_description|default:campaign.description|truncatewords:30 }}">
+{% if campaign.image %}
+<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ campaign.image.url }}">
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+  <div class="container">
+    <div class="row g-4">
+      
+      <!-- LEFT: Campaign Info -->
+      <div class="col-lg-8">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+          <ol class="breadcrumb" style="font-size:0.85rem;">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:var(--green-primary);">হোম</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'campaign_list' %}" style="color:var(--green-primary);">ক্যাম্পেইন</a></li>
+            <li class="breadcrumb-item active">{{ campaign.title|truncatewords:5 }}</li>
+          </ol>
+        </nav>
+
+        <!-- Status Badge -->
+        <div class="d-flex gap-2 align-items-center flex-wrap mb-3">
+          {% if campaign.status == 'urgent' %}
+          <span class="badge bg-danger">🚨 জরুরি সাহায্য প্রয়োজন</span>
+          {% elif campaign.status == 'active' %}
+          <span class="badge bg-success">✅ চলমান</span>
+          {% elif campaign.status == 'completed' %}
+          <span class="badge bg-primary">🏁 সম্পন্ন</span>
+          {% endif %}
+          {% if campaign.category %}
+          <span class="badge" style="background:var(--green-light); color:var(--green-primary);">{{ campaign.category.name }}</span>
+          {% endif %}
+          {% if campaign.location %}
+          <span style="font-size:0.82rem; color:var(--text-light);"><i class="bi bi-geo-alt"></i> {{ campaign.location }}</span>
+          {% endif %}
+        </div>
+
+        <h1 style="font-size:1.75rem; font-weight:800; color:var(--text-dark); margin-bottom:1rem;">{{ campaign.title }}</h1>
+
+        <!-- Image -->
+        {% if campaign.image %}
+        <img src="{{ campaign.image.url }}" class="campaign-detail-img mb-4" alt="{{ campaign.title }}">
+        {% else %}
+        <div class="campaign-detail-img-placeholder mb-4">🤲</div>
+        {% endif %}
+
+        <!-- Progress -->
+        <div class="sidebar-card mb-4">
+          <div class="row g-3 text-center mb-3">
+            <div class="col-4">
+              <div style="font-size:1.4rem; font-weight:800; color:var(--green-primary);">৳{{ campaign.raised_amount|floatformat:0 }}</div>
+              <div style="font-size:0.78rem; color:var(--text-light);">সংগ্রহ হয়েছে</div>
+            </div>
+            <div class="col-4">
+              <div style="font-size:1.4rem; font-weight:800; color:var(--text-dark);">{{ campaign.donor_count }}</div>
+              <div style="font-size:0.78rem; color:var(--text-light);">জন দাতা</div>
+            </div>
+            <div class="col-4">
+              <div style="font-size:1.4rem; font-weight:800; color:var(--text-mid);">৳{{ campaign.remaining_amount|floatformat:0 }}</div>
+              <div style="font-size:0.78rem; color:var(--text-light);">আরও প্রয়োজন</div>
+            </div>
+          </div>
+          <div class="progress" style="height:10px; margin-bottom:0.5rem;">
+            <div class="progress-bar" data-width="{{ campaign.progress_percent }}" style="width:0%;"></div>
+          </div>
+          <div class="d-flex justify-content-between" style="font-size:0.82rem; color:var(--text-light);">
+            <span>{{ campaign.progress_percent }}% সম্পন্ন</span>
+            <span>লক্ষ্য: ৳{{ campaign.target_amount|floatformat:0 }}</span>
+          </div>
+        </div>
+
+        <!-- Share Strip -->
+        <div class="share-strip mb-4">
+          <span class="share-label"><i class="bi bi-share me-1"></i>শেয়ার করুন:</span>
+          <button class="btn-share btn-fb share-facebook" data-url="{{ request.build_absolute_uri }}">
+            <i class="bi bi-facebook"></i> Facebook
+          </button>
+          <button class="btn-share btn-wa share-whatsapp" data-url="{{ request.build_absolute_uri }}" data-title="{{ campaign.title }}">
+            <i class="bi bi-whatsapp"></i> WhatsApp
+          </button>
+          <button class="btn-share copy-link" data-url="{{ request.build_absolute_uri }}">
+            <i class="bi bi-link-45deg"></i> লিংক কপি
+          </button>
+        </div>
+
+        <!-- Description + Updates Tabs -->
+        <ul class="nav nav-tabs mb-3" id="campaignTab">
+          <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#description">
+              <i class="bi bi-file-text me-1"></i>বিবরণ
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#updates">
+              <i class="bi bi-arrow-clockwise me-1"></i>আপডেট
+              {% if updates %}<span class="badge bg-success ms-1">{{ updates.count }}</span>{% endif %}
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#donors">
+              <i class="bi bi-people me-1"></i>দাতারা
+            </button>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <!-- Description Tab -->
+          <div class="tab-pane fade show active" id="description">
+            <div style="color:var(--text-mid); line-height:1.9; font-size:0.97rem;">
+              {{ campaign.description|linebreaks }}
+            </div>
+          </div>
+          <!-- Updates Tab -->
+          <div class="tab-pane fade" id="updates">
+            {% if updates %}
+              {% for update in updates %}
+              <div class="update-card">
+                <div class="update-date">{{ update.created_at|date:"d M, Y" }}</div>
+                <div class="update-title">{{ update.title }}</div>
+                <p style="font-size:0.9rem; color:var(--text-mid); margin:0;">{{ update.content|linebreaks }}</p>
+                {% if update.image %}
+                <img src="{{ update.image.url }}" class="mt-2 rounded" style="max-width:100%; max-height:300px; object-fit:cover;" alt="আপডেট ছবি">
+                {% endif %}
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="text-center py-4" style="color:var(--text-light);">
+                <i class="bi bi-clock-history fs-2 d-block mb-2"></i>
+                এখনো কোনো আপডেট নেই
+              </div>
+            {% endif %}
+          </div>
+          <!-- Donors Tab -->
+          <div class="tab-pane fade" id="donors">
+            {% if recent_donors %}
+              {% for donor in recent_donors %}
+              <div class="donor-item">
+                <div class="donor-avatar">
+                  {{ donor.display_name|first|upper }}
+                </div>
+                <div class="flex-grow-1">
+                  <div class="donor-name">{{ donor.display_name }}</div>
+                  {% if donor.message %}<div style="font-size:0.8rem; color:var(--text-light);">"{{ donor.message }}"</div>{% endif %}
+                  <div class="donor-time">{{ donor.created_at|date:"d M, Y" }}</div>
+                </div>
+                <div class="donor-amount">৳{{ donor.amount|floatformat:0 }}</div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="text-center py-4" style="color:var(--text-light);">
+                <i class="bi bi-people fs-2 d-block mb-2"></i>
+                প্রথম দাতা হোন!
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Donate Sidebar -->
+      <div class="col-lg-4">
+        <div style="position:sticky; top:90px;">
+          
+          {% if campaign.status != 'completed' %}
+          <!-- Quick Donate Card -->
+          <div class="sidebar-card" style="border:2px solid var(--green-primary);">
+            <h5 style="font-weight:800; color:var(--text-dark); margin-bottom:1.25rem;">
+              <i class="bi bi-heart-fill text-success me-2"></i>এখনই সাহায্য করুন
+            </h5>
+            <a href="{% url 'donate' campaign.slug %}" class="btn-donate mb-3" style="font-size:1.05rem; padding:0.8rem;">
+              <i class="bi bi-heart-fill"></i> ডোনেট করুন
+            </a>
+            <div style="font-size:0.8rem; color:var(--text-light); text-align:center;">
+              <i class="bi bi-shield-check text-success me-1"></i> নিরাপদ ও স্বচ্ছ প্রক্রিয়া
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Payment Numbers -->
+          {% if campaign.bkash_number or campaign.nagad_number or campaign.rocket_number %}
+          <div class="sidebar-card">
+            <h6 style="font-weight:700; margin-bottom:1rem;">পেমেন্ট নম্বরসমূহ</h6>
+            {% if campaign.bkash_number %}
+            <div class="payment-method-card">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="badge bg-success">বিকাশ</span>
+                <div class="payment-number">{{ campaign.bkash_number }}</div>
+              </div>
+              <div style="font-size:0.75rem; color:var(--text-light); margin-top:0.3rem;">Personal/Send Money</div>
+            </div>
+            {% endif %}
+            {% if campaign.nagad_number %}
+            <div class="payment-method-card">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="badge bg-warning text-dark">নগদ</span>
+                <div class="payment-number">{{ campaign.nagad_number }}</div>
+              </div>
+              <div style="font-size:0.75rem; color:var(--text-light); margin-top:0.3rem;">Send Money</div>
+            </div>
+            {% endif %}
+            {% if campaign.rocket_number %}
+            <div class="payment-method-card">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="badge bg-danger">রকেট</span>
+                <div class="payment-number">{{ campaign.rocket_number }}</div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          {% endif %}
+
+          <!-- Share Card -->
+          <div class="sidebar-card">
+            <h6 style="font-weight:700; margin-bottom:1rem;"><i class="bi bi-megaphone me-2"></i>বন্ধুদের জানান</h6>
+            <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:1rem;">শেয়ার করলেই সাহায্য হয়, ডোনেশন ছাড়াও!</p>
+            <div class="d-grid gap-2">
+              <button class="btn-donate share-facebook" style="background:#1877F2;" data-url="{{ request.build_absolute_uri }}">
+                <i class="bi bi-facebook me-2"></i>Facebook-এ শেয়ার
+              </button>
+              <button class="btn-donate share-whatsapp" style="background:#25D366;" data-url="{{ request.build_absolute_uri }}" data-title="{{ campaign.title }}">
+                <i class="bi bi-whatsapp me-2"></i>WhatsApp-এ শেয়ার
+              </button>
+              <button class="btn-donate copy-link" style="background:var(--text-mid);" data-url="{{ request.build_absolute_uri }}">
+                <i class="bi bi-link-45deg me-2"></i>লিংক কপি করুন
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Campaigns -->
+    {% if related %}
+    <div class="mt-5">
+      <h3 style="font-weight:800; margin-bottom:1.5rem;">আরও দেখুন</h3>
+      <div class="row g-3">
+        {% for c in related %}
+        <div class="col-md-4">
+          <div class="campaign-card h-100">
+            {% if c.image %}
+            <img src="{{ c.image.url }}" class="campaign-card-img" alt="{{ c.title }}">
+            {% else %}
+            <div class="campaign-img-placeholder">🤲</div>
+            {% endif %}
+            <div class="campaign-card-body">
+              <h5 class="campaign-card-title">{{ c.title }}</h5>
+              <div class="progress-wrap">
+                <div class="progress-info">
+                  <span class="progress-raised">৳{{ c.raised_amount|floatformat:0 }}</span>
+                  <span class="progress-target">৳{{ c.target_amount|floatformat:0 }}</span>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar" data-width="{{ c.progress_percent }}" style="width:0%"></div>
+                </div>
+              </div>
+              <a href="{% url 'donate' c.slug %}" class="btn-donate mt-2">
+                <i class="bi bi-heart-fill"></i> দান করুন
+              </a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}ডোনেশন সফল - সহায়{% endblock %}
+
+{% block content %}
+<div class="section-padding">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-7 col-lg-5">
+        <div class="success-card">
+          <div class="success-icon">✅</div>
+          <h2 style="font-weight:800; color:var(--text-dark); margin-bottom:0.5rem;">
+            জাযাকাল্লাহ খায়রান! 🤲
+          </h2>
+          <p style="color:var(--text-light); margin-bottom:2rem;">
+            আপনার ডোনেশন জমা হয়েছে। আমরা শীঘ্রই যাচাই করে নিশ্চিত করবো।
+          </p>
+          
+          <div class="sidebar-card mb-3" style="text-align:left;">
+            <div class="d-flex justify-content-between mb-2">
+              <span style="color:var(--text-light); font-size:0.88rem;">ক্যাম্পেইন</span>
+              <strong style="font-size:0.88rem;">{{ donation.campaign.title }}</strong>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span style="color:var(--text-light); font-size:0.88rem;">পরিমাণ</span>
+              <strong style="color:var(--green-primary);">৳{{ donation.amount|floatformat:0 }}</strong>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span style="color:var(--text-light); font-size:0.88rem;">মাধ্যম</span>
+              <strong style="font-size:0.88rem;">{{ donation.get_payment_method_display }}</strong>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span style="color:var(--text-light); font-size:0.88rem;">অবস্থা</span>
+              <span class="badge bg-warning text-dark">যাচাই বাকি</span>
+            </div>
+          </div>
+
+          <p style="font-size:0.82rem; color:var(--text-light); margin-bottom:1.5rem;">
+            <i class="bi bi-megaphone me-1"></i>বন্ধুদের শেয়ার করুন, আরও সাহায্য আসুক!
+          </p>
+
+          <div class="d-grid gap-2">
+            <button class="btn-donate share-whatsapp" 
+              data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' donation.campaign.slug %}"
+              data-title="{{ donation.campaign.title }}">
+              <i class="bi bi-whatsapp me-2"></i>WhatsApp-এ শেয়ার করুন
+            </button>
+            <button class="btn-donate share-facebook" style="background:#1877F2;"
+              data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' donation.campaign.slug %}">
+              <i class="bi bi-facebook me-2"></i>Facebook-এ শেয়ার করুন
+            </button>
+            <a href="{% url 'home' %}" class="btn-donate" style="background:var(--text-mid);">
+              <i class="bi bi-house me-2"></i>হোমে ফিরে যান
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
