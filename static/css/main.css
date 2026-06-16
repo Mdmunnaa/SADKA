@@ -32,6 +32,19 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── Container (replaces Bootstrap's .container) ── */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+@media (max-width: 576px) {
+  .container { padding-left: 1rem; padding-right: 1rem; }
+}
+
 body {
   font-family: 'Hind Siliguri', 'Inter', sans-serif;
   background: var(--gray-50);
