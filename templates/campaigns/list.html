@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}সকল ক্যাম্পেইন — সহায়.bd{% endblock %}
 {% block content %}
-<section class="sec sec-cream" style="min-height:80vh;">
+<section class="sec sec-gray" style="min-height:80vh;">
   <div class="container">
-    <div class="sec-head" style="margin-bottom:1.5rem;">
+    <div class="sec-head">
       <span class="sec-eyebrow">সকল ক্যাম্পেইন</span>
-      <h2 class="sec-title">সাহায্যের হাত <span class="accent">বাড়িয়ে দিন</span></h2>
+      <h2 class="sec-title">সাহায্যের হাত <span>বাড়িয়ে দিন</span></h2>
     </div>
 
     <!-- FILTER -->
@@ -16,9 +16,9 @@
           <input type="text" name="q" value="{{ search|default:'' }}" placeholder="ক্যাম্পেইনের নাম...">
         </div>
         <div class="ff">
-          <label>ক্যাটাগরি</label>
+          <label>বিভাগ</label>
           <select name="category">
-            <option value="">সকল ক্যাটাগরি</option>
+            <option value="">সকল বিভাগ</option>
             {% for cat in categories %}
             <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
             {% endfor %}
@@ -35,7 +35,7 @@
         </div>
         <button type="submit" class="btn-filter">খুঁজুন</button>
         {% if search or selected_category or selected_status %}
-        <a href="{% url 'campaign_list' %}" style="font-size:.85rem; color:var(--text-500); align-self:center;">✕ ফিল্টার মুছুন</a>
+        <a href="{% url 'campaign_list' %}" style="font-size:.85rem; color:var(--gray-500); align-self:center;">✕ ফিল্টার মুছুন</a>
         {% endif %}
       </form>
     </div>
@@ -64,7 +64,7 @@
               <span class="c-raised">৳{{ c.raised_amount|floatformat:0 }}</span>
               <span class="c-target">৳{{ c.target_amount|floatformat:0 }}</span>
             </div>
-            <div class="c-progress-bar-wrap"><div class="c-progress-bar" data-width="{{ c.progress_percent }}" style="width:0%"></div></div>
+            <div class="c-progress-bar-wrap"><div class="c-progress-bar" data-pct="{{ c.progress_percent }}"></div></div>
           </div>
           <div class="c-footer">
             <span class="c-donors"><i class="bi bi-people"></i> {{ c.donor_count }} জন দাতা</span>
@@ -93,7 +93,7 @@
     <div class="empty-state">
       <div class="icon">🔍</div>
       <h4>কোনো ক্যাম্পেইন পাওয়া যায়নি</h4>
-      <p><a href="{% url 'campaign_list' %}" style="color:var(--teal-700);">সব ক্যাম্পেইন দেখুন</a></p>
+      <p><a href="{% url 'campaign_list' %}" style="color:var(--green-700);">সব ক্যাম্পেইন দেখুন</a></p>
     </div>
     {% endif %}
   </div>

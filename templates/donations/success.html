@@ -4,35 +4,34 @@
 <div class="success-wrap">
   <div class="container" style="max-width:520px;">
     <div class="success-box">
-      <div class="success-icon">🤲</div>
-      <span class="success-arabic">جَزَاكَ ٱللَّٰهُ خَيْرًا</span>
-      <h2 class="success-title">আল্লাহ আপনাকে উত্তম পুরস্কার দিন!</h2>
+      <div class="success-icon">✅</div>
+      <h2 class="success-title">জাযাকাল্লাহ খায়রান 🤲</h2>
       <p class="success-sub">আপনার ডোনেশন জমা হয়েছে। আমরা শীঘ্রই যাচাই করে নিশ্চিত করবো।</p>
 
-      <div style="background:var(--teal-50);border:1px solid var(--teal-100);border-radius:var(--r);padding:1rem 1.15rem;margin-bottom:1.5rem;text-align:left;">
-        <div class="detail-row"><span class="dr-label">ক্যাম্পেইন</span><span class="dr-val" style="font-size:.85rem;text-align:right;max-width:200px;">{{ donation.campaign.title }}</span></div>
-        <div class="detail-row"><span class="dr-label">পরিমাণ</span><span class="dr-val" style="color:var(--teal-700);">৳{{ donation.amount|floatformat:0 }}</span></div>
+      <div style="background:var(--gray-50);border:1px solid var(--gray-300);border-radius:var(--radius);padding:1rem 1.15rem;margin-bottom:1.5rem;text-align:left;">
+        <div class="detail-row"><span class="dr-label">ক্যাম্পেইন</span><span class="dr-val" style="max-width:200px;text-align:right;font-size:.85rem;">{{ donation.campaign.title }}</span></div>
+        <div class="detail-row"><span class="dr-label">পরিমাণ</span><span class="dr-val" style="color:var(--green-700);">৳{{ donation.amount|floatformat:0 }}</span></div>
         <div class="detail-row"><span class="dr-label">মাধ্যম</span><span class="dr-val">{{ donation.get_payment_method_display }}</span></div>
         <div class="detail-row"><span class="dr-label">অবস্থা</span><span class="badge-active">যাচাই চলছে</span></div>
       </div>
 
-      <p style="font-size:.82rem;color:var(--text-500);margin-bottom:1.25rem;">
+      <p style="font-size:.83rem;color:var(--gray-500);margin-bottom:1.25rem;">
         <i class="bi bi-megaphone me-1"></i>বন্ধুদের শেয়ার করুন, আরও সাহায্য আসুক!
       </p>
 
       <div style="display:flex;flex-direction:column;gap:.6rem;">
-        <button class="btn-share-wa" style="justify-content:center;border-radius:var(--r-sm);padding:.75rem;font-size:.95rem;"
+        <button class="btn-share-wa" style="justify-content:center;border-radius:var(--radius-sm);padding:.75rem;font-size:.95rem;"
           data-share="whatsapp"
           data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' donation.campaign.slug %}"
           data-title="{{ donation.campaign.title }}">
           <i class="bi bi-whatsapp"></i> WhatsApp-এ শেয়ার করুন
         </button>
-        <button class="btn-share-fb" style="justify-content:center;border-radius:var(--r-sm);padding:.75rem;font-size:.95rem;"
+        <button class="btn-share-fb" style="justify-content:center;border-radius:var(--radius-sm);padding:.75rem;font-size:.95rem;"
           data-share="facebook"
           data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' donation.campaign.slug %}">
           <i class="bi bi-facebook"></i> Facebook-এ শেয়ার করুন
         </button>
-        <a href="{% url 'home' %}" class="btn-share-copy" style="justify-content:center;border-radius:var(--r-sm);padding:.75rem;font-size:.95rem;">
+        <a href="{% url 'home' %}" class="btn-share-copy" style="justify-content:center;border-radius:var(--radius-sm);padding:.75rem;font-size:.95rem;">
           <i class="bi bi-house me-1"></i> হোমে ফিরে যান
         </a>
       </div>

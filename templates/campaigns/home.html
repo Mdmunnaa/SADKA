@@ -6,30 +6,18 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="container position-relative" style="z-index:2;">
-    <div class="row align-items-center">
-      <div class="col-lg-7">
-        <span class="hero-arabic">بِسْمِ اللَّهِ</span>
-        <div class="hero-badge"><span>🌙</span> ইসলামিক চ্যারিটি প্ল্যাটফর্ম</div>
-        <h1>মানুষের পাশে<br>দাঁড়ানোই <span class="gold">আমাদের ইবাদত</span></h1>
-
-        <div class="hadith-quote">
-          <span class="hadith-text">"الصَّدَقَةُ تُطْفِئُ الْخَطِيئَةَ كَمَا يُطْفِئُ الْمَاءُ النَّارَ"</span>
-          <span class="hadith-ref">সদকা পাপকে নিভিয়ে দেয় যেমন পানি আগুন নেভায় — তিরমিযী</span>
-        </div>
-
-        <p class="hero-sub">মানুষের সমস্যা তুলে ধরি, একসাথে সমাধান করি। আপনার একটু সহায়তা বদলে দিতে পারে একটি জীবন।</p>
-        <div class="hero-cta">
-          <a href="{% url 'campaign_list' %}" class="btn-hero-primary">
-            <i class="bi bi-heart-fill"></i> এখনই সাদাকাহ করুন
-          </a>
-          <a href="{% url 'campaign_list' %}?status=urgent" class="btn-hero-ghost">
-            <i class="bi bi-exclamation-circle"></i> জরুরি সাহায্য
-          </a>
-        </div>
-      </div>
-      <div class="col-lg-5 d-none d-lg-flex justify-content-center align-items-center">
-        <div style="font-size:7rem; opacity:0.12; line-height:1;">☪</div>
+  <div class="container hero-inner">
+    <div style="max-width:600px;">
+      <div class="hero-eyebrow"><span>💚</span> বাংলাদেশের মানুষের জন্য</div>
+      <h1>মানুষের পাশে<br>দাঁড়ানোই <span>আমাদের কাজ</span></h1>
+      <p class="hero-sub">মানুষের সমস্যা তুলে ধরি, একসাথে সমাধান করি। আপনার একটু সহায়তা বদলে দিতে পারে একটি জীবন।</p>
+      <div class="hero-cta">
+        <a href="{% url 'campaign_list' %}" class="btn-hero-primary">
+          <i class="bi bi-heart-fill"></i> এখনই সহায়তা করুন
+        </a>
+        <a href="{% url 'campaign_list' %}?status=urgent" class="btn-hero-ghost">
+          <i class="bi bi-exclamation-circle"></i> জরুরি ক্যাম্পেইন
+        </a>
       </div>
     </div>
   </div>
@@ -38,23 +26,35 @@
 <!-- STATS -->
 <div class="container">
   <div class="stats-float">
-    <div class="row align-items-center g-2 text-center">
-      <div class="col"><span class="stat-val">৳{{ stats.total_raised|floatformat:0 }}</span><div class="stat-lbl">মোট সদকা সংগ্রহ</div></div>
-      <div class="col-auto d-none d-md-block"><div class="stat-sep"></div></div>
-      <div class="col"><span class="stat-val">{{ stats.total_donors }}</span><div class="stat-lbl">দাতার সংখ্যা</div></div>
-      <div class="col-auto d-none d-md-block"><div class="stat-sep"></div></div>
-      <div class="col"><span class="stat-val">{{ stats.total_campaigns }}</span><div class="stat-lbl">চলমান ক্যাম্পেইন</div></div>
-      <div class="col-auto d-none d-md-block"><div class="stat-sep"></div></div>
-      <div class="col"><span class="stat-val">{{ stats.completed_campaigns }}</span><div class="stat-lbl">সম্পন্ন কার্যক্রম</div></div>
+    <div style="display:grid; grid-template-columns:1fr auto 1fr auto 1fr auto 1fr; align-items:center; gap:.5rem;">
+      <div class="stat-col">
+        <span class="stat-val">৳{{ stats.total_raised|floatformat:0 }}</span>
+        <div class="stat-lbl">মোট সংগ্রহ</div>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-col">
+        <span class="stat-val">{{ stats.total_donors }}</span>
+        <div class="stat-lbl">মোট দাতা</div>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-col">
+        <span class="stat-val">{{ stats.total_campaigns }}</span>
+        <div class="stat-lbl">সক্রিয় ক্যাম্পেইন</div>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-col">
+        <span class="stat-val">{{ stats.completed_campaigns }}</span>
+        <div class="stat-lbl">সম্পন্ন কার্যক্রম</div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- URGENT -->
 {% if urgent %}
-<section class="sec" style="background:#fff5f5; padding-top:3.5rem;">
+<section class="sec sec-gray" style="background:#fff5f5;">
   <div class="container">
-    <div class="sec-head-row">
+    <div class="sec-head sec-head-row">
       <div>
         <span class="sec-eyebrow red">🚨 জরুরি সাহায্য</span>
         <h2 class="sec-title">এখনই সাহায্য দরকার</h2>
@@ -80,18 +80,26 @@
               <span class="c-raised">৳{{ c.raised_amount|floatformat:0 }}</span>
               <span class="c-target">৳{{ c.target_amount|floatformat:0 }}</span>
             </div>
-            <div class="c-progress-bar-wrap"><div class="c-progress-bar" data-width="{{ c.progress_percent }}" style="width:0%"></div></div>
+            <div class="c-progress-bar-wrap"><div class="c-progress-bar" data-pct="{{ c.progress_percent }}"></div></div>
           </div>
           <div class="c-footer">
-            <span class="c-donors"><i class="bi bi-people"></i> {{ c.donor_count }} জন</span>
+            <span class="c-donors"><i class="bi bi-people"></i>{{ c.donor_count }} জন</span>
             <div class="c-actions">
-              <button class="btn-donate-card" data-donate-trigger
-                data-slug="{{ c.slug }}" data-title="{{ c.title }}"
-                data-bkash="{{ c.bkash_number }}" data-nagad="{{ c.nagad_number }}" data-rocket="{{ c.rocket_number }}">
+              <button class="btn-donate-card"
+                data-donate-trigger
+                data-slug="{{ c.slug }}"
+                data-title="{{ c.title }}"
+                data-bkash="{{ c.bkash_number }}"
+                data-nagad="{{ c.nagad_number }}"
+                data-rocket="{{ c.rocket_number }}">
                 <i class="bi bi-heart-fill"></i> দান করুন
               </button>
-              <button class="btn-icon wa" data-share="whatsapp" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' c.slug %}" data-title="{{ c.title }}"><i class="bi bi-whatsapp"></i></button>
-              <button class="btn-icon fb" data-share="facebook" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' c.slug %}"><i class="bi bi-facebook"></i></button>
+              <button class="btn-icon wa" data-share="whatsapp" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' c.slug %}" data-title="{{ c.title }}" title="WhatsApp">
+                <i class="bi bi-whatsapp"></i>
+              </button>
+              <button class="btn-icon fb" data-share="facebook" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' c.slug %}" title="Facebook">
+                <i class="bi bi-facebook"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -102,56 +110,13 @@
 </section>
 {% endif %}
 
-<!-- ISLAMIC INFO STRIP -->
-<section class="info-strip">
-  <div class="container position-relative" style="z-index:1;">
-    <div class="text-center mb-4">
-      <span style="font-family:'Amiri',serif; font-size:1.5rem; color:var(--gold-300);">أَنْوَاعُ الصَّدَقَةِ</span>
-      <h2 class="sec-title" style="color:white; margin-top:.5rem;">ইসলামে <span style="color:var(--gold-400);">সাদাকার</span> ফযীলত</h2>
-    </div>
-    <div class="row g-3">
-      <div class="col-md-3 col-6">
-        <div class="info-card">
-          <span class="info-icon">💰</span>
-          <div class="info-title">সাদাকায়ে জারিয়া</div>
-          <div class="info-desc">মৃত্যুর পরও যে সদকার সওয়াব অব্যাহত থাকে</div>
-        </div>
-      </div>
-      <div class="col-md-3 col-6">
-        <div class="info-card">
-          <span class="info-icon">🏥</span>
-          <div class="info-title">চিকিৎসা সহায়তা</div>
-          <div class="info-desc">অসুস্থ মানুষকে সাহায্য করা সর্বোত্তম সদকা</div>
-        </div>
-      </div>
-      <div class="col-md-3 col-6">
-        <div class="info-card">
-          <span class="info-icon">📚</span>
-          <div class="info-title">শিক্ষা সহায়তা</div>
-          <div class="info-desc">ইলম অর্জনে সাহায্য করা আল্লাহর কাছে প্রিয়</div>
-        </div>
-      </div>
-      <div class="col-md-3 col-6">
-        <div class="info-card">
-          <span class="info-icon">🍲</span>
-          <div class="info-title">খাদ্য সহায়তা</div>
-          <div class="info-desc">ক্ষুধার্তকে খাওয়ানো জান্নাতের পথ</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- FEATURED -->
 {% if featured %}
 <section class="sec sec-white">
   <div class="container">
-    <div class="sec-head-row">
-      <div>
-        <span class="sec-eyebrow gold">⭐ বিশেষ ক্যাম্পেইন</span>
-        <h2 class="sec-title">সবচেয়ে বেশি <span class="gold">সাড়া পাওয়া</span></h2>
-      </div>
-      <a href="{% url 'campaign_list' %}" class="link-all">সব দেখুন <i class="bi bi-arrow-right"></i></a>
+    <div class="sec-head">
+      <span class="sec-eyebrow">⭐ বিশেষ ক্যাম্পেইন</span>
+      <h2 class="sec-title">সবচেয়ে বেশি <span>সাড়া পাওয়া</span></h2>
     </div>
     <div class="card-grid card-grid-3">
       {% for c in featured %}
@@ -159,26 +124,38 @@
         <a href="{% url 'campaign_detail' c.slug %}" class="featured-img" style="display:block;">
           <span class="featured-badge">⭐ বিশেষ</span>
           {% if c.image %}<img src="{{ c.image.url }}" alt="{{ c.title }}">
-          {% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;background:var(--teal-50);">🤲</div>{% endif %}
+          {% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;background:var(--green-50);">🤲</div>{% endif %}
         </a>
         <div class="featured-body">
           {% if c.category %}<span class="c-cat">{{ c.category.name }}</span>{% endif %}
-          <a href="{% url 'campaign_detail' c.slug %}" style="display:block;">
+          <a href="{% url 'campaign_detail' c.slug %}" style="display:block; color:inherit;">
           <div class="featured-title">{{ c.title }}</div>
           </a>
           <p class="featured-desc">{{ c.short_description|default:c.description|truncatewords:20 }}</p>
-          <div class="c-progress-meta"><span class="c-raised">৳{{ c.raised_amount|floatformat:0 }} সংগ্রহ</span><span class="c-target">{{ c.progress_percent }}%</span></div>
-          <div class="c-progress-bar-wrap" style="height:7px;margin:.4rem 0 .3rem;"><div class="c-progress-bar" data-width="{{ c.progress_percent }}" style="width:0%"></div></div>
-          <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-500);margin-bottom:1rem;">
-            <span>{{ c.donor_count }} জন দাতা</span><span>লক্ষ্য: ৳{{ c.target_amount|floatformat:0 }}</span>
+          <div class="c-progress" style="margin-bottom:1rem;">
+            <div class="c-progress-meta">
+              <span class="c-raised">৳{{ c.raised_amount|floatformat:0 }} সংগ্রহ</span>
+              <span class="c-target">{{ c.progress_percent }}%</span>
+            </div>
+            <div class="c-progress-bar-wrap" style="height:7px;"><div class="c-progress-bar" data-pct="{{ c.progress_percent }}"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--gray-500);margin-top:.3rem;">
+              <span>{{ c.donor_count }} জন দাতা</span>
+              <span>লক্ষ্য: ৳{{ c.target_amount|floatformat:0 }}</span>
+            </div>
           </div>
           <div style="display:flex;gap:.5rem;">
-            <button class="btn-donate-card" style="flex:1;border-radius:var(--r-sm);padding:.6rem;font-size:.88rem;"
-              data-donate-trigger data-slug="{{ c.slug }}" data-title="{{ c.title }}"
-              data-bkash="{{ c.bkash_number }}" data-nagad="{{ c.nagad_number }}" data-rocket="{{ c.rocket_number }}">
-              <i class="bi bi-heart-fill"></i> দান করুন
+            <button class="btn-donate-card" style="flex:1;border-radius:var(--radius-sm);padding:.6rem;"
+              data-donate-trigger
+              data-slug="{{ c.slug }}"
+              data-title="{{ c.title }}"
+              data-bkash="{{ c.bkash_number }}"
+              data-nagad="{{ c.nagad_number }}"
+              data-rocket="{{ c.rocket_number }}">
+              <i class="bi bi-heart-fill"></i> এখনই দান করুন
             </button>
-            <a href="{% url 'campaign_detail' c.slug %}" class="btn-icon" style="width:auto;padding:0 .8rem;"><i class="bi bi-arrow-right"></i></a>
+            <a href="{% url 'campaign_detail' c.slug %}" class="btn-icon" style="width:auto;padding:0 .8rem;">
+              <i class="bi bi-info-circle"></i>
+            </a>
           </div>
         </div>
       </div>
@@ -190,12 +167,12 @@
 
 <!-- ACTIVE -->
 {% if active %}
-<section class="sec sec-cream">
+<section class="sec sec-gray">
   <div class="container">
-    <div class="sec-head-row">
+    <div class="sec-head sec-head-row">
       <div>
-        <span class="sec-eyebrow">🤲 চলমান সদকা</span>
-        <h2 class="sec-title">সক্রিয় <span class="accent">ক্যাম্পেইন</span></h2>
+        <span class="sec-eyebrow">💚 চলমান ক্যাম্পেইন</span>
+        <h2 class="sec-title">সক্রিয় <span>ক্যাম্পেইন</span></h2>
         <p class="sec-sub">আপনার সহায়তায় পরিবর্তন আনুন</p>
       </div>
       <a href="{% url 'campaign_list' %}" class="link-all">সব দেখুন <i class="bi bi-arrow-right"></i></a>
@@ -214,19 +191,30 @@
           </a>
           <div class="c-desc">{{ c.short_description|default:c.description }}</div>
           <div class="c-progress">
-            <div class="c-progress-meta"><span class="c-raised">৳{{ c.raised_amount|floatformat:0 }}</span><span class="c-target">৳{{ c.target_amount|floatformat:0 }}</span></div>
-            <div class="c-progress-bar-wrap"><div class="c-progress-bar" data-width="{{ c.progress_percent }}" style="width:0%"></div></div>
+            <div class="c-progress-meta">
+              <span class="c-raised">৳{{ c.raised_amount|floatformat:0 }}</span>
+              <span class="c-target">৳{{ c.target_amount|floatformat:0 }}</span>
+            </div>
+            <div class="c-progress-bar-wrap"><div class="c-progress-bar" data-pct="{{ c.progress_percent }}"></div></div>
           </div>
           <div class="c-footer">
-            <span class="c-donors"><i class="bi bi-geo-alt"></i> {{ c.location|default:"বাংলাদেশ" }}</span>
+            <span class="c-donors"><i class="bi bi-geo-alt"></i>{{ c.location|default:"বাংলাদেশ" }}</span>
             <div class="c-actions">
-              <button class="btn-donate-card" data-donate-trigger
-                data-slug="{{ c.slug }}" data-title="{{ c.title }}"
-                data-bkash="{{ c.bkash_number }}" data-nagad="{{ c.nagad_number }}" data-rocket="{{ c.rocket_number }}">
-                <i class="bi bi-heart-fill"></i> দান
+              <button class="btn-donate-card"
+                data-donate-trigger
+                data-slug="{{ c.slug }}"
+                data-title="{{ c.title }}"
+                data-bkash="{{ c.bkash_number }}"
+                data-nagad="{{ c.nagad_number }}"
+                data-rocket="{{ c.rocket_number }}">
+                <i class="bi bi-heart-fill"></i> দান করুন
               </button>
-              <a href="{% url 'campaign_detail' c.slug %}" class="btn-icon" title="বিস্তারিত"><i class="bi bi-arrow-right"></i></a>
-              <button class="btn-icon wa" data-share="whatsapp" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' c.slug %}" data-title="{{ c.title }}"><i class="bi bi-whatsapp"></i></button>
+              <a href="{% url 'campaign_detail' c.slug %}" class="btn-icon" title="বিস্তারিত">
+                <i class="bi bi-arrow-right"></i>
+              </a>
+              <button class="btn-icon wa" data-share="whatsapp" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' c.slug %}" data-title="{{ c.title }}">
+                <i class="bi bi-whatsapp"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -241,20 +229,17 @@
 {% if completed %}
 <section class="sec sec-white">
   <div class="container">
-    <div class="sec-head-row">
-      <div>
-        <span class="sec-eyebrow gold">الحمد لله ✅</span>
-        <h2 class="sec-title">আলহামদুলিল্লাহ! <span class="gold">সম্পন্ন হয়েছে</span></h2>
-      </div>
+    <div class="sec-head">
+      <span class="sec-eyebrow">✅ সম্পন্ন</span>
+      <h2 class="sec-title">আপনাদের সহায়তায় <span>সমাধান হয়েছে</span></h2>
     </div>
-    <div class="islamic-divider"><span>﴾ আল্লাহর রহমতে ﴿</span></div>
     <div class="card-grid card-grid-3">
       {% for c in completed %}
       <div class="done-card">
         <div class="done-check"><i class="bi bi-check-lg"></i></div>
         <div>
           <div class="done-title">{{ c.title }}</div>
-          <div class="done-meta">{{ c.donor_count }} জন সাহায্য · ৳{{ c.raised_amount|floatformat:0 }}</div>
+          <div class="done-meta">{{ c.donor_count }} জন সাহায্য করেছেন · ৳{{ c.raised_amount|floatformat:0 }} সংগ্রহ</div>
         </div>
       </div>
       {% endfor %}
@@ -264,27 +249,27 @@
 {% endif %}
 
 <!-- HOW IT WORKS -->
-<section class="sec sec-cream">
+<section class="sec sec-green">
   <div class="container">
-    <div class="text-center mb-4">
+    <div class="sec-head" style="text-align:center;">
       <span class="sec-eyebrow">কীভাবে কাজ করে</span>
-      <h2 class="sec-title">মাত্র <span class="accent">৩টি ধাপে</span> সাদাকাহ করুন</h2>
+      <h2 class="sec-title">মাত্র <span>৩টি ধাপে</span> সাহায্য করুন</h2>
     </div>
     <div class="card-grid card-grid-3">
       <div class="step-card">
         <div class="step-num">1</div>
         <div class="step-title">ক্যাম্পেইন বেছে নিন</div>
-        <p class="step-desc">যার সাহায্য করতে চান তার ক্যাম্পেইন খুঁজুন এবং "দান করুন" বাটনে ক্লিক করুন</p>
+        <p class="step-desc">যার সাহায্য করতে চান তার ক্যাম্পেইন খুঁজে নিন এবং "দান করুন" বাটনে ক্লিক করুন</p>
       </div>
       <div class="step-card">
         <div class="step-num">2</div>
         <div class="step-title">বিকাশ/নগদে পাঠান</div>
-        <p class="step-desc">দেখানো নম্বরে Send Money করুন এবং Transaction ID দিয়ে confirm করুন</p>
+        <p class="step-desc">দেখানো নম্বরে Send Money করুন এবং Transaction ID দিয়ে ফর্ম সাবমিট করুন</p>
       </div>
       <div class="step-card">
         <div class="step-num">3</div>
         <div class="step-title">আমরা যাচাই করি</div>
-        <p class="step-desc">২৪ ঘণ্টার মধ্যে যাচাই করে আপডেট দেওয়া হয়। আল্লাহ কবুল করুন।</p>
+        <p class="step-desc">২৪ ঘণ্টার মধ্যে যাচাই করে ডোনেশন নিশ্চিত করা হয় এবং আপডেট দেওয়া হয়</p>
       </div>
     </div>
   </div>
