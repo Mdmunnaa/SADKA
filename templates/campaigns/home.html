@@ -1,114 +1,97 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}সহায় - সমাজের পাশে থাকুন{% endblock %}
+{% block title %}সহায়.bd — সমাজের পাশে থাকুন{% endblock %}
 
 {% block content %}
 
 <!-- HERO -->
 <section class="hero">
-  <div class="container position-relative" style="z-index:5;">
+  <div class="container position-relative" style="z-index:2;">
     <div class="row align-items-center">
       <div class="col-lg-7">
-        <div class="hero-badge">💚 একসাথে আমরা পারি</div>
-        <h1>মানুষের পাশে<br>দাঁড়ানোই <br>আমাদের লক্ষ্য</h1>
-        <p>মানুষের সমস্যা তুলে ধরি, একসাথে সমাধান করি। আপনার একটু সহায়তা বদলে দিতে পারে একটি জীবন।</p>
-        <a href="{% url 'campaign_list' %}" class="btn-hero">
-          <i class="bi bi-heart-fill me-2"></i>এখনই সহায়তা করুন
-        </a>
-        <a href="{% url 'campaign_list' %}?status=urgent" class="btn-hero-outline">
-          জরুরি ক্যাম্পেইন দেখুন
-        </a>
+        <span class="hero-arabic">بِسْمِ اللَّهِ</span>
+        <div class="hero-badge"><span>🌙</span> ইসলামিক চ্যারিটি প্ল্যাটফর্ম</div>
+        <h1>মানুষের পাশে<br>দাঁড়ানোই <span class="gold">আমাদের ইবাদত</span></h1>
+
+        <div class="hadith-quote">
+          <span class="hadith-text">"الصَّدَقَةُ تُطْفِئُ الْخَطِيئَةَ كَمَا يُطْفِئُ الْمَاءُ النَّارَ"</span>
+          <span class="hadith-ref">সদকা পাপকে নিভিয়ে দেয় যেমন পানি আগুন নেভায় — তিরমিযী</span>
+        </div>
+
+        <p class="hero-sub">মানুষের সমস্যা তুলে ধরি, একসাথে সমাধান করি। আপনার একটু সহায়তা বদলে দিতে পারে একটি জীবন।</p>
+        <div class="hero-cta">
+          <a href="{% url 'campaign_list' %}" class="btn-hero-primary">
+            <i class="bi bi-heart-fill"></i> এখনই সাদাকাহ করুন
+          </a>
+          <a href="{% url 'campaign_list' %}?status=urgent" class="btn-hero-ghost">
+            <i class="bi bi-exclamation-circle"></i> জরুরি সাহায্য
+          </a>
+        </div>
       </div>
-      <div class="col-lg-5 d-none d-lg-flex justify-content-end">
-        <div style="font-size:10rem; opacity:0.15;">🤝</div>
+      <div class="col-lg-5 d-none d-lg-flex justify-content-center align-items-center">
+        <div style="font-size:7rem; opacity:0.12; line-height:1;">☪</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- STATS STRIP -->
+<!-- STATS -->
 <div class="container">
-  <div class="stats-strip">
-    <div class="row align-items-center g-3">
-      <div class="col">
-        <div class="stat-item">
-          <span class="stat-number">৳{{ stats.total_raised|floatformat:0 }}</span>
-          <div class="stat-label">মোট সংগ্রহ</div>
-        </div>
-      </div>
-      <div class="col-auto d-none d-md-block"><div class="stat-divider"></div></div>
-      <div class="col">
-        <div class="stat-item">
-          <span class="stat-number">{{ stats.total_donors }}</span>
-          <div class="stat-label">মোট দাতা</div>
-        </div>
-      </div>
-      <div class="col-auto d-none d-md-block"><div class="stat-divider"></div></div>
-      <div class="col">
-        <div class="stat-item">
-          <span class="stat-number">{{ stats.total_campaigns }}</span>
-          <div class="stat-label">সক্রিয় ক্যাম্পেইন</div>
-        </div>
-      </div>
-      <div class="col-auto d-none d-md-block"><div class="stat-divider"></div></div>
-      <div class="col">
-        <div class="stat-item">
-          <span class="stat-number">{{ stats.completed_campaigns }}</span>
-          <div class="stat-label">সম্পন্ন কার্যক্রম</div>
-        </div>
-      </div>
+  <div class="stats-float">
+    <div class="row align-items-center g-2 text-center">
+      <div class="col"><span class="stat-val">৳{{ stats.total_raised|floatformat:0 }}</span><div class="stat-lbl">মোট সদকা সংগ্রহ</div></div>
+      <div class="col-auto d-none d-md-block"><div class="stat-sep"></div></div>
+      <div class="col"><span class="stat-val">{{ stats.total_donors }}</span><div class="stat-lbl">দাতার সংখ্যা</div></div>
+      <div class="col-auto d-none d-md-block"><div class="stat-sep"></div></div>
+      <div class="col"><span class="stat-val">{{ stats.total_campaigns }}</span><div class="stat-lbl">চলমান ক্যাম্পেইন</div></div>
+      <div class="col-auto d-none d-md-block"><div class="stat-sep"></div></div>
+      <div class="col"><span class="stat-val">{{ stats.completed_campaigns }}</span><div class="stat-lbl">সম্পন্ন কার্যক্রম</div></div>
     </div>
   </div>
 </div>
 
-<!-- URGENT SECTION -->
+<!-- URGENT -->
 {% if urgent %}
-<section class="section-padding" style="background: #FFF9F9;">
+<section class="sec" style="background:#fff5f5; padding-top:3.5rem;">
   <div class="container">
-    <div class="section-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div class="sec-head-row">
       <div>
-        <span class="section-label" style="background:#FFEBEE; color:#E53935;">🚨 জরুরি সাহায্য</span>
-        <h2 class="section-title">এখনই সাহায্য দরকার</h2>
+        <span class="sec-eyebrow red">🚨 জরুরি সাহায্য</span>
+        <h2 class="sec-title">এখনই সাহায্য দরকার</h2>
       </div>
-      <a href="{% url 'campaign_list' %}?status=urgent" class="btn btn-outline-danger btn-sm rounded-pill">সব দেখুন</a>
+      <a href="{% url 'campaign_list' %}?status=urgent" class="link-all">সব দেখুন <i class="bi bi-arrow-right"></i></a>
     </div>
-    <div class="row g-3">
-      {% for campaign in urgent %}
-      <div class="col-md-6 col-lg-3">
-        <div class="campaign-card h-100">
-          <div class="urgent-banner">🚨 জরুরি সাহায্য প্রয়োজন</div>
-          {% if campaign.image %}
-          <img src="{{ campaign.image.url }}" class="campaign-card-img" alt="{{ campaign.title }}">
-          {% else %}
-          <div class="campaign-img-placeholder">🆘</div>
-          {% endif %}
-          <div class="campaign-card-body">
-            <h5 class="campaign-card-title">{{ campaign.title }}</h5>
-            <p class="campaign-desc">{{ campaign.short_description|default:campaign.description }}</p>
-            <div class="progress-wrap">
-              <div class="progress-info">
-                <span class="progress-raised">৳{{ campaign.raised_amount|floatformat:0 }} সংগ্রহ</span>
-                <span class="progress-target">লক্ষ্য: ৳{{ campaign.target_amount|floatformat:0 }}</span>
-              </div>
-              <div class="progress">
-                <div class="progress-bar" data-width="{{ campaign.progress_percent }}" style="width:0%"></div>
-              </div>
+    <div class="card-grid card-grid-4">
+      {% for c in urgent %}
+      <div class="c-card">
+        <a href="{% url 'campaign_detail' c.slug %}" class="c-card-img" style="display:block;">
+          <div class="urgent-ribbon">🚨 জরুরি সাহায্য প্রয়োজন</div>
+          {% if c.image %}<img src="{{ c.image.url }}" alt="{{ c.title }}">
+          {% else %}<div class="c-card-placeholder">🆘</div>{% endif %}
+        </a>
+        <div class="c-card-body">
+          {% if c.category %}<span class="c-cat">{{ c.category.name }}</span>{% endif %}
+          <a href="{% url 'campaign_detail' c.slug %}" style="display:block; color:inherit;">
+          <div class="c-title">{{ c.title }}</div>
+          </a>
+          <div class="c-desc">{{ c.short_description|default:c.description }}</div>
+          <div class="c-progress">
+            <div class="c-progress-meta">
+              <span class="c-raised">৳{{ c.raised_amount|floatformat:0 }}</span>
+              <span class="c-target">৳{{ c.target_amount|floatformat:0 }}</span>
             </div>
-            <div class="campaign-meta">
-              {% if campaign.location %}<span class="campaign-location"><i class="bi bi-geo-alt"></i>{{ campaign.location }}</span>{% endif %}
-              <span><i class="bi bi-people"></i> {{ campaign.donor_count }} জন দাতা</span>
-            </div>
-            <div class="d-flex gap-2">
-              <a href="{% url 'donate' campaign.slug %}" class="btn-donate flex-grow-1">
-                <i class="bi bi-heart-fill"></i> সাহায্য করুন
-              </a>
-              <button class="btn-share share-facebook" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' campaign.slug %}" title="Facebook শেয়ার">
-                <i class="bi bi-facebook"></i>
+            <div class="c-progress-bar-wrap"><div class="c-progress-bar" data-width="{{ c.progress_percent }}" style="width:0%"></div></div>
+          </div>
+          <div class="c-footer">
+            <span class="c-donors"><i class="bi bi-people"></i> {{ c.donor_count }} জন</span>
+            <div class="c-actions">
+              <button class="btn-donate-card" data-donate-trigger
+                data-slug="{{ c.slug }}" data-title="{{ c.title }}"
+                data-bkash="{{ c.bkash_number }}" data-nagad="{{ c.nagad_number }}" data-rocket="{{ c.rocket_number }}">
+                <i class="bi bi-heart-fill"></i> দান করুন
               </button>
-              <button class="btn-share share-whatsapp" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' campaign.slug %}" data-title="{{ campaign.title }}" title="WhatsApp শেয়ার">
-                <i class="bi bi-whatsapp"></i>
-              </button>
+              <button class="btn-icon wa" data-share="whatsapp" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' c.slug %}" data-title="{{ c.title }}"><i class="bi bi-whatsapp"></i></button>
+              <button class="btn-icon fb" data-share="facebook" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' c.slug %}"><i class="bi bi-facebook"></i></button>
             </div>
           </div>
         </div>
@@ -118,49 +101,84 @@
   </div>
 </section>
 {% endif %}
+
+<!-- ISLAMIC INFO STRIP -->
+<section class="info-strip">
+  <div class="container position-relative" style="z-index:1;">
+    <div class="text-center mb-4">
+      <span style="font-family:'Amiri',serif; font-size:1.5rem; color:var(--gold-300);">أَنْوَاعُ الصَّدَقَةِ</span>
+      <h2 class="sec-title" style="color:white; margin-top:.5rem;">ইসলামে <span style="color:var(--gold-400);">সাদাকার</span> ফযীলত</h2>
+    </div>
+    <div class="row g-3">
+      <div class="col-md-3 col-6">
+        <div class="info-card">
+          <span class="info-icon">💰</span>
+          <div class="info-title">সাদাকায়ে জারিয়া</div>
+          <div class="info-desc">মৃত্যুর পরও যে সদকার সওয়াব অব্যাহত থাকে</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="info-card">
+          <span class="info-icon">🏥</span>
+          <div class="info-title">চিকিৎসা সহায়তা</div>
+          <div class="info-desc">অসুস্থ মানুষকে সাহায্য করা সর্বোত্তম সদকা</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="info-card">
+          <span class="info-icon">📚</span>
+          <div class="info-title">শিক্ষা সহায়তা</div>
+          <div class="info-desc">ইলম অর্জনে সাহায্য করা আল্লাহর কাছে প্রিয়</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="info-card">
+          <span class="info-icon">🍲</span>
+          <div class="info-title">খাদ্য সহায়তা</div>
+          <div class="info-desc">ক্ষুধার্তকে খাওয়ানো জান্নাতের পথ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- FEATURED -->
 {% if featured %}
-<section class="section-padding bg-white-section">
+<section class="sec sec-white">
   <div class="container">
-    <div class="section-header">
-      <span class="section-label">⭐ বিশেষ ক্যাম্পেইন</span>
-      <h2 class="section-title">সবচেয়ে বেশি <span>সাড়া পাওয়া</span></h2>
+    <div class="sec-head-row">
+      <div>
+        <span class="sec-eyebrow gold">⭐ বিশেষ ক্যাম্পেইন</span>
+        <h2 class="sec-title">সবচেয়ে বেশি <span class="gold">সাড়া পাওয়া</span></h2>
+      </div>
+      <a href="{% url 'campaign_list' %}" class="link-all">সব দেখুন <i class="bi bi-arrow-right"></i></a>
     </div>
-    <div class="row g-4">
-      {% for campaign in featured %}
-      <div class="col-lg-4">
-        <div class="featured-card h-100">
-          <span class="featured-label">⭐ বিশেষ</span>
-          {% if campaign.image %}
-          <img src="{{ campaign.image.url }}" class="featured-card-img" alt="{{ campaign.title }}">
-          {% else %}
-          <div style="height:280px; background:linear-gradient(135deg, var(--green-light), #c8e6d1); display:flex; align-items:center; justify-content:center; font-size:5rem;">🤲</div>
-          {% endif %}
-          <div class="featured-card-body">
-            <h4 style="font-weight:800; color:var(--text-dark); margin-bottom:0.75rem;">{{ campaign.title }}</h4>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-bottom:1.25rem;">{{ campaign.short_description|default:campaign.description|truncatewords:25 }}</p>
-            <div class="progress-wrap">
-              <div class="progress-info">
-                <span class="progress-raised" style="font-size:0.9rem;">৳{{ campaign.raised_amount|floatformat:0 }} সংগ্রহ</span>
-                <span class="progress-target">{{ campaign.progress_percent }}%</span>
-              </div>
-              <div class="progress" style="height:8px;">
-                <div class="progress-bar" data-width="{{ campaign.progress_percent }}" style="width:0%"></div>
-              </div>
-              <div class="d-flex justify-content-between mt-2" style="font-size:0.8rem; color:var(--text-light);">
-                <span>লক্ষ্য: ৳{{ campaign.target_amount|floatformat:0 }}</span>
-                <span>{{ campaign.donor_count }} জন দাতা</span>
-              </div>
-            </div>
-            <div class="d-flex gap-2 mt-3">
-              <a href="{% url 'donate' campaign.slug %}" class="btn-donate" style="flex:1;">
-                <i class="bi bi-heart-fill"></i> এখনই দান করুন
-              </a>
-              <a href="{% url 'campaign_detail' campaign.slug %}" class="btn-share" style="padding:0.6rem 0.8rem;">
-                <i class="bi bi-arrow-right"></i>
-              </a>
-            </div>
+    <div class="card-grid card-grid-3">
+      {% for c in featured %}
+      <div class="featured-card">
+        <a href="{% url 'campaign_detail' c.slug %}" class="featured-img" style="display:block;">
+          <span class="featured-badge">⭐ বিশেষ</span>
+          {% if c.image %}<img src="{{ c.image.url }}" alt="{{ c.title }}">
+          {% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;background:var(--teal-50);">🤲</div>{% endif %}
+        </a>
+        <div class="featured-body">
+          {% if c.category %}<span class="c-cat">{{ c.category.name }}</span>{% endif %}
+          <a href="{% url 'campaign_detail' c.slug %}" style="display:block;">
+          <div class="featured-title">{{ c.title }}</div>
+          </a>
+          <p class="featured-desc">{{ c.short_description|default:c.description|truncatewords:20 }}</p>
+          <div class="c-progress-meta"><span class="c-raised">৳{{ c.raised_amount|floatformat:0 }} সংগ্রহ</span><span class="c-target">{{ c.progress_percent }}%</span></div>
+          <div class="c-progress-bar-wrap" style="height:7px;margin:.4rem 0 .3rem;"><div class="c-progress-bar" data-width="{{ c.progress_percent }}" style="width:0%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-500);margin-bottom:1rem;">
+            <span>{{ c.donor_count }} জন দাতা</span><span>লক্ষ্য: ৳{{ c.target_amount|floatformat:0 }}</span>
+          </div>
+          <div style="display:flex;gap:.5rem;">
+            <button class="btn-donate-card" style="flex:1;border-radius:var(--r-sm);padding:.6rem;font-size:.88rem;"
+              data-donate-trigger data-slug="{{ c.slug }}" data-title="{{ c.title }}"
+              data-bkash="{{ c.bkash_number }}" data-nagad="{{ c.nagad_number }}" data-rocket="{{ c.rocket_number }}">
+              <i class="bi bi-heart-fill"></i> দান করুন
+            </button>
+            <a href="{% url 'campaign_detail' c.slug %}" class="btn-icon" style="width:auto;padding:0 .8rem;"><i class="bi bi-arrow-right"></i></a>
           </div>
         </div>
       </div>
@@ -170,56 +188,45 @@
 </section>
 {% endif %}
 
-<!-- ACTIVE CAMPAIGNS -->
+<!-- ACTIVE -->
 {% if active %}
-<section class="section-padding">
+<section class="sec sec-cream">
   <div class="container">
-    <div class="section-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div class="sec-head-row">
       <div>
-        <span class="section-label">💚 চলমান</span>
-        <h2 class="section-title">সক্রিয় <span>ক্যাম্পেইন</span></h2>
-        <p class="section-subtitle">আপনার সহায়তায় পরিবর্তন আনুন</p>
+        <span class="sec-eyebrow">🤲 চলমান সদকা</span>
+        <h2 class="sec-title">সক্রিয় <span class="accent">ক্যাম্পেইন</span></h2>
+        <p class="sec-sub">আপনার সহায়তায় পরিবর্তন আনুন</p>
       </div>
-      <a href="{% url 'campaign_list' %}" class="btn btn-outline-success btn-sm rounded-pill">সব দেখুন</a>
+      <a href="{% url 'campaign_list' %}" class="link-all">সব দেখুন <i class="bi bi-arrow-right"></i></a>
     </div>
-    <div class="row g-3">
-      {% for campaign in active %}
-      <div class="col-md-6 col-lg-4">
-        <div class="campaign-card h-100">
-          {% if campaign.image %}
-          <img src="{{ campaign.image.url }}" class="campaign-card-img" alt="{{ campaign.title }}">
-          {% else %}
-          <div class="campaign-img-placeholder">🤲</div>
-          {% endif %}
-          <div class="campaign-card-body">
-            {% if campaign.category %}
-            <span class="campaign-badge badge-active">{{ campaign.category.name }}</span>
-            {% endif %}
-            <h5 class="campaign-card-title">{{ campaign.title }}</h5>
-            <p class="campaign-desc">{{ campaign.short_description|default:campaign.description }}</p>
-            <div class="progress-wrap">
-              <div class="progress-info">
-                <span class="progress-raised">৳{{ campaign.raised_amount|floatformat:0 }}</span>
-                <span class="progress-target">৳{{ campaign.target_amount|floatformat:0 }}</span>
-              </div>
-              <div class="progress">
-                <div class="progress-bar" data-width="{{ campaign.progress_percent }}" style="width:0%"></div>
-              </div>
-            </div>
-            <div class="campaign-meta">
-              {% if campaign.location %}<span class="campaign-location"><i class="bi bi-geo-alt"></i>{{ campaign.location }}</span>{% endif %}
-              <span>{{ campaign.donor_count }} জন দাতা</span>
-            </div>
-            <div class="d-flex gap-2">
-              <a href="{% url 'donate' campaign.slug %}" class="btn-donate" style="flex:1;">
-                <i class="bi bi-heart-fill"></i> দান করুন
-              </a>
-              <a href="{% url 'campaign_detail' campaign.slug %}" class="btn-share" title="বিস্তারিত দেখুন">
-                <i class="bi bi-info-circle"></i>
-              </a>
-              <button class="btn-share share-whatsapp" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' campaign.slug %}" data-title="{{ campaign.title }}" title="শেয়ার করুন">
-                <i class="bi bi-whatsapp"></i>
+    <div class="card-grid card-grid-3">
+      {% for c in active %}
+      <div class="c-card">
+        <a href="{% url 'campaign_detail' c.slug %}" class="c-card-img" style="display:block;">
+          {% if c.image %}<img src="{{ c.image.url }}" alt="{{ c.title }}">
+          {% else %}<div class="c-card-placeholder">🤲</div>{% endif %}
+        </a>
+        <div class="c-card-body">
+          {% if c.category %}<span class="c-cat">{{ c.category.name }}</span>{% endif %}
+          <a href="{% url 'campaign_detail' c.slug %}" style="display:block; color:inherit;">
+          <div class="c-title">{{ c.title }}</div>
+          </a>
+          <div class="c-desc">{{ c.short_description|default:c.description }}</div>
+          <div class="c-progress">
+            <div class="c-progress-meta"><span class="c-raised">৳{{ c.raised_amount|floatformat:0 }}</span><span class="c-target">৳{{ c.target_amount|floatformat:0 }}</span></div>
+            <div class="c-progress-bar-wrap"><div class="c-progress-bar" data-width="{{ c.progress_percent }}" style="width:0%"></div></div>
+          </div>
+          <div class="c-footer">
+            <span class="c-donors"><i class="bi bi-geo-alt"></i> {{ c.location|default:"বাংলাদেশ" }}</span>
+            <div class="c-actions">
+              <button class="btn-donate-card" data-donate-trigger
+                data-slug="{{ c.slug }}" data-title="{{ c.title }}"
+                data-bkash="{{ c.bkash_number }}" data-nagad="{{ c.nagad_number }}" data-rocket="{{ c.rocket_number }}">
+                <i class="bi bi-heart-fill"></i> দান
               </button>
+              <a href="{% url 'campaign_detail' c.slug %}" class="btn-icon" title="বিস্তারিত"><i class="bi bi-arrow-right"></i></a>
+              <button class="btn-icon wa" data-share="whatsapp" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' c.slug %}" data-title="{{ c.title }}"><i class="bi bi-whatsapp"></i></button>
             </div>
           </div>
         </div>
@@ -232,25 +239,22 @@
 
 <!-- COMPLETED -->
 {% if completed %}
-<section class="section-padding bg-white-section">
+<section class="sec sec-white">
   <div class="container">
-    <div class="section-header">
-      <span class="section-label">✅ সম্পন্ন</span>
-      <h2 class="section-title">আপনাদের সহায়তায় <span>সমাধান হয়েছে</span></h2>
-      <p class="section-subtitle">একসাথে আমরা যা পারি</p>
+    <div class="sec-head-row">
+      <div>
+        <span class="sec-eyebrow gold">الحمد لله ✅</span>
+        <h2 class="sec-title">আলহামদুলিল্লাহ! <span class="gold">সম্পন্ন হয়েছে</span></h2>
+      </div>
     </div>
-    <div class="row g-3">
-      {% for campaign in completed %}
-      <div class="col-md-4">
-        <div class="completed-card">
-          <div class="completed-check">✅</div>
-          <div>
-            <div style="font-weight:700; color:var(--text-dark); font-size:0.95rem;">{{ campaign.title }}</div>
-            <div style="font-size:0.82rem; color:var(--text-light); margin-top:0.2rem;">
-              <i class="bi bi-people me-1"></i>{{ campaign.donor_count }} জন সাহায্য করেছেন
-              • ৳{{ campaign.raised_amount|floatformat:0 }} সংগ্রহ
-            </div>
-          </div>
+    <div class="islamic-divider"><span>﴾ আল্লাহর রহমতে ﴿</span></div>
+    <div class="card-grid card-grid-3">
+      {% for c in completed %}
+      <div class="done-card">
+        <div class="done-check"><i class="bi bi-check-lg"></i></div>
+        <div>
+          <div class="done-title">{{ c.title }}</div>
+          <div class="done-meta">{{ c.donor_count }} জন সাহায্য · ৳{{ c.raised_amount|floatformat:0 }}</div>
         </div>
       </div>
       {% endfor %}
@@ -260,27 +264,27 @@
 {% endif %}
 
 <!-- HOW IT WORKS -->
-<section class="section-padding" style="background: var(--green-light);">
+<section class="sec sec-cream">
   <div class="container">
-    <div class="section-header text-center">
-      <span class="section-label">কীভাবে কাজ করে</span>
-      <h2 class="section-title">মাত্র ৩টি ধাপে <span>সাহায্য করুন</span></h2>
+    <div class="text-center mb-4">
+      <span class="sec-eyebrow">কীভাবে কাজ করে</span>
+      <h2 class="sec-title">মাত্র <span class="accent">৩টি ধাপে</span> সাদাকাহ করুন</h2>
     </div>
-    <div class="row g-4 text-center">
-      <div class="col-md-4">
-        <div style="width:70px; height:70px; background:var(--green-primary); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.8rem; color:white;">১</div>
-        <h5 style="font-weight:700;">ক্যাম্পেইন বেছে নিন</h5>
-        <p style="color:var(--text-light); font-size:0.9rem;">যে মানুষটির সাহায্য করতে চান তার ক্যাম্পেইন খুঁজে নিন</p>
+    <div class="card-grid card-grid-3">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-title">ক্যাম্পেইন বেছে নিন</div>
+        <p class="step-desc">যার সাহায্য করতে চান তার ক্যাম্পেইন খুঁজুন এবং "দান করুন" বাটনে ক্লিক করুন</p>
       </div>
-      <div class="col-md-4">
-        <div style="width:70px; height:70px; background:var(--green-primary); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.8rem; color:white;">২</div>
-        <h5 style="font-weight:700;">পরিমাণ নির্ধারণ করুন</h5>
-        <p style="color:var(--text-light); font-size:0.9rem;">আপনার সুবিধামতো যেকোনো পরিমাণ ডোনেট করুন</p>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-title">বিকাশ/নগদে পাঠান</div>
+        <p class="step-desc">দেখানো নম্বরে Send Money করুন এবং Transaction ID দিয়ে confirm করুন</p>
       </div>
-      <div class="col-md-4">
-        <div style="width:70px; height:70px; background:var(--green-primary); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.8rem; color:white;">৩</div>
-        <h5 style="font-weight:700;">বিকাশ/নগদে পাঠান</h5>
-        <p style="color:var(--text-light); font-size:0.9rem;">বিকাশ বা নগদে সরাসরি পাঠান, স্ক্রিনশট দিয়ে নিশ্চিত করুন</p>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-title">আমরা যাচাই করি</div>
+        <p class="step-desc">২৪ ঘণ্টার মধ্যে যাচাই করে আপডেট দেওয়া হয়। আল্লাহ কবুল করুন।</p>
       </div>
     </div>
   </div>

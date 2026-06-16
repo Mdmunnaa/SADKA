@@ -1,113 +1,137 @@
-// ===== SAHAY PLATFORM - MAIN JS =====
+/* ===== সহায়.bd — Islamic Charity Platform JS ===== */
 
-// Quick amount buttons
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
 
-  // Amount quick select
-  const amountBtns = document.querySelectorAll('.amount-btn');
-  const amountInput = document.getElementById('amount');
+  /* ── Progress bars (supports both data-width and data-pct) ── */
+  document.querySelectorAll('[data-width], [data-pct]').forEach(bar => {
+    const pct = parseFloat(bar.dataset.width || bar.dataset.pct) || 0;
+    setTimeout(() => { bar.style.width = Math.min(pct, 100) + '%'; }, 300);
+  });
 
-  if (amountBtns.length && amountInput) {
-    amountBtns.forEach(btn => {
-      btn.addEventListener('click', function() {
-        amountBtns.forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        amountInput.value = this.dataset.amount;
-      });
+  /* ── Donate Modal ── */
+  const overlay  = document.getElementById('donateOverlay');
+  const modalTitle = document.getElementById('modalCampaignTitle');
+  const modalForm  = document.getElementById('donateForm');
+
+  const openModal = btn => {
+    if (!overlay) return;
+    const { slug, title, bkash = '', nagad = '', rocket = '' } = btn.dataset;
+    if (modalTitle) modalTitle.textContent = title;
+    if (modalForm)  modalForm.action = '/donate/' + slug + '/';
+    updatePayTabs(bkash, nagad, rocket);
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeModal = () => {
+    if (!overlay) return;
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
+  document.querySelectorAll('[data-donate-trigger]').forEach(btn =>
+    btn.addEventListener('click', () => openModal(btn)));
+  document.querySelectorAll('[data-close-modal]').forEach(el =>
+    el.addEventListener('click', closeModal));
+  if (overlay) overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  function updatePayTabs(bkash, nagad, rocket) {
+    const map = { bkash, nagad, rocket };
+    const display = document.getElementById('payNumberDisplay');
+    const inp     = document.getElementById('modalPaymentMethod');
+    let first = null, firstMethod = null;
+
+    document.querySelectorAll('.pay-tab[data-method]').forEach(tab => {
+      const m = tab.dataset.method;
+      const num = map[m] || '';
+      tab.style.display = num ? '' : 'none';
+      tab.dataset.num = num;
+      tab.classList.remove('active');
+      if (num && !first) { first = num; firstMethod = m; }
     });
 
-    amountInput.addEventListener('input', function() {
-      amountBtns.forEach(b => b.classList.remove('active'));
-    });
+    if (first) {
+      const firstTab = document.querySelector(`.pay-tab[data-method="${firstMethod}"]`);
+      if (firstTab) firstTab.classList.add('active');
+      if (display) display.textContent = first;
+      if (inp) inp.value = firstMethod;
+    }
   }
 
-  // Progress bar animation
-  const progressBars = document.querySelectorAll('.progress-bar[data-width]');
-  progressBars.forEach(bar => {
-    const width = bar.dataset.width;
-    setTimeout(() => {
-      bar.style.width = width + '%';
-    }, 300);
+  document.querySelectorAll('.pay-tab[data-method]').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const display = document.getElementById('payNumberDisplay');
+      if (display) display.textContent = tab.dataset.num || '—';
+      const inp = document.getElementById('modalPaymentMethod');
+      if (inp) inp.value = tab.dataset.method;
+    });
   });
 
-  // Payment method selection
-  const paymentCards = document.querySelectorAll('.payment-method-card');
-  const paymentInput = document.getElementById('payment_method');
-
-  if (paymentCards.length) {
-    paymentCards.forEach(card => {
-      card.addEventListener('click', function() {
-        paymentCards.forEach(c => c.classList.remove('selected'));
-        this.classList.add('selected');
-        if (paymentInput) {
-          paymentInput.value = this.dataset.method;
-        }
-      });
+  /* ── Amount pills ── */
+  document.querySelectorAll('.pill[data-amount]').forEach(pill => {
+    pill.addEventListener('click', () => {
+      pill.closest('.amount-pills')?.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const inp = pill.closest('.modal-body, form')?.querySelector('input[name="amount"]');
+      if (inp) inp.value = pill.dataset.amount;
     });
-  }
+  });
+  document.querySelectorAll('input[name="amount"]').forEach(inp =>
+    inp.addEventListener('input', () =>
+      inp.closest('.modal-body, form')?.querySelectorAll('.pill').forEach(p => p.classList.remove('active'))));
 
-  // Share buttons
-  const currentUrl = window.location.href;
-  const pageTitle = document.title;
+  /* ── Detail page tabs ── */
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab)?.classList.add('active');
+    });
+  });
 
-  const fbShare = document.querySelectorAll('.share-facebook');
-  fbShare.forEach(btn => {
-    btn.addEventListener('click', function(e) {
+  /* ── Share buttons ── */
+  document.querySelectorAll('[data-share="facebook"]').forEach(btn =>
+    btn.addEventListener('click', e => {
       e.preventDefault();
-      const url = this.dataset.url || currentUrl;
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank', 'width=600,height=400');
-    });
-  });
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(btn.dataset.url || location.href)}`, '_blank', 'width=620,height=420');
+    }));
 
-  const waShare = document.querySelectorAll('.share-whatsapp');
-  waShare.forEach(btn => {
-    btn.addEventListener('click', function(e) {
+  document.querySelectorAll('[data-share="whatsapp"]').forEach(btn =>
+    btn.addEventListener('click', e => {
       e.preventDefault();
-      const url = this.dataset.url || currentUrl;
-      const title = this.dataset.title || pageTitle;
-      const text = `${title}\n\nএখানে ডোনেট করুন: ${url}`;
-      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-    });
-  });
+      const url   = btn.dataset.url   || location.href;
+      const title = btn.dataset.title || document.title;
+      window.open(`https://wa.me/?text=${encodeURIComponent(title + '\n\n' + url)}`, '_blank');
+    }));
 
-  // Copy link
-  const copyBtns = document.querySelectorAll('.copy-link');
-  copyBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
-      const url = this.dataset.url || currentUrl;
-      navigator.clipboard.writeText(url).then(() => {
-        const original = this.innerHTML;
-        this.innerHTML = '<i class="bi bi-check2"></i> কপি হয়েছে!';
-        setTimeout(() => { this.innerHTML = original; }, 2000);
+  document.querySelectorAll('[data-share="copy"]').forEach(btn =>
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(btn.dataset.url || location.href).then(() => {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check2"></i> কপি হয়েছে!';
+        btn.style.color = 'var(--teal-700)';
+        setTimeout(() => { btn.innerHTML = orig; btn.style.color = ''; }, 2500);
       });
-    });
-  });
+    }));
 
-  // Number counter animation
-  const counters = document.querySelectorAll('.counter-animate');
-  counters.forEach(counter => {
-    const target = parseFloat(counter.dataset.target);
-    const prefix = counter.dataset.prefix || '';
-    const suffix = counter.dataset.suffix || '';
-    const isFloat = counter.dataset.float === 'true';
-    let start = 0;
-    const duration = 2000;
-    const step = target / (duration / 16);
+  /* ── Share buttons (old class-based) ── */
+  document.querySelectorAll('.share-facebook').forEach(btn =>
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const url = btn.dataset.url || location.href;
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank', 'width=620,height=420');
+    }));
 
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= target) {
-        start = target;
-        clearInterval(timer);
-      }
-      const val = isFloat ? start.toFixed(1) : Math.floor(start).toLocaleString('bn-BD');
-      counter.textContent = prefix + val + suffix;
-    }, 16);
-  });
+  document.querySelectorAll('.share-whatsapp').forEach(btn =>
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const url   = btn.dataset.url   || location.href;
+      const title = btn.dataset.title || document.title;
+      window.open(`https://wa.me/?text=${encodeURIComponent(title + '\n\n' + url)}`, '_blank');
+    }));
 
 });
-
-// Format taka
-function formatTaka(amount) {
-  return '৳' + parseFloat(amount).toLocaleString('bn-BD');
-}
