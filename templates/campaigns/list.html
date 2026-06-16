@@ -16,9 +16,9 @@
           <input type="text" name="q" value="{{ search|default:'' }}" placeholder="ক্যাম্পেইনের নাম...">
         </div>
         <div class="ff">
-          <label>বিভাগ</label>
+          <label>ক্যাটাগরি</label>
           <select name="category">
-            <option value="">সকল বিভাগ</option>
+            <option value="">সকল ক্যাটাগরি</option>
             {% for cat in categories %}
             <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
             {% endfor %}

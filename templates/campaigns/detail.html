@@ -131,12 +131,14 @@
           <div class="card-grid card-grid-2">
             {% for c in related %}
             <div class="c-card">
-              <div class="c-card-img" style="aspect-ratio:16/7;">
+              <a href="{% url 'campaign_detail' c.slug %}" class="c-card-img" style="aspect-ratio:16/7; display:block;">
                 {% if c.image %}<img src="{{ c.image.url }}" alt="{{ c.title }}">
                 {% else %}<div class="c-card-placeholder">🤲</div>{% endif %}
-              </div>
+              </a>
               <div class="c-card-body">
+                <a href="{% url 'campaign_detail' c.slug %}" style="display:block; color:inherit;">
                 <div class="c-title" style="-webkit-line-clamp:1;">{{ c.title }}</div>
+                </a>
                 <div class="c-progress">
                   <div class="c-progress-bar-wrap"><div class="c-progress-bar" data-pct="{{ c.progress_percent }}"></div></div>
                   <div class="c-progress-meta" style="margin-top:.3rem;">
