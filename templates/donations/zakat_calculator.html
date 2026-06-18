@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}যাকাত হিসাব ক্যালকুলেটর — সহায়.bd{% endblock %}
+{% block content %}
+<div class="detail-wrap">
+  <div class="container" style="max-width:700px;">
+    <div class="sec-head" style="text-align:center; margin-bottom:2rem;">
+      <span class="sec-eyebrow gold">🕌 যাকাত হিসাব</span>
+      <h2 class="sec-title">আপনার <span class="accent">যাকাত</span> হিসাব করুন</h2>
+      <p class="sec-sub">সম্পদের পরিমাণ লিখুন, আমরা স্বয়ংক্রিয়ভাবে যাকাতের পরিমাণ হিসাব করে দেবো</p>
+    </div>
+
+    <div class="alert-green" style="margin-bottom:1.5rem;">
+      <i class="bi bi-info-circle me-2"></i>
+      নিসাব (Nisab) ধরা হয়েছে রুপার মান অনুযায়ী আনুমানিক ৳{{ default_nisab|floatformat:0 }} (৬১২.৩৬ গ্রাম রুপা)। রুপা/স্বর্ণের দাম প্রতিদিন বদলায়, তাই সঠিক হিসাবের জন্য বর্তমান বাজার দর অনুযায়ী নিসাবের মান নিজে আপডেট করে দিতে পারেন।
+    </div>
+
+    <div class="donate-form-card" style="background:var(--white); border:1px solid var(--gray-300); border-radius:var(--radius-xl); padding:2rem; box-shadow:var(--shadow-md);">
+      <form method="post">
+        {% csrf_token %}
+
+        <h4 style="font-weight:700; font-size:1rem; margin-bottom:1rem; color:var(--gray-900);">💰 জাকাতযোগ্য সম্পদ</h4>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem;">
+          <div class="form-field">
+            <label>হাতে নগদ টাকা</label>
+            <input type="number" name="cash" step="0.01" value="{{ breakdown.cash|default:'' }}" placeholder="৳০">
+          </div>
+          <div class="form-field">
+            <label>ব্যাংক/সঞ্চয়</label>
+            <input type="number" name="bank_savings" step="0.01" value="{{ breakdown.bank_savings|default:'' }}" placeholder="৳০">
+          </div>
+          <div class="form-field">
+            <label>স্বর্ণের বাজার মূল্য</label>
+            <input type="number" name="gold_value" step="0.01" value="{{ breakdown.gold_value|default:'' }}" placeholder="৳০">
+          </div>
+          <div class="form-field">
+            <label>রুপার বাজার মূল্য</label>
+            <input type="number" name="silver_value" step="0.01" value="{{ breakdown.silver_value|default:'' }}" placeholder="৳০">
+          </div>
+          <div class="form-field">
+            <label>ব্যবসায়িক পণ্য/সম্পদ</label>
+            <input type="number" name="business_assets" step="0.01" value="{{ breakdown.business_assets|default:'' }}" placeholder="৳০">
+          </div>
+          <div class="form-field">
+            <label>বিনিয়োগ/শেয়ার</label>
+            <input type="number" name="investments" step="0.01" value="{{ breakdown.investments|default:'' }}" placeholder="৳০">
+          </div>
+          <div class="form-field">
+            <label>প্রাপ্য ঋণ (অন্যের কাছে পাওনা)</label>
+            <input type="number" name="receivables" step="0.01" value="{{ breakdown.receivables|default:'' }}" placeholder="৳০">
+          </div>
+          <div class="form-field">
+            <label>আপনার দেনা (যা পরিশোধ করতে হবে)</label>
+            <input type="number" name="debts" step="0.01" value="{{ breakdown.debts|default:'' }}" placeholder="৳০">
+          </div>
+        </div>
+
+        <div class="form-field" style="margin-top:.5rem;">
+          <label>নিসাবের মান (ঐচ্ছিক — আজকের বাজার অনুযায়ী)</label>
+          <input type="number" name="nisab_threshold" step="0.01" placeholder="ডিফল্ট: ৳{{ default_nisab|floatformat:0 }}">
+        </div>
+
+        <button type="submit" class="btn-modal-submit" style="margin-top:1rem;">
+          <i class="bi bi-calculator"></i> যাকাত হিসাব করুন
+        </button>
+      </form>
+
+      {% if result %}
+      <div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--gray-100);">
+        <div class="detail-row"><span class="dr-label">মোট সম্পদ</span><span class="dr-val">৳{{ result.total_assets|floatformat:0 }}</span></div>
+        <div class="detail-row"><span class="dr-label">দেনা বাদে নেট সম্পদ</span><span class="dr-val">৳{{ result.net_zakatable|floatformat:0 }}</span></div>
+        <div class="detail-row"><span class="dr-label">নিসাবের মান</span><span class="dr-val">৳{{ result.nisab_threshold|floatformat:0 }}</span></div>
+
+        {% if result.is_eligible %}
+        <div class="alert-green" style="margin-top:1.25rem; text-align:center; padding:1.5rem;">
+          <div style="font-size:.9rem; margin-bottom:.5rem;">✅ আপনার সম্পদ নিসাবের সমান বা বেশি — যাকাত দেওয়া ফরয</div>
+          <div style="font-size:1.8rem; font-weight:800; color:var(--green-700);">৳{{ result.zakat_due|floatformat:0 }}</div>
+          <div style="font-size:.8rem; color:var(--gray-500); margin-top:.25rem;">(নেট সম্পদের ২.৫%)</div>
+        </div>
+        <div style="text-align:center; margin-top:1.25rem;">
+          <a href="{% url 'campaign_list' %}" class="btn-hero-primary" style="display:inline-flex; background:var(--green-700); color:#fff;">
+            <i class="bi bi-heart-fill"></i> এখনই যাকাত দান করুন
+          </a>
+        </div>
+        {% else %}
+        <div class="alert-green" style="margin-top:1.25rem; text-align:center; padding:1.5rem; background:var(--gray-50); border-color:var(--gray-300);">
+          <div style="font-size:.95rem; color:var(--gray-700);">আপনার সম্পদ নিসাবের কম — এই বছর যাকাত ফরয নয়। তবে স্বেচ্ছায় সদকা করতে পারেন।</div>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+    <p style="font-size:.78rem; color:var(--gray-500); text-align:center; margin-top:1.5rem;">
+      <i class="bi bi-exclamation-circle me-1"></i>এই ক্যালকুলেটর একটি সাধারণ গাইড মাত্র। নির্দিষ্ট পরিস্থিতির জন্য একজন ইসলামিক স্কলারের পরামর্শ নেওয়া উত্তম।
+    </p>
+  </div>
+</div>
+{% endblock %}

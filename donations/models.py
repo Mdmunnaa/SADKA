@@ -56,3 +56,30 @@ class Donation(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+class RecurringReminder(models.Model):
+    FREQUENCY_CHOICES = [
+        ('monthly', 'মাসিক'),
+        ('weekly', 'সাপ্তাহিক'),
+    ]
+
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='reminders', null=True, blank=True,
+                                  help_text="খালি রাখলে general reminder (নির্দিষ্ট কোনো ক্যাম্পেইন না)")
+    name = models.CharField(max_length=200, blank=True)
+    phone = models.CharField(max_length=20, blank=True)
+    email = models.EmailField(blank=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, help_text="প্রতিবার কত টাকা দিতে চান")
+    frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES, default='monthly')
+    is_active = models.BooleanField(default=True)
+    last_reminded_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        target = self.campaign.title if self.campaign else "সাধারণ সদকা"
+        return f"{self.name or self.phone or self.email} — ৳{self.amount}/{self.get_frequency_display()} ({target})"
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "রিকারিং রিমাইন্ডার"
+        verbose_name_plural = "রিকারিং রিমাইন্ডার"

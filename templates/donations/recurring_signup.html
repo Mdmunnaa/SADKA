@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}মাসিক সদকা সেট করুন — সহায়.bd{% endblock %}
+{% block content %}
+<div class="detail-wrap">
+  <div class="container" style="max-width:600px;">
+    <div class="sec-head" style="text-align:center; margin-bottom:2rem;">
+      <span class="sec-eyebrow gold">🔁 রিকারিং সদকা</span>
+      <h2 class="sec-title">নিয়মিত <span class="accent">সদকা</span> সেট করুন</h2>
+      <p class="sec-sub">প্রতি মাসে বা সপ্তাহে একই পরিমাণ দান করার জন্য রিমাইন্ডার সেট করুন — আমরা আপনাকে সময় হলে মনে করিয়ে দেবো</p>
+    </div>
+
+    <div class="donate-form-card" style="background:var(--white); border:1px solid var(--gray-300); border-radius:var(--radius-xl); padding:2rem; box-shadow:var(--shadow-md);">
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="form-field">
+          <label>কোন ক্যাম্পেইনের জন্য? (ঐচ্ছিক)</label>
+          <select name="campaign">
+            <option value="">সাধারণ সদকা (যেকোনো জরুরি প্রয়োজনে)</option>
+            {% for c in campaigns %}
+            <option value="{{ c.id }}">{{ c.title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>পরিমাণ (টাকা) <span style="color:var(--red-600)">*</span></label>
+          <input type="number" name="amount" placeholder="যেমন: ৫০০" min="10" required>
+        </div>
+
+        <div class="form-field">
+          <label>কত দিন পর পর? <span style="color:var(--red-600)">*</span></label>
+          <select name="frequency" required>
+            <option value="monthly">মাসিক</option>
+            <option value="weekly">সাপ্তাহিক</option>
+          </select>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem;">
+          <div class="form-field">
+            <label>নাম</label>
+            <input type="text" name="name" placeholder="আপনার নাম">
+          </div>
+          <div class="form-field">
+            <label>মোবাইল নম্বর</label>
+            <input type="tel" name="phone" placeholder="01XXXXXXXXX">
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>ইমেইল (ঐচ্ছিক, যদি ফোন না দেন তাহলে আবশ্যক)</label>
+          <input type="email" name="email" placeholder="you@example.com">
+        </div>
+
+        <p style="font-size:.78rem; color:var(--gray-500); margin-bottom:1.25rem;">
+          <i class="bi bi-info-circle me-1"></i>আমরা নির্ধারিত সময়ে আপনাকে SMS/Email এর মাধ্যমে রিমাইন্ডার পাঠাবো। প্রতিবার আপনাকে নিজে বিকাশ/নগদে টাকা পাঠিয়ে confirm করতে হবে।
+        </p>
+
+        <button type="submit" class="btn-modal-submit">
+          <i class="bi bi-arrow-repeat"></i> রিমাইন্ডার সেট করুন
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

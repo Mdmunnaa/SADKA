@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}পেজ পাওয়া যায়নি — সহায়.bd{% endblock %}
+{% block content %}
+<div class="sec sec-cream" style="min-height:65vh; display:flex; align-items:center;">
+  <div class="container text-center">
+    <div style="font-size:5rem; margin-bottom:.5rem;">🔍</div>
+    <h1 style="font-size:2.2rem; font-weight:800; color:var(--gray-900); margin-bottom:.5rem;">৪০৪ — পেজ পাওয়া যায়নি</h1>
+    <p style="color:var(--gray-500); font-size:1rem; margin-bottom:2rem; max-width:480px; margin-left:auto; margin-right:auto;">
+      আপনি যে পেজ খুঁজছেন সেটা মুছে ফেলা হয়েছে, নাম বদলে গেছে, অথবা কখনো ছিল না।
+    </p>
+    <a href="{% url 'home' %}" class="btn-hero-primary" style="display:inline-flex;">
+      <i class="bi bi-house"></i> হোমে ফিরে যান
+    </a>
+  </div>
+</div>
+{% endblock %}

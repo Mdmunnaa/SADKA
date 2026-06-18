@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static i18n %}
 
 {% block title %}{{ campaign.title }} — সহায়.bd{% endblock %}
 
@@ -12,6 +12,7 @@
 <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ campaign.image.url }}">
 {% endif %}
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta name="description" content="{{ campaign.short_description|default:campaign.description|truncatewords:30 }}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ campaign.title }}">
 <meta name="twitter:description" content="{{ campaign.short_description|default:campaign.description|truncatewords:30 }}">
@@ -24,9 +25,9 @@
 
     <!-- Breadcrumb -->
     <div class="breadcrumb-custom" style="margin-bottom:1.5rem;">
-      <a href="{% url 'home' %}">হোম</a>
+      <a href="{% url 'home' %}">{% trans "হোম" %}</a>
       <span class="bc-sep">/</span>
-      <a href="{% url 'campaign_list' %}">ক্যাম্পেইন</a>
+      <a href="{% url 'campaign_list' %}">{% trans "ক্যাম্পেইন" %}</a>
       <span class="bc-sep">/</span>
       <span>{{ campaign.title|truncatewords:6 }}</span>
     </div>
@@ -44,10 +45,19 @@
 
         <!-- Status badges -->
         <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin:.9rem 0 .5rem;">
-          {% if campaign.status == 'urgent' %}<span class="badge-urgent">🚨 জরুরি</span>{% endif %}
-          {% if campaign.status == 'active' %}<span class="badge-active">✅ চলমান</span>{% endif %}
-          {% if campaign.status == 'completed' %}<span class="badge-completed">🏁 সম্পন্ন</span>{% endif %}
+          {% if campaign.status == 'urgent' %}<span class="badge-urgent">🚨 {% trans "জরুরি" %}</span>{% endif %}
+          {% if campaign.status == 'active' %}<span class="badge-active">✅ {% trans "চলমান" %}</span>{% endif %}
+          {% if campaign.status == 'completed' %}<span class="badge-completed">🏁 {% trans "সম্পন্ন" %}</span>{% endif %}
           {% if campaign.category %}<span class="c-cat">{{ campaign.category.name }}</span>{% endif %}
+          {% if campaign.deadline and campaign.status != 'completed' %}
+            {% if campaign.is_deadline_passed %}
+            <span class="deadline-badge expired"><i class="bi bi-clock-history"></i> {% trans "সময় শেষ" %}</span>
+            {% elif campaign.days_remaining <= 3 %}
+            <span class="deadline-badge critical"><i class="bi bi-alarm"></i> {% trans "মাত্র" %} {{ campaign.days_remaining }} {% trans "দিন বাকি" %}</span>
+            {% else %}
+            <span class="deadline-badge"><i class="bi bi-calendar3"></i> {{ campaign.days_remaining }} {% trans "দিন বাকি" %}</span>
+            {% endif %}
+          {% endif %}
           {% if campaign.location %}<span style="font-size:.78rem; color:var(--gray-500);"><i class="bi bi-geo-alt"></i> {{ campaign.location }}</span>{% endif %}
         </div>
 
@@ -55,7 +65,7 @@
 
         <!-- Share bar — GoFundMe style -->
         <div class="share-bar">
-          <span class="share-bar-label"><i class="bi bi-share me-1"></i>শেয়ার করুন:</span>
+          <span class="share-bar-label"><i class="bi bi-share me-1"></i>{% trans "শেয়ার করুন" %}:</span>
           <button class="btn-share-fb" data-share="facebook" data-url="{{ request.build_absolute_uri }}">
             <i class="bi bi-facebook"></i> Facebook
           </button>
@@ -63,18 +73,18 @@
             <i class="bi bi-whatsapp"></i> WhatsApp
           </button>
           <button class="btn-share-copy" data-share="copy" data-url="{{ request.build_absolute_uri }}">
-            <i class="bi bi-link-45deg"></i> লিংক কপি
+            <i class="bi bi-link-45deg"></i> {% trans "লিংক কপি" %}
           </button>
         </div>
 
         <!-- Tabs — GoFundMe style -->
         <div class="detail-tabs">
           <ul>
-            <li><button class="tab-btn active" data-tab="tab-desc">বিবরণ</button></li>
+            <li><button class="tab-btn active" data-tab="tab-desc">{% trans "বিবরণ" %}</button></li>
             <li><button class="tab-btn" data-tab="tab-updates">
-              আপডেট {% if updates %}<span style="background:var(--green-700);color:#fff;font-size:.68rem;padding:.15rem .45rem;border-radius:999px;margin-left:.3rem;">{{ updates.count }}</span>{% endif %}
+              {% trans "আপডেট" %} {% if updates %}<span style="background:var(--green-700);color:#fff;font-size:.68rem;padding:.15rem .45rem;border-radius:999px;margin-left:.3rem;">{{ updates.count }}</span>{% endif %}
             </button></li>
-            <li><button class="tab-btn" data-tab="tab-donors">দাতারা</button></li>
+            <li><button class="tab-btn" data-tab="tab-donors">{% trans "দাতারা" %}</button></li>
           </ul>
         </div>
 
@@ -91,13 +101,13 @@
               <div class="update-meta"><i class="bi bi-calendar3 me-1"></i>{{ u.created_at|date:"d M, Y" }}</div>
               <div class="update-title">{{ u.title }}</div>
               <div class="update-body">{{ u.content|linebreaks }}</div>
-              {% if u.image %}<img src="{{ u.image.url }}" class="update-img" alt="আপডেট ছবি">{% endif %}
+              {% if u.image %}<img src="{{ u.image.url }}" class="update-img" alt="{% trans 'আপডেট ছবি' %}">{% endif %}
             </div>
             {% endfor %}
           {% else %}
           <div class="empty-state" style="padding:2rem 0;">
             <div class="icon">🕐</div>
-            <p>এখনো কোনো আপডেট নেই</p>
+            <p>{% trans "এখনো কোনো আপডেট নেই" %}</p>
           </div>
           {% endif %}
         </div>
@@ -119,7 +129,7 @@
           {% else %}
           <div class="empty-state" style="padding:2rem 0;">
             <div class="icon">🤲</div>
-            <p>প্রথম দাতা হোন!</p>
+            <p>{% trans "প্রথম দাতা হোন!" %}</p>
           </div>
           {% endif %}
         </div>
@@ -127,7 +137,7 @@
         <!-- Related -->
         {% if related %}
         <div style="margin-top:3rem;">
-          <h3 style="font-size:1.2rem;font-weight:800;margin-bottom:1.25rem;color:var(--gray-900);">আরও দেখুন</h3>
+          <h3 style="font-size:1.2rem;font-weight:800;margin-bottom:1.25rem;color:var(--gray-900);">{% trans "আরও দেখুন" %}</h3>
           <div class="card-grid card-grid-2">
             {% for c in related %}
             <div class="c-card">
@@ -149,7 +159,7 @@
                 <button class="btn-donate-card" style="width:100%;margin-top:.5rem;border-radius:var(--radius-sm);"
                   data-donate-trigger data-slug="{{ c.slug }}" data-title="{{ c.title }}"
                   data-bkash="{{ c.bkash_number }}" data-nagad="{{ c.nagad_number }}" data-rocket="{{ c.rocket_number }}">
-                  <i class="bi bi-heart-fill"></i> দান করুন
+                  <i class="bi bi-heart-fill"></i> {% trans "দান করুন" %}
                 </button>
               </div>
             </div>
@@ -169,23 +179,23 @@
             <div class="stat-3">
               <div>
                 <span class="stat-3-val" style="color:var(--green-700);">৳{{ campaign.raised_amount|floatformat:0 }}</span>
-                <span class="stat-3-lbl">সংগ্রহ</span>
+                <span class="stat-3-lbl">{% trans "সংগ্রহ" %}</span>
               </div>
               <div>
                 <span class="stat-3-val">{{ campaign.donor_count }}</span>
-                <span class="stat-3-lbl">দাতা</span>
+                <span class="stat-3-lbl">{% trans "দাতা" %}</span>
               </div>
               <div>
                 <span class="stat-3-val" style="color:var(--gray-700);">৳{{ campaign.remaining_amount|floatformat:0 }}</span>
-                <span class="stat-3-lbl">আরও দরকার</span>
+                <span class="stat-3-lbl">{% trans "আরও দরকার" %}</span>
               </div>
             </div>
             <div class="big-progress-bar-wrap">
               <div class="big-progress-bar" data-pct="{{ campaign.progress_percent }}"></div>
             </div>
             <div class="progress-nums">
-              <span class="p-raised">{{ campaign.progress_percent }}% সম্পন্ন</span>
-              <span class="p-pct">লক্ষ্য: ৳{{ campaign.target_amount|floatformat:0 }}</span>
+              <span class="p-raised">{{ campaign.progress_percent }}% {% trans "সম্পন্ন" %}</span>
+              <span class="p-pct">{% trans "লক্ষ্য" %}: ৳{{ campaign.target_amount|floatformat:0 }}</span>
             </div>
           </div>
           {% if campaign.status != 'completed' %}
@@ -197,7 +207,7 @@
               data-bkash="{{ campaign.bkash_number }}"
               data-nagad="{{ campaign.nagad_number }}"
               data-rocket="{{ campaign.rocket_number }}">
-              <i class="bi bi-heart-fill"></i> এখনই দান করুন
+              <i class="bi bi-heart-fill"></i> {% trans "এখনই দান করুন" %}
             </button>
           </div>
           {% endif %}
@@ -206,23 +216,23 @@
         <!-- Payment numbers -->
         {% if campaign.bkash_number or campaign.nagad_number or campaign.rocket_number %}
         <div class="sidebar-box">
-          <div class="sidebar-box-head"><i class="bi bi-credit-card me-2"></i>পেমেন্ট নম্বর</div>
+          <div class="sidebar-box-head"><i class="bi bi-credit-card me-2"></i>{% trans "পেমেন্ট নম্বর" %}</div>
           <div class="sidebar-box-body">
             {% if campaign.bkash_number %}
             <div class="pay-row">
-              <span class="pay-badge bkash">বিকাশ</span>
+              <span class="pay-badge bkash">{% trans "বিকাশ" %}</span>
               <span class="pay-num">{{ campaign.bkash_number }}</span>
             </div>
             {% endif %}
             {% if campaign.nagad_number %}
             <div class="pay-row">
-              <span class="pay-badge nagad">নগদ</span>
+              <span class="pay-badge nagad">{% trans "নগদ" %}</span>
               <span class="pay-num">{{ campaign.nagad_number }}</span>
             </div>
             {% endif %}
             {% if campaign.rocket_number %}
             <div class="pay-row" style="margin-bottom:0;">
-              <span class="pay-badge rocket">রকেট</span>
+              <span class="pay-badge rocket">{% trans "রকেট" %}</span>
               <span class="pay-num">{{ campaign.rocket_number }}</span>
             </div>
             {% endif %}
@@ -232,19 +242,19 @@
 
         <!-- Share sidebar -->
         <div class="sidebar-box">
-          <div class="sidebar-box-head"><i class="bi bi-megaphone me-2"></i>বন্ধুদের জানান</div>
+          <div class="sidebar-box-head"><i class="bi bi-megaphone me-2"></i>{% trans "বন্ধুদের জানান" %}</div>
           <div class="sidebar-box-body" style="display:flex;flex-direction:column;gap:.5rem;">
             <button class="btn-share-fb" style="width:100%;justify-content:center;border-radius:var(--radius-sm);padding:.65rem;"
               data-share="facebook" data-url="{{ request.build_absolute_uri }}">
-              <i class="bi bi-facebook"></i> Facebook-এ শেয়ার
+              <i class="bi bi-facebook"></i> Facebook-{% trans "এ শেয়ার" %}
             </button>
             <button class="btn-share-wa" style="width:100%;justify-content:center;border-radius:var(--radius-sm);padding:.65rem;"
               data-share="whatsapp" data-url="{{ request.build_absolute_uri }}" data-title="{{ campaign.title }}">
-              <i class="bi bi-whatsapp"></i> WhatsApp-এ শেয়ার
+              <i class="bi bi-whatsapp"></i> WhatsApp-{% trans "এ শেয়ার" %}
             </button>
             <button class="btn-share-copy" style="width:100%;justify-content:center;border-radius:var(--radius-sm);padding:.65rem;"
               data-share="copy" data-url="{{ request.build_absolute_uri }}">
-              <i class="bi bi-link-45deg"></i> লিংক কপি করুন
+              <i class="bi bi-link-45deg"></i> {% trans "লিংক কপি করুন" %}
             </button>
           </div>
         </div>

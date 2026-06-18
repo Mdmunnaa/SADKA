@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="bn">
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   {% block og_tags %}
   <meta property="og:site_name" content="সহায়.bd">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="সহায়.bd — সমাজের পাশে">
-  <meta property="og:description" content="মানুষের সমস্যা তুলে ধরি, একসাথে সমাধান করি।">
+  <meta property="og:title" content="{% trans 'সহায়.bd — সমাজের পাশে' %}">
+  <meta property="og:description" content="{% trans 'মানুষের সমস্যা তুলে ধরি, একসাথে সমাধান করি।' %}">
   <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta name="description" content="{% trans 'বাংলাদেশের অসহায় মানুষের জন্য ডোনেশন প্ল্যাটফর্ম — চিকিৎসা, শিক্ষা, খাদ্য ও দুর্যোগ সহায়তায় বিকাশ/নগদে দান করুন।' %}">
   {% endblock %}
   <meta name="twitter:card" content="summary_large_image">
   <title>{% block title %}সহায়.bd{% endblock %}</title>
@@ -39,11 +42,26 @@
     </button>
     <div class="nav-collapse" id="navCollapse">
       <ul class="nav-links">
-        <li><a href="{% url 'home' %}"><i class="bi bi-house me-1"></i>হোম</a></li>
-        <li><a href="{% url 'campaign_list' %}"><i class="bi bi-grid-3x3-gap me-1"></i>ক্যাম্পেইন</a></li>
-        <li><a href="{% url 'campaign_list' %}?status=urgent" class="urgent"><i class="bi bi-exclamation-circle me-1"></i>জরুরি</a></li>
-        <li><a href="{% url 'campaign_list' %}?status=completed"><i class="bi bi-check-circle me-1"></i>সম্পন্ন</a></li>
-        <li><a href="{% url 'campaign_list' %}" class="btn-nav"><i class="bi bi-heart-fill me-1"></i>ডোনেট করুন</a></li>
+        <li><a href="{% url 'home' %}"><i class="bi bi-house me-1"></i>{% trans "হোম" %}</a></li>
+        <li><a href="{% url 'campaign_list' %}"><i class="bi bi-grid-3x3-gap me-1"></i>{% trans "ক্যাম্পেইন" %}</a></li>
+        <li><a href="{% url 'campaign_list' %}?status=urgent" class="urgent"><i class="bi bi-exclamation-circle me-1"></i>{% trans "জরুরি" %}</a></li>
+        <li><a href="{% url 'zakat_calculator' %}"><i class="bi bi-calculator me-1"></i>{% trans "যাকাত হিসাব" %}</a></li>
+        <li><a href="{% url 'recurring_signup' %}"><i class="bi bi-arrow-repeat me-1"></i>{% trans "মাসিক সদকা" %}</a></li>
+        <li><a href="{% url 'campaign_list' %}" class="btn-nav"><i class="bi bi-heart-fill me-1"></i>{% trans "ডোনেট করুন" %}</a></li>
+        <li>
+          <form action="{% url 'set_language' %}" method="post" class="lang-switch-form">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.path }}">
+            {% get_current_language as CURRENT_LANG %}
+            {% if CURRENT_LANG == 'bn' %}
+            <input type="hidden" name="language" value="en">
+            <button type="submit" class="lang-switch-btn"><i class="bi bi-translate me-1"></i>English</button>
+            {% else %}
+            <input type="hidden" name="language" value="bn">
+            <button type="submit" class="lang-switch-btn"><i class="bi bi-translate me-1"></i>বাংলা</button>
+            {% endif %}
+          </form>
+        </li>
       </ul>
     </div>
   </div>
@@ -65,11 +83,11 @@
 <div class="modal-overlay" id="donateOverlay">
   <div class="modal-box">
     <div class="modal-header">
-      <h3><i class="bi bi-heart-fill me-2" style="color:var(--green-700)"></i>ডোনেশন করুন</h3>
+      <h3><i class="bi bi-heart-fill me-2" style="color:var(--green-700)"></i>{% trans "ডোনেশন করুন" %}</h3>
       <button class="modal-close" data-close-modal>✕</button>
     </div>
     <div class="modal-campaign-strip">
-      ক্যাম্পেইন: <strong id="modalCampaignTitle">—</strong>
+      {% trans "ক্যাম্পেইন" %}: <strong id="modalCampaignTitle">—</strong>
     </div>
     <form method="post" id="donateForm" action="">
       {% csrf_token %}
@@ -80,7 +98,7 @@
 
         <!-- Amount -->
         <div class="form-field">
-          <label>পরিমাণ (টাকা) <span style="color:var(--red-600)">*</span></label>
+          <label>{% trans "পরিমাণ (টাকা)" %} <span style="color:var(--red-600)">*</span></label>
           <div class="amount-pills">
             <button type="button" class="pill" data-amount="100">৳১০০</button>
             <button type="button" class="pill" data-amount="200">৳২০০</button>
@@ -89,55 +107,55 @@
             <button type="button" class="pill" data-amount="2000">৳২,০০০</button>
             <button type="button" class="pill" data-amount="5000">৳৫,০০০</button>
           </div>
-          <input type="number" name="amount" placeholder="অথবা নিজে লিখুন..." min="10" required>
+          <input type="number" name="amount" placeholder="{% trans 'অথবা নিজে লিখুন...' %}" min="10" required>
         </div>
 
         <!-- Payment Method -->
         <div class="form-field">
-          <label>পেমেন্ট মাধ্যম বেছে নিন</label>
+          <label>{% trans "পেমেন্ট মাধ্যম বেছে নিন" %}</label>
           <div class="pay-tabs">
-            <button type="button" class="pay-tab" data-method="bkash" data-num="">বিকাশ</button>
-            <button type="button" class="pay-tab" data-method="nagad" data-num="">নগদ</button>
-            <button type="button" class="pay-tab" data-method="rocket" data-num="">রকেট</button>
+            <button type="button" class="pay-tab" data-method="bkash" data-num="">{% trans "বিকাশ" %}</button>
+            <button type="button" class="pay-tab" data-method="nagad" data-num="">{% trans "নগদ" %}</button>
+            <button type="button" class="pay-tab" data-method="rocket" data-num="">{% trans "রকেট" %}</button>
           </div>
           <div class="pay-number-display" id="payNumberDisplay">—</div>
           <p style="font-size:.78rem; color:var(--gray-500); margin-top:.3rem;">
-            <i class="bi bi-info-circle me-1"></i>উপরের নম্বরে Send Money করুন, তারপর নিচে Reference দিন
+            <i class="bi bi-info-circle me-1"></i>{% trans "উপরের নম্বরে Send Money করুন, তারপর নিচে Reference দিন" %}
           </p>
         </div>
 
         <!-- Reference -->
         <div class="form-field">
-          <label>Transaction ID / Reference</label>
-          <input type="text" name="payment_reference" placeholder="যেমন: 8N7HD9XYZ (দিলে দ্রুত verify হবে)">
+          <label>{% trans "Transaction ID / Reference" %}</label>
+          <input type="text" name="payment_reference" placeholder="{% trans 'যেমন: 8N7HD9XYZ (দিলে দ্রুত verify হবে)' %}">
         </div>
 
         <!-- Name & Phone (minimal — As-Sunnah style) -->
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem;">
           <div class="form-field">
-            <label>নাম</label>
-            <input type="text" name="donor_name" placeholder="আপনার নাম">
+            <label>{% trans "নাম" %}</label>
+            <input type="text" name="donor_name" placeholder="{% trans 'আপনার নাম' %}">
           </div>
           <div class="form-field">
-            <label>মোবাইল</label>
+            <label>{% trans "মোবাইল" %}</label>
             <input type="tel" name="donor_phone" placeholder="01XXXXXXXXX">
           </div>
         </div>
 
         <label class="anon-check">
           <input type="checkbox" name="is_anonymous">
-          নাম গোপন রাখুন (Anonymous)
+          {% trans "নাম গোপন রাখুন (Anonymous)" %}
         </label>
 
       </div><!-- /modal-body -->
 
       <div class="modal-footer">
         <button type="submit" class="btn-modal-submit">
-          <i class="bi bi-heart-fill"></i> ডোনেশন নিশ্চিত করুন
+          <i class="bi bi-heart-fill"></i> {% trans "ডোনেশন নিশ্চিত করুন" %}
         </button>
         <p class="notice">
           <i class="bi bi-shield-check" style="color:var(--green-700)"></i>
-          নিরাপদ ও স্বচ্ছ প্রক্রিয়া — আমরা ২৪ ঘণ্টার মধ্যে যাচাই করি
+          {% trans "নিরাপদ ও স্বচ্ছ প্রক্রিয়া — আমরা ২৪ ঘণ্টার মধ্যে যাচাই করি" %}
         </p>
       </div>
     </form>
@@ -152,31 +170,31 @@
         <div class="footer-brand">
           <img src="{% static 'img/logo_transparent.png' %}" alt="সহায়.bd" style="width:32px;height:32px;object-fit:contain;vertical-align:middle;margin-right:6px;">সহায়.bd
         </div>
-        <div class="footer-tag">সমাজের পাশে, সবসময়</div>
-        <p class="footer-about">মানুষের সমস্যা তুলে ধরি, একসাথে সমাধান করি। আপনার ছোট্ট সহায়তা বদলে দিতে পারে একটি জীবন।</p>
+        <div class="footer-tag">{% trans "সমাজের পাশে, সবসময়" %}</div>
+        <p class="footer-about">{% trans "মানুষের সমস্যা তুলে ধরি, একসাথে সমাধান করি। আপনার ছোট্ট সহায়তা বদলে দিতে পারে একটি জীবন।" %}</p>
       </div>
       <div>
-        <div class="footer-heading">নেভিগেশন</div>
-        <a href="{% url 'home' %}">হোম</a>
-        <a href="{% url 'campaign_list' %}">সকল ক্যাম্পেইন</a>
-        <a href="{% url 'campaign_list' %}?status=urgent">জরুরি সাহায্য</a>
-        <a href="{% url 'campaign_list' %}?status=completed">সম্পন্ন কার্যক্রম</a>
+        <div class="footer-heading">{% trans "নেভিগেশন" %}</div>
+        <a href="{% url 'home' %}">{% trans "হোম" %}</a>
+        <a href="{% url 'campaign_list' %}">{% trans "সকল ক্যাম্পেইন" %}</a>
+        <a href="{% url 'campaign_list' %}?status=urgent">{% trans "জরুরি সাহায্য" %}</a>
+        <a href="{% url 'campaign_list' %}?status=completed">{% trans "সম্পন্ন কার্যক্রম" %}</a>
       </div>
       <div>
-        <div class="footer-heading">পেমেন্ট</div>
-        <a href="#">বিকাশ</a>
-        <a href="#">নগদ</a>
-        <a href="#">রকেট</a>
+        <div class="footer-heading">{% trans "পেমেন্ট" %}</div>
+        <a href="#">{% trans "বিকাশ" %}</a>
+        <a href="#">{% trans "নগদ" %}</a>
+        <a href="#">{% trans "রকেট" %}</a>
       </div>
       <div>
-        <div class="footer-heading">যোগাযোগ</div>
+        <div class="footer-heading">{% trans "যোগাযোগ" %}</div>
         <a href="mailto:sahay@example.com"><i class="bi bi-envelope me-1"></i>sahay@example.com</a>
         <a href="#"><i class="bi bi-telephone me-1"></i>+880 1XXX-XXXXXX</a>
         <a href="#"><i class="bi bi-facebook me-1"></i>Facebook</a>
       </div>
     </div>
     <hr class="footer-divider">
-    <p class="footer-copy">© ২০২৪ সহায়.bd — সমাজের সেবায় নিবেদিত</p>
+    <p class="footer-copy">© ২০২৪ সহায়.bd — {% trans "সমাজের সেবায় নিবেদিত" %}</p>
   </div>
 </footer>
 

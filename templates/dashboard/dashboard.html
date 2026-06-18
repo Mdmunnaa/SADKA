@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block title %}অ্যাডমিন ড্যাশবোর্ড — সহায়.bd{% endblock %}
+{% block content %}
+<section class="sec sec-cream" style="padding-top:2rem;">
+  <div class="container">
+    <div class="sec-head" style="margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem;">
+      <div>
+        <span class="sec-eyebrow">অ্যাডমিন</span>
+        <h2 class="sec-title">ড্যাশবোর্ড <span class="accent">সামারি</span></h2>
+      </div>
+      <a href="/admin/" class="link-all"><i class="bi bi-gear"></i> পুরো Admin Panel</a>
+    </div>
+
+    <!-- TOP STATS -->
+    <div class="card-grid card-grid-4" style="margin-bottom:2rem;">
+      <div class="sidebar-box" style="margin-bottom:0;">
+        <div class="sidebar-box-body" style="text-align:center;">
+          <div style="font-size:1.7rem; font-weight:800; color:var(--green-700);">৳{{ today_total|floatformat:0 }}</div>
+          <div style="font-size:.8rem; color:var(--gray-500); margin-top:.2rem;">আজকের সংগ্রহ ({{ today_count }} টা)</div>
+        </div>
+      </div>
+      <div class="sidebar-box" style="margin-bottom:0;">
+        <div class="sidebar-box-body" style="text-align:center;">
+          <div style="font-size:1.7rem; font-weight:800; color:#d97706;">{{ pending_count }}</div>
+          <div style="font-size:.8rem; color:var(--gray-500); margin-top:.2rem;">যাচাই বাকি (৳{{ pending_total|floatformat:0 }})</div>
+        </div>
+      </div>
+      <div class="sidebar-box" style="margin-bottom:0;">
+        <div class="sidebar-box-body" style="text-align:center;">
+          <div style="font-size:1.7rem; font-weight:800; color:var(--gray-900);">৳{{ week_total|floatformat:0 }}</div>
+          <div style="font-size:.8rem; color:var(--gray-500); margin-top:.2rem;">এই সপ্তাহের সংগ্রহ</div>
+        </div>
+      </div>
+      <div class="sidebar-box" style="margin-bottom:0;">
+        <div class="sidebar-box-body" style="text-align:center;">
+          <div style="font-size:1.7rem; font-weight:800; color:var(--green-700);">৳{{ all_total|floatformat:0 }}</div>
+          <div style="font-size:.8rem; color:var(--gray-500); margin-top:.2rem;">সর্বমোট সংগ্রহ ({{ all_donor_count }} দাতা)</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;" class="dash-grid">
+
+      <!-- PENDING VERIFICATION -->
+      <div class="sidebar-box">
+        <div class="sidebar-box-head" style="display:flex; justify-content:space-between; align-items:center;">
+          <span><i class="bi bi-hourglass-split me-2" style="color:#d97706;"></i>যাচাই বাকি ডোনেশন</span>
+          {% if pending_count %}<span class="badge-urgent">{{ pending_count }}</span>{% endif %}
+        </div>
+        <div class="sidebar-box-body" style="padding:0;">
+          {% if recent_pending %}
+            {% for d in recent_pending %}
+            <div class="donor-row" style="padding:.85rem 1.15rem;">
+              <div class="donor-av" style="background:#fef3c7; color:#d97706;">{{ d.display_name|first|upper }}</div>
+              <div style="flex:1;">
+                <div class="donor-name">{{ d.display_name }}</div>
+                <div class="donor-time">{{ d.campaign.title|truncatechars:30 }} · {{ d.get_payment_method_display }}</div>
+                {% if d.payment_reference %}<div class="donor-time">Ref: {{ d.payment_reference }}</div>{% endif %}
+              </div>
+              <div class="donor-amount">৳{{ d.amount|floatformat:0 }}</div>
+            </div>
+            {% endfor %}
+            <div style="padding:.85rem 1.15rem;">
+              <a href="/admin/donations/donation/?is_verified__exact=0" class="link-all">সব যাচাই করুন <i class="bi bi-arrow-right"></i></a>
+            </div>
+          {% else %}
+          <div class="empty-state" style="padding:2rem 0;">
+            <div class="icon">✅</div>
+            <p>সব ডোনেশন যাচাই করা হয়েছে!</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- TOP CAMPAIGNS -->
+      <div class="sidebar-box">
+        <div class="sidebar-box-head"><i class="bi bi-trophy me-2" style="color:var(--green-700);"></i>সর্বাধিক সংগ্রহকারী ক্যাম্পেইন</div>
+        <div class="sidebar-box-body" style="padding:0;">
+          {% for c in top_campaigns %}
+          <div class="donor-row" style="padding:.85rem 1.15rem;">
+            <div class="donor-av">{{ forloop.counter }}</div>
+            <div style="flex:1;">
+              <div class="donor-name">{{ c.title|truncatechars:35 }}</div>
+              <div class="donor-time">{{ c.donor_count }} জন দাতা · {{ c.progress_percent }}% সম্পন্ন</div>
+            </div>
+            <div class="donor-amount">৳{{ c.raised_amount|floatformat:0 }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CAMPAIGN STATUS BREAKDOWN -->
+    <div class="sidebar-box" style="margin-top:1.5rem;">
+      <div class="sidebar-box-head"><i class="bi bi-pie-chart me-2"></i>ক্যাম্পেইন অবস্থা</div>
+      <div class="sidebar-box-body">
+        <div class="card-grid card-grid-4">
+          <div style="text-align:center;">
+            <span class="badge-urgent" style="font-size:.9rem; padding:.4rem 1rem;">{{ campaign_stats.urgent }}</span>
+            <div style="font-size:.78rem; color:var(--gray-500); margin-top:.4rem;">জরুরি</div>
+          </div>
+          <div style="text-align:center;">
+            <span class="badge-active" style="font-size:.9rem; padding:.4rem 1rem;">{{ campaign_stats.active }}</span>
+            <div style="font-size:.78rem; color:var(--gray-500); margin-top:.4rem;">চলমান</div>
+          </div>
+          <div style="text-align:center;">
+            <span class="badge-completed" style="font-size:.9rem; padding:.4rem 1rem;">{{ campaign_stats.completed }}</span>
+            <div style="font-size:.78rem; color:var(--gray-500); margin-top:.4rem;">সম্পন্ন</div>
+          </div>
+          <div style="text-align:center;">
+            <span style="background:var(--gray-100); color:var(--gray-500); font-size:.9rem; padding:.4rem 1rem; border-radius:999px; font-weight:700;">{{ campaign_stats.paused }}</span>
+            <div style="font-size:.78rem; color:var(--gray-500); margin-top:.4rem;">বিরতি</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT VERIFIED -->
+    <div class="sidebar-box" style="margin-top:1.5rem;">
+      <div class="sidebar-box-head"><i class="bi bi-check-circle me-2" style="color:var(--green-700);"></i>সাম্প্রতিক যাচাইকৃত ডোনেশন</div>
+      <div class="sidebar-box-body" style="padding:0;">
+        {% if recent_verified %}
+          {% for d in recent_verified %}
+          <div class="donor-row" style="padding:.85rem 1.15rem;">
+            <div class="donor-av">{{ d.display_name|first|upper }}</div>
+            <div style="flex:1;">
+              <div class="donor-name">{{ d.display_name }}</div>
+              <div class="donor-time">{{ d.campaign.title|truncatechars:35 }} · {{ d.created_at|date:"d M, h:i A" }}</div>
+            </div>
+            <div class="donor-amount">৳{{ d.amount|floatformat:0 }}</div>
+          </div>
+          {% endfor %}
+        {% else %}
+        <div class="empty-state" style="padding:2rem 0;"><p>এখনো কোনো ডোনেশন যাচাই হয়নি</p></div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+@media (max-width: 768px) {
+  .dash-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+{% endblock %}

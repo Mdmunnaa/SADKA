@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db.models import Sum
-from .models import Donation
+from .models import Donation, RecurringReminder
 
 
 @admin.register(Donation)
@@ -33,3 +33,12 @@ class DonationAdmin(admin.ModelAdmin):
         ).aggregate(total=Sum('amount'))['total'] or 0
         campaign.raised_amount = total
         campaign.save(update_fields=['raised_amount'])
+
+
+@admin.register(RecurringReminder)
+class RecurringReminderAdmin(admin.ModelAdmin):
+    list_display = ['__str__', 'campaign', 'amount', 'frequency', 'is_active', 'last_reminded_at', 'created_at']
+    list_filter = ['frequency', 'is_active', 'campaign']
+    search_fields = ['name', 'phone', 'email']
+    list_editable = ['is_active']
+    readonly_fields = ['created_at']
