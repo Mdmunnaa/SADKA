@@ -1,14 +1,9 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# English translation for সহায়.bd donation platform
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-18 09:56+0600\n"
+"POT-Creation-Date: 2026-06-18 16:15+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,13 +26,13 @@ msgid ""
 "সহায়তায় বিকাশ/নগদে দান করুন।"
 msgstr "A donation platform for the underprivileged people of Bangladesh — donate via bKash/Nagad for medical, education, food and disaster relief support."
 
-#: templates/base.html:45 templates/base.html:178
+#: templates/base.html:45 templates/base.html:183
 #: templates/campaigns/detail.html:28
 msgid "হোম"
 msgstr "Home"
 
 #: templates/base.html:46 templates/base.html:90
-#: templates/campaigns/detail.html:30 templates/campaigns/home.html:178
+#: templates/campaigns/detail.html:30 templates/campaigns/home.html:180
 msgid "ক্যাম্পেইন"
 msgstr "Campaigns"
 
@@ -75,18 +70,18 @@ msgstr "Or enter your own amount..."
 msgid "পেমেন্ট মাধ্যম বেছে নিন"
 msgstr "Choose Payment Method"
 
-#: templates/base.html:117 templates/base.html:185
-#: templates/campaigns/detail.html:223
+#: templates/base.html:117 templates/base.html:190
+#: templates/campaigns/detail.html:262
 msgid "বিকাশ"
 msgstr "bKash"
 
-#: templates/base.html:118 templates/base.html:186
-#: templates/campaigns/detail.html:229
+#: templates/base.html:118 templates/base.html:191
+#: templates/campaigns/detail.html:268
 msgid "নগদ"
 msgstr "Nagad"
 
-#: templates/base.html:119 templates/base.html:187
-#: templates/campaigns/detail.html:235
+#: templates/base.html:119 templates/base.html:192
+#: templates/campaigns/detail.html:274
 msgid "রকেট"
 msgstr "Rocket"
 
@@ -102,11 +97,11 @@ msgstr "Transaction ID / Reference"
 msgid "যেমন: 8N7HD9XYZ (দিলে দ্রুত verify হবে)"
 msgstr "e.g. 8N7HD9XYZ (helps faster verification)"
 
-#: templates/base.html:136
+#: templates/base.html:136 templates/campaigns/detail.html:145
 msgid "নাম"
 msgstr "Name"
 
-#: templates/base.html:137
+#: templates/base.html:137 templates/campaigns/detail.html:146
 msgid "আপনার নাম"
 msgstr "Your name"
 
@@ -118,49 +113,57 @@ msgstr "Mobile"
 msgid "নাম গোপন রাখুন (Anonymous)"
 msgstr "Keep my name anonymous"
 
-#: templates/base.html:154
+#: templates/base.html:151
+msgid "বার্তা (ঐচ্ছিক)"
+msgstr "Message (optional)"
+
+#: templates/base.html:152
+msgid "যাকে সাহায্য করছেন তার জন্য কিছু বলতে চান?"
+msgstr "Want to say something to the person you're helping?"
+
+#: templates/base.html:159
 msgid "ডোনেশন নিশ্চিত করুন"
 msgstr "Confirm Donation"
 
-#: templates/base.html:158
+#: templates/base.html:163
 msgid "নিরাপদ ও স্বচ্ছ প্রক্রিয়া — আমরা ২৪ ঘণ্টার মধ্যে যাচাই করি"
 msgstr "Safe and transparent process — we verify within 24 hours"
 
-#: templates/base.html:173
+#: templates/base.html:178
 msgid "সমাজের পাশে, সবসময়"
 msgstr "Standing with society, always"
 
-#: templates/base.html:174
+#: templates/base.html:179
 msgid ""
 "মানুষের সমস্যা তুলে ধরি, একসাথে সমাধান করি। আপনার ছোট্ট সহায়তা বদলে দিতে পারে "
 "একটি জীবন।"
 msgstr "We highlight people's problems and solve them together. Your small contribution can change a life."
 
-#: templates/base.html:177
+#: templates/base.html:182
 msgid "নেভিগেশন"
 msgstr "Navigation"
 
-#: templates/base.html:179 templates/campaigns/list.html:21
+#: templates/base.html:184 templates/campaigns/list.html:21
 msgid "সকল ক্যাম্পেইন"
 msgstr "All Campaigns"
 
-#: templates/base.html:180 templates/campaigns/home.html:59
+#: templates/base.html:185 templates/campaigns/home.html:59
 msgid "জরুরি সাহায্য"
 msgstr "Urgent Help"
 
-#: templates/base.html:181 templates/campaigns/home.html:47
+#: templates/base.html:186 templates/campaigns/home.html:47
 msgid "সম্পন্ন কার্যক্রম"
 msgstr "Completed Campaigns"
 
-#: templates/base.html:184
+#: templates/base.html:189
 msgid "পেমেন্ট"
 msgstr "Payment"
 
-#: templates/base.html:190
+#: templates/base.html:195
 msgid "যোগাযোগ"
 msgstr "Contact"
 
-#: templates/base.html:197
+#: templates/base.html:202
 msgid "সমাজের সেবায় নিবেদিত"
 msgstr "Dedicated to serving society"
 
@@ -168,8 +171,8 @@ msgstr "Dedicated to serving society"
 msgid "চলমান"
 msgstr "Active"
 
-#: templates/campaigns/detail.html:50 templates/campaigns/detail.html:197
-#: templates/campaigns/home.html:240 templates/campaigns/list.html:47
+#: templates/campaigns/detail.html:50 templates/campaigns/detail.html:236
+#: templates/campaigns/home.html:242 templates/campaigns/list.html:47
 #: templates/campaigns/list.html:69
 msgid "সম্পন্ন"
 msgstr "Completed"
@@ -178,12 +181,12 @@ msgstr "Completed"
 msgid "সময় শেষ"
 msgstr "Time's up"
 
-#: templates/campaigns/detail.html:56 templates/campaigns/home.html:263
+#: templates/campaigns/detail.html:56 templates/campaigns/home.html:265
 msgid "মাত্র"
 msgstr "Only"
 
 #: templates/campaigns/detail.html:56 templates/campaigns/detail.html:58
-#: templates/campaigns/home.html:88
+#: templates/campaigns/home.html:89
 msgid "দিন বাকি"
 msgstr "days left"
 
@@ -207,61 +210,77 @@ msgstr "Updates"
 msgid "দাতারা"
 msgstr "Donors"
 
-#: templates/campaigns/detail.html:104
+#: templates/campaigns/detail.html:89 templates/campaigns/detail.html:149
+msgid "মন্তব্য"
+msgstr "Comments"
+
+#: templates/campaigns/detail.html:107
 msgid "আপডেট ছবি"
 msgstr "Update photo"
 
-#: templates/campaigns/detail.html:110
+#: templates/campaigns/detail.html:113
 msgid "এখনো কোনো আপডেট নেই"
 msgstr "No updates yet"
 
-#: templates/campaigns/detail.html:132
+#: templates/campaigns/detail.html:135
 msgid "প্রথম দাতা হোন!"
 msgstr "Be the first donor!"
 
-#: templates/campaigns/detail.html:140
+#: templates/campaigns/detail.html:150
+msgid "আপনার মন্তব্য লিখুন..."
+msgstr "Or enter your own amount..."
+
+#: templates/campaigns/detail.html:153
+msgid "মন্তব্য পাঠান"
+msgstr "Send via bKash/Nagad"
+
+#: templates/campaigns/detail.html:171
+msgid "প্রথম মন্তব্য করুন!"
+msgstr "Be the first donor!"
+
+#: templates/campaigns/detail.html:179
 msgid "আরও দেখুন"
 msgstr "See More"
 
-#: templates/campaigns/detail.html:162 templates/campaigns/home.html:98
-#: templates/campaigns/home.html:217
+#: templates/campaigns/detail.html:201 templates/campaigns/home.html:100
+#: templates/campaigns/home.html:219
 msgid "দান করুন"
 msgstr "Donate"
 
-#: templates/campaigns/detail.html:182 templates/campaigns/home.html:140
-#: templates/campaigns/home.html:249
+#: templates/campaigns/detail.html:221 templates/campaigns/home.html:142
+#: templates/campaigns/home.html:251
 msgid "সংগ্রহ"
 msgstr "raised"
 
-#: templates/campaigns/detail.html:186
+#: templates/campaigns/detail.html:225
 msgid "দাতা"
 msgstr "Donors"
 
-#: templates/campaigns/detail.html:190
+#: templates/campaigns/detail.html:229
 msgid "আরও দরকার"
 msgstr "Still needed"
 
-#: templates/campaigns/detail.html:198 templates/campaigns/home.html:146
+#: templates/campaigns/detail.html:237 templates/campaigns/home.html:148
 msgid "লক্ষ্য"
 msgstr "Goal"
 
-#: templates/campaigns/detail.html:210 templates/campaigns/home.html:157
+#: templates/campaigns/detail.html:249 templates/campaigns/home.html:159
 msgid "এখনই দান করুন"
 msgstr "Donate Now"
 
-#: templates/campaigns/detail.html:219
+#: templates/campaigns/detail.html:258
 msgid "পেমেন্ট নম্বর"
 msgstr "Payment Numbers"
 
-#: templates/campaigns/detail.html:245
+#: templates/campaigns/detail.html:284
 msgid "বন্ধুদের জানান"
 msgstr "Tell Your Friends"
 
-#: templates/campaigns/detail.html:249 templates/campaigns/detail.html:253
+#: templates/campaigns/detail.html:288 templates/campaigns/detail.html:292
 msgid "এ শেয়ার"
 msgstr "Share on"
 
-#: templates/campaigns/detail.html:257
+#: templates/campaigns/detail.html:296
 msgid "লিংক কপি করুন"
 msgstr "Copy Link"
 
@@ -315,7 +334,7 @@ msgstr "Active Campaigns"
 msgid "এখনই সাহায্য দরকার"
 msgstr "Help Needed Now"
 
-#: templates/campaigns/home.html:62 templates/campaigns/home.html:181
+#: templates/campaigns/home.html:62 templates/campaigns/home.html:183
 msgid "সব দেখুন"
 msgstr "View All"
 
@@ -323,95 +342,95 @@ msgstr "View All"
 msgid "জরুরি সাহায্য প্রয়োজন"
 msgstr "Urgent Help Needed"
 
-#: templates/campaigns/home.html:86
+#: templates/campaigns/home.html:87
 msgid "জন"
 msgstr "people"
 
-#: templates/campaigns/home.html:121
+#: templates/campaigns/home.html:123
 msgid "বিশেষ ক্যাম্পেইন"
 msgstr "Featured Campaigns"
 
-#: templates/campaigns/home.html:122
+#: templates/campaigns/home.html:124
 msgid "সবচেয়ে বেশি"
 msgstr "Most"
 
-#: templates/campaigns/home.html:122
+#: templates/campaigns/home.html:124
 msgid "সাড়া পাওয়া"
 msgstr "popular"
 
-#: templates/campaigns/home.html:128
+#: templates/campaigns/home.html:130
 msgid "বিশেষ"
 msgstr "Featured"
 
-#: templates/campaigns/home.html:145 templates/campaigns/list.html:84
+#: templates/campaigns/home.html:147 templates/campaigns/list.html:84
 msgid "জন দাতা"
 msgstr "donors"
 
-#: templates/campaigns/home.html:177
+#: templates/campaigns/home.html:179
 msgid "চলমান ক্যাম্পেইন"
 msgstr "Ongoing Campaigns"
 
-#: templates/campaigns/home.html:178
+#: templates/campaigns/home.html:180
 msgid "সক্রিয়"
 msgstr "Active"
 
-#: templates/campaigns/home.html:179
+#: templates/campaigns/home.html:181
 msgid "আপনার সহায়তায় পরিবর্তন আনুন"
 msgstr "Bring change through your support"
 
-#: templates/campaigns/home.html:207
+#: templates/campaigns/home.html:209
 msgid "বাংলাদেশ"
 msgstr "Bangladesh"
 
-#: templates/campaigns/home.html:219 templates/campaigns/list.html:97
+#: templates/campaigns/home.html:221 templates/campaigns/list.html:97
 msgid "বিস্তারিত"
 msgstr "Details"
 
-#: templates/campaigns/home.html:241
+#: templates/campaigns/home.html:243
 msgid "আপনাদের সহায়তায়"
 msgstr "Through your support"
 
-#: templates/campaigns/home.html:241
+#: templates/campaigns/home.html:243
 msgid "সমাধান হয়েছে"
 msgstr "has been resolved"
 
-#: templates/campaigns/home.html:249
+#: templates/campaigns/home.html:251
 msgid "জন সাহায্য করেছেন"
 msgstr "people helped"
 
-#: templates/campaigns/home.html:262
+#: templates/campaigns/home.html:264
 msgid "কীভাবে কাজ করে"
 msgstr "How It Works"
 
-#: templates/campaigns/home.html:263
+#: templates/campaigns/home.html:265
 msgid "৩টি ধাপে"
 msgstr "3 simple steps"
 
-#: templates/campaigns/home.html:263
+#: templates/campaigns/home.html:265
 msgid "সাহায্য করুন"
 msgstr "to help"
 
-#: templates/campaigns/home.html:268
+#: templates/campaigns/home.html:270
 msgid "ক্যাম্পেইন বেছে নিন"
 msgstr "Choose a Campaign"
 
-#: templates/campaigns/home.html:269
+#: templates/campaigns/home.html:271
 msgid "যার সাহায্য করতে চান তার ক্যাম্পেইন খুঁজে নিন এবং 'দান করুন' বাটনে ক্লিক করুন"
 msgstr "Find the campaign you want to support and click the 'Donate' button"
 
-#: templates/campaigns/home.html:273
+#: templates/campaigns/home.html:275
 msgid "বিকাশ/নগদে পাঠান"
 msgstr "Send via bKash/Nagad"
 
-#: templates/campaigns/home.html:274
+#: templates/campaigns/home.html:276
 msgid "দেখানো নম্বরে Send Money করুন এবং Transaction ID দিয়ে ফর্ম সাবমিট করুন"
 msgstr "Send Money to the number shown and submit the form with the Transaction ID"
 
-#: templates/campaigns/home.html:278
+#: templates/campaigns/home.html:280
 msgid "আমরা যাচাই করি"
 msgstr "We Verify"
 
-#: templates/campaigns/home.html:279
+#: templates/campaigns/home.html:281
 msgid "২৪ ঘণ্টার মধ্যে যাচাই করে ডোনেশন নিশ্চিত করা হয় এবং আপডেট দেওয়া হয়"
 msgstr "We verify within 24 hours, confirm your donation, and post updates"
 
