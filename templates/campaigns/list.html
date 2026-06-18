@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n campaign_extras %}
 {% block title %}{{ seo_title }}{% endblock %}
 
 {% block og_tags %}
@@ -70,9 +70,9 @@
             {% if c.status == 'urgent' %}<span class="badge-urgent">{% trans "জরুরি" %}</span>{% endif %}
           </div>
           <a href="{% url 'campaign_detail' c.slug %}" style="display:block; color:inherit;">
-          <div class="c-title">{{ c.title }}</div>
+          <div class="c-title">{{ c|localized_title }}</div>
           </a>
-          <div class="c-desc">{{ c.short_description|default:c.description }}</div>
+          <div class="c-desc">{{ c|localized_short_description }}</div>
           <div class="c-progress">
             <div class="c-progress-meta">
               <span class="c-raised">৳{{ c.raised_amount|floatformat:0 }}</span>

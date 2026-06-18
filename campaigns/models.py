@@ -80,6 +80,11 @@ class Campaign(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     deadline = models.DateField(null=True, blank=True)
 
+    # Auto-translated English fields (filled via admin action, not editable by hand normally)
+    title_en = models.CharField(max_length=255, blank=True, help_text="স্বয়ংক্রিয় অনুবাদ — admin-এ 'Translate to English' action ব্যবহার করুন")
+    description_en = models.TextField(blank=True, help_text="স্বয়ংক্রিয় অনুবাদ")
+    short_description_en = models.CharField(max_length=350, blank=True, help_text="স্বয়ংক্রিয় অনুবাদ")
+
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.title, allow_unicode=True)
@@ -132,6 +137,49 @@ class Campaign(models.Model):
             return False
         return self.days_remaining is not None and self.days_remaining < 0
 
+    def display_title(self, language='bn'):
+        """Returns the English translation if available and language is 'en', otherwise the original Bangla."""
+        if language == 'en' and self.title_en:
+            return self.title_en
+        return self.title
+
+    def display_description(self, language='bn'):
+        if language == 'en' and self.description_en:
+            return self.description_en
+        return self.description
+
+    def display_short_description(self, language='bn'):
+        if language == 'en' and self.short_description_en:
+            return self.short_description_en
+        if language == 'en' and self.description_en:
+            return self.description_en
+        return self.short_description or self.description
+
+    def auto_translate_to_english(self):
+        """Translates title/description/short_description to English using Google Translate
+        (via deep-translator) and saves them into the _en fields. Fails silently and returns
+        False if translation service is unavailable (e.g. no internet access), so this never
+        breaks the site — it's meant to be triggered manually from the admin."""
+        try:
+            from deep_translator import GoogleTranslator
+            translator = GoogleTranslator(source='bn', target='en')
+
+            if self.title:
+                self.title_en = translator.translate(self.title)[:255]
+            if self.description:
+                # Google Translate has a ~5000 char limit per request; chunk if needed
+                text = self.description
+                if len(text) > 4500:
+                    text = text[:4500]
+                self.description_en = translator.translate(text)
+            if self.short_description:
+                self.short_description_en = translator.translate(self.short_description)[:350]
+
+            self.save(update_fields=['title_en', 'description_en', 'short_description_en'])
+            return True
+        except Exception:
+            return False
+
     def __str__(self):
         return self.title
 
@@ -160,3 +208,19 @@ class CampaignUpdate(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+class Comment(models.Model):
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='comments')
+    name = models.CharField(max_length=100, default='অজ্ঞাত')
+    message = models.TextField(max_length=1000)
+    is_approved = models.BooleanField(default=True, help_text="অনুপযুক্ত মন্তব্য হলে আনচেক করুন")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name}: {self.message[:40]}"
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "মন্তব্য"
+        verbose_name_plural = "মন্তব্যসমূহ"

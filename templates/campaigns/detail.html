@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% load static i18n %}
+{% load static i18n campaign_extras %}
 
-{% block title %}{{ campaign.title }} — সহায়.bd{% endblock %}
+{% block title %}{{ campaign|localized_title }} — সহায়.bd{% endblock %}
 
 {% block og_tags %}
 <meta property="og:site_name" content="সহায়.bd">
@@ -29,7 +29,7 @@
       <span class="bc-sep">/</span>
       <a href="{% url 'campaign_list' %}">{% trans "ক্যাম্পেইন" %}</a>
       <span class="bc-sep">/</span>
-      <span>{{ campaign.title|truncatewords:6 }}</span>
+      <span>{{ campaign|localized_title|truncatewords:6 }}</span>
     </div>
 
     <div style="display:grid; grid-template-columns:1fr 360px; gap:2rem; align-items:start;">
@@ -61,7 +61,7 @@
           {% if campaign.location %}<span style="font-size:.78rem; color:var(--gray-500);"><i class="bi bi-geo-alt"></i> {{ campaign.location }}</span>{% endif %}
         </div>
 
-        <h1 class="detail-title">{{ campaign.title }}</h1>
+        <h1 class="detail-title">{{ campaign|localized_title }}</h1>
 
         <!-- Share bar — GoFundMe style -->
         <div class="share-bar">
@@ -85,12 +85,15 @@
               {% trans "আপডেট" %} {% if updates %}<span style="background:var(--green-700);color:#fff;font-size:.68rem;padding:.15rem .45rem;border-radius:999px;margin-left:.3rem;">{{ updates.count }}</span>{% endif %}
             </button></li>
             <li><button class="tab-btn" data-tab="tab-donors">{% trans "দাতারা" %}</button></li>
+            <li><button class="tab-btn" data-tab="tab-comments">
+              {% trans "মন্তব্য" %} {% if comments %}<span style="background:var(--green-700);color:#fff;font-size:.68rem;padding:.15rem .45rem;border-radius:999px;margin-left:.3rem;">{{ comments.count }}</span>{% endif %}
+            </button></li>
           </ul>
         </div>
 
         <!-- Description -->
         <div id="tab-desc" class="tab-panel active">
-          <div class="detail-body">{{ campaign.description|linebreaks }}</div>
+          <div class="detail-body">{{ campaign|localized_description|linebreaks }}</div>
         </div>
 
         <!-- Updates -->
@@ -134,6 +137,42 @@
           {% endif %}
         </div>
 
+        <!-- Comments -->
+        <div id="tab-comments" class="tab-panel">
+          <form method="post" style="margin-bottom:1.5rem; background:var(--gray-50); border:1px solid var(--gray-300); border-radius:var(--radius); padding:1.1rem;">
+            {% csrf_token %}
+            <div class="form-field" style="margin-bottom:.7rem;">
+              <label>{% trans "নাম" %}</label>
+              <input type="text" name="comment_name" placeholder="{% trans 'আপনার নাম' %}">
+            </div>
+            <div class="form-field" style="margin-bottom:.7rem;">
+              <label>{% trans "মন্তব্য" %}</label>
+              <textarea name="comment_message" rows="3" placeholder="{% trans 'আপনার মন্তব্য লিখুন...' %}" required></textarea>
+            </div>
+            <button type="submit" class="btn-donate-card" style="border-radius:var(--radius-sm);">
+              <i class="bi bi-chat-dots"></i> {% trans "মন্তব্য পাঠান" %}
+            </button>
+          </form>
+
+          {% if comments %}
+            {% for c in comments %}
+            <div class="donor-row">
+              <div class="donor-av">{{ c.name|first|upper }}</div>
+              <div style="flex:1;">
+                <div class="donor-name">{{ c.name }}</div>
+                <div class="donor-msg" style="font-style:normal;">{{ c.message }}</div>
+                <div class="donor-time">{{ c.created_at|date:"d M, Y, h:i A" }}</div>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+          <div class="empty-state" style="padding:2rem 0;">
+            <div class="icon">💬</div>
+            <p>{% trans "প্রথম মন্তব্য করুন!" %}</p>
+          </div>
+          {% endif %}
+        </div>
+
         <!-- Related -->
         {% if related %}
         <div style="margin-top:3rem;">
@@ -147,7 +186,7 @@
               </a>
               <div class="c-card-body">
                 <a href="{% url 'campaign_detail' c.slug %}" style="display:block; color:inherit;">
-                <div class="c-title" style="-webkit-line-clamp:1;">{{ c.title }}</div>
+                <div class="c-title" style="-webkit-line-clamp:1;">{{ c|localized_title }}</div>
                 </a>
                 <div class="c-progress">
                   <div class="c-progress-bar-wrap"><div class="c-progress-bar" data-pct="{{ c.progress_percent }}"></div></div>

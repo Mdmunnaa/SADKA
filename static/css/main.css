@@ -378,6 +378,7 @@ a { text-decoration: none; color: inherit; }
 .c-card-img img {
   width: 100%; height: 100%;
   object-fit: cover;
+  object-position: top center;
   transition: transform .35s;
 }
 .c-card:hover .c-card-img img { transform: scale(1.04); }
@@ -477,11 +478,12 @@ a { text-decoration: none; color: inherit; }
   border-top: 1px solid var(--gray-100);
   padding-top: .65rem;
   margin-top: .1rem;
+  flex-wrap: wrap;
 }
-.c-donors { font-size: .75rem; color: var(--gray-500); display: flex; align-items: center; gap: .3rem; }
+.c-donors { font-size: .75rem; color: var(--gray-500); display: flex; align-items: center; gap: .3rem; flex-shrink: 0; }
 
 /* Card action buttons */
-.c-actions { display: flex; gap: .5rem; align-items: center; }
+.c-actions { display: flex; gap: .4rem; align-items: center; flex-wrap: nowrap; min-width: 0; }
 
 .btn-donate-card {
   font-size: .8rem;
@@ -489,16 +491,17 @@ a { text-decoration: none; color: inherit; }
   background: var(--green-700);
   color: #fff;
   border: none;
-  padding: .42rem 1rem;
+  padding: .42rem .85rem;
   border-radius: 999px;
   cursor: pointer;
   transition: background .15s, transform .15s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .btn-donate-card:hover { background: var(--green-600); transform: translateY(-1px); }
 
 .btn-icon {
-  width: 32px; height: 32px;
+  width: 30px; height: 30px;
   display: flex; align-items: center; justify-content: center;
   border: 1.5px solid var(--gray-300);
   border-radius: var(--radius-sm);
@@ -506,7 +509,8 @@ a { text-decoration: none; color: inherit; }
   cursor: pointer;
   transition: all .15s;
   background: none;
-  font-size: .85rem;
+  font-size: .8rem;
+  flex-shrink: 0;
 }
 .btn-icon:hover { border-color: var(--green-500); color: var(--green-700); background: var(--green-50); }
 .btn-icon.wa:hover { border-color: #25D366; color: #25D366; background: #f0fdf4; }
@@ -530,7 +534,7 @@ a { text-decoration: none; color: inherit; }
   background: var(--green-100);
   position: relative;
 }
-.featured-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s; }
+.featured-img img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform .35s; }
 .featured-card:hover .featured-img img { transform: scale(1.03); }
 .featured-badge {
   position: absolute;
@@ -616,6 +620,7 @@ a { text-decoration: none; color: inherit; }
   width: 100%;
   aspect-ratio: 16/9;
   object-fit: cover;
+  object-position: top center;
   border-radius: var(--radius-lg);
   border: 1px solid var(--gray-300);
 }

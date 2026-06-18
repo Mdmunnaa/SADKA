@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static i18n %}
+{% load static i18n campaign_extras %}
 {% block title %}{% trans "সহায়.bd — সমাজের পাশে থাকুন" %}{% endblock %}
 
 {% block content %}
@@ -72,9 +72,9 @@
         <div class="c-card-body">
           {% if c.category %}<span class="c-cat">{{ c.category.name }}</span>{% endif %}
           <a href="{% url 'campaign_detail' c.slug %}" style="display:block; color:inherit;">
-          <div class="c-title">{{ c.title }}</div>
+          <div class="c-title">{{ c|localized_title }}</div>
           </a>
-          <div class="c-desc">{{ c.short_description|default:c.description }}</div>
+          <div class="c-desc">{{ c|localized_short_description }}</div>
           <div class="c-progress">
             <div class="c-progress-meta">
               <span class="c-raised">৳{{ c.raised_amount|floatformat:0 }}</span>
@@ -82,13 +82,15 @@
             </div>
             <div class="c-progress-bar-wrap"><div class="c-progress-bar" data-pct="{{ c.progress_percent }}"></div></div>
           </div>
-          <div class="c-footer">
-            <span class="c-donors"><i class="bi bi-people"></i>{{ c.donor_count }} {% trans "জন" %}</span>
-            {% if c.deadline and not c.is_deadline_passed %}
-            <span class="c-donors" style="color:var(--red-600); font-weight:700;"><i class="bi bi-alarm"></i> {{ c.days_remaining }} {% trans "দিন বাকি" %}</span>
-            {% endif %}
-            <div class="c-actions">
-              <button class="btn-donate-card"
+          <div class="c-footer" style="flex-direction:column; align-items:stretch; gap:.6rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:.5rem;">
+              <span class="c-donors"><i class="bi bi-people"></i>{{ c.donor_count }} {% trans "জন" %}</span>
+              {% if c.deadline and not c.is_deadline_passed %}
+              <span class="c-donors" style="color:var(--red-600); font-weight:700;"><i class="bi bi-alarm"></i> {{ c.days_remaining }} {% trans "দিন বাকি" %}</span>
+              {% endif %}
+            </div>
+            <div class="c-actions" style="width:100%;">
+              <button class="btn-donate-card" style="flex:1;"
                 data-donate-trigger
                 data-slug="{{ c.slug }}"
                 data-title="{{ c.title }}"
@@ -132,9 +134,9 @@
         <div class="featured-body">
           {% if c.category %}<span class="c-cat">{{ c.category.name }}</span>{% endif %}
           <a href="{% url 'campaign_detail' c.slug %}" style="display:block; color:inherit;">
-          <div class="featured-title">{{ c.title }}</div>
+          <div class="featured-title">{{ c|localized_title }}</div>
           </a>
-          <p class="featured-desc">{{ c.short_description|default:c.description|truncatewords:20 }}</p>
+          <p class="featured-desc">{{ c|localized_short_description|truncatewords:20 }}</p>
           <div class="c-progress" style="margin-bottom:1rem;">
             <div class="c-progress-meta">
               <span class="c-raised">৳{{ c.raised_amount|floatformat:0 }} {% trans "সংগ্রহ" %}</span>
@@ -190,9 +192,9 @@
         <div class="c-card-body">
           {% if c.category %}<span class="c-cat">{{ c.category.name }}</span>{% endif %}
           <a href="{% url 'campaign_detail' c.slug %}" style="display:block; color:inherit;">
-          <div class="c-title">{{ c.title }}</div>
+          <div class="c-title">{{ c|localized_title }}</div>
           </a>
-          <div class="c-desc">{{ c.short_description|default:c.description }}</div>
+          <div class="c-desc">{{ c|localized_short_description }}</div>
           <div class="c-progress">
             <div class="c-progress-meta">
               <span class="c-raised">৳{{ c.raised_amount|floatformat:0 }}</span>
@@ -245,7 +247,7 @@
       <div class="done-card">
         <div class="done-check"><i class="bi bi-check-lg"></i></div>
         <div>
-          <div class="done-title">{{ c.title }}</div>
+          <div class="done-title">{{ c|localized_title }}</div>
           <div class="done-meta">{{ c.donor_count }} {% trans "জন সাহায্য করেছেন" %} · ৳{{ c.raised_amount|floatformat:0 }} {% trans "সংগ্রহ" %}</div>
         </div>
       </div>

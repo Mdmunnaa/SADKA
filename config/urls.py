@@ -1,11 +1,15 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, register_converter
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
 from campaigns.sitemaps import CampaignSitemap, StaticViewSitemap
 from campaigns.dashboard_views import admin_dashboard
+from campaigns.converters import UnicodeSlugConverter
+
+# Register the Unicode-aware slug converter once, before any app urls (which use it) are included.
+register_converter(UnicodeSlugConverter, 'uslug')
 
 admin.site.site_header = "সহায় - Admin Panel"
 admin.site.site_title = "সহায় Admin"

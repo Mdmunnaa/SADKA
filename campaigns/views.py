@@ -1,10 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q, Sum, Count
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
-from .models import Campaign, Category
+from .models import Campaign, Category, Comment
 
 
 def custom_404(request, exception=None):
@@ -100,14 +101,26 @@ def campaign_detail(request, slug):
     campaign = get_object_or_404(Campaign, slug=slug)
     updates = campaign.updates.all()
     recent_donors = campaign.donations.filter(is_verified=True).order_by('-created_at')[:10]
+    comments = campaign.comments.filter(is_approved=True)
     related = Campaign.objects.filter(
         category=campaign.category, status__in=['active', 'urgent']
     ).exclude(pk=campaign.pk)[:3]
+
+    if request.method == 'POST' and 'comment_message' in request.POST:
+        message_text = request.POST.get('comment_message', '').strip()
+        name = request.POST.get('comment_name', '').strip() or 'অজ্ঞাত'
+        if message_text:
+            Comment.objects.create(campaign=campaign, name=name, message=message_text)
+            messages.success(request, 'আপনার মন্তব্য যুক্ত হয়েছে। জাযাকাল্লাহ খায়রান!')
+        else:
+            messages.error(request, 'মন্তব্য খালি রাখা যাবে না।')
+        return redirect('campaign_detail', slug=slug)
 
     context = {
         'campaign': campaign,
         'updates': updates,
         'recent_donors': recent_donors,
+        'comments': comments,
         'related': related,
     }
     return render(request, 'campaigns/detail.html', context)
