@@ -219,17 +219,20 @@ a { text-decoration: none; color: inherit; }
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: 0 16px 48px rgba(0,0,0,.25);
+  height: 420px;
+  max-height: 420px;
 }
 .hero-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
   display: block;
 }
 
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; gap: 1.75rem; }
-  .hero-img-wrap { order: -1; max-height: 240px; }
+  .hero-img-wrap { order: -1; height: 220px; max-height: 220px; }
 }
 
 .hero-eyebrow {
