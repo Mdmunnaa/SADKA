@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}সাধারণ জিজ্ঞাসা (FAQ) — সহায়.bd{% endblock %}
+
+{% block extra_css %}
+<style>
+.faq-item {
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  background: var(--white);
+  transition: box-shadow .2s;
+}
+.faq-item:hover { box-shadow: var(--shadow-sm); }
+.faq-q {
+  width: 100%; text-align: left;
+  padding: 1.1rem 1.35rem;
+  background: var(--white);
+  border: none;
+  cursor: pointer;
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: .97rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: background .15s;
+}
+.faq-q:hover, .faq-q[aria-expanded="true"] {
+  background: var(--green-50);
+  color: var(--green-700);
+}
+.faq-q .faq-icon { flex-shrink: 0; transition: transform .25s; }
+.faq-q[aria-expanded="true"] .faq-icon { transform: rotate(180deg); }
+.faq-a {
+  padding: 0 1.35rem;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease, padding .3s ease;
+  color: var(--gray-600);
+  font-size: .93rem;
+  line-height: 1.8;
+}
+.faq-a.open { max-height: 300px; padding: .1rem 1.35rem 1.1rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section style="background:linear-gradient(135deg, var(--green-700) 0%, #065f46 100%);padding:3.5rem 0 4rem;text-align:center;">
+  <div class="container">
+    <h1 style="color:#fff;font-weight:800;font-size:clamp(1.8rem,4vw,2.5rem);margin-bottom:.5rem;">সাধারণ জিজ্ঞাসা (FAQ)</h1>
+    <p style="color:rgba(255,255,255,.8);margin:0;">আপনাদের মনের সাধারণ প্রশ্নের উত্তর</p>
+  </div>
+</section>
+
+<section class="sec sec-gray">
+  <div class="container">
+    <div style="max-width:780px;margin:0 auto;">
+
+      {% for faq in faqs %}
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          {{ faq.q }}
+          <i class="bi bi-chevron-down faq-icon"></i>
+        </button>
+        <div class="faq-a">{{ faq.a }}</div>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const isOpen = btn.getAttribute('aria-expanded') === 'true';
+    // Close all
+    document.querySelectorAll('.faq-q').forEach(b => {
+      b.setAttribute('aria-expanded', 'false');
+      b.nextElementSibling.classList.remove('open');
+    });
+    // Open clicked (if wasn't open)
+    if (!isOpen) {
+      btn.setAttribute('aria-expanded', 'true');
+      btn.nextElementSibling.classList.add('open');
+    }
+  });
+});
+// Open first by default
+const first = document.querySelector('.faq-q');
+if (first) { first.click(); }
+</script>
+{% endblock %}
+{% endblock %}

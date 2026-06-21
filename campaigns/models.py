@@ -224,3 +224,34 @@ class Comment(models.Model):
         ordering = ['-created_at']
         verbose_name = "মন্তব্য"
         verbose_name_plural = "মন্তব্যসমূহ"
+
+
+class Volunteer(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'বিচারাধীন'),
+        ('approved', 'অনুমোদিত'),
+        ('rejected', 'প্রত্যাখ্যাত'),
+    ]
+
+    name = models.CharField(max_length=200, verbose_name='পুরো নাম')
+    phone = models.CharField(max_length=20, verbose_name='মোবাইল নম্বর')
+    email = models.EmailField(blank=True, verbose_name='ইমেইল (ঐচ্ছিক)')
+    profession = models.CharField(max_length=200, verbose_name='পেশা')
+    address = models.TextField(verbose_name='বর্তমান ঠিকানা')
+    nid = models.CharField(max_length=30, verbose_name='NID / জাতীয় পরিচয়পত্র নম্বর')
+    why_volunteer = models.TextField(
+        blank=True,
+        verbose_name='কেন ভলান্টিয়ার হতে চান?',
+        help_text='সংক্ষেপে লিখুন (ঐচ্ছিক)'
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    note = models.TextField(blank=True, verbose_name='Admin নোট')
+
+    def __str__(self):
+        return f"{self.name} ({self.phone}) — {self.get_status_display()}"
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'ভলান্টিয়ার'
+        verbose_name_plural = 'ভলান্টিয়ারসমূহ'

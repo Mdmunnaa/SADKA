@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}আমাদের সম্পর্কে — সহায়.bd{% endblock %}
+
+{% block content %}
+<!-- PAGE HEADER -->
+<section style="background: var(--green-700); padding: 3.5rem 0; text-align:center;">
+  <div class="container">
+    <span class="sec-eyebrow" style="background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.25);">সহায়.bd</span>
+    <h1 style="color:#fff; font-size:clamp(1.8rem,4vw,2.5rem); font-weight:800; margin:.75rem 0 .5rem;">আমাদের সম্পর্কে</h1>
+    <p style="color:rgba(255,255,255,.8); font-size:1rem;">মানবতার সেবায় নিবেদিত একটি সামাজিক আন্দোলন</p>
+  </div>
+</section>
+
+<section class="sec" style="background:var(--gray-50);">
+  <div class="container" style="max-width:900px;">
+
+    <!-- Our Story -->
+    <div class="sidebar-box" style="margin-bottom:1.5rem;">
+      <div class="sidebar-box-head" style="font-size:1.1rem;">🌿 আমাদের গল্প ও পথচলা</div>
+      <div class="sidebar-box-body">
+        <p style="color:var(--gray-700); line-height:1.9; font-size:.97rem; text-align:justify;">
+          'সহায়.bd' শুধু একটি ওয়েবসাইট নয়, এটি মানবতার সেবায় নিবেদিত একটি সামাজিক আন্দোলন। আমাদের সমাজের আনাচে-কানাচে এমন অনেক মানুষ আছেন, যাদের একটি বেলার খাবার, জরুরি চিকিৎসা বা সন্তানের শিক্ষার জন্য সামান্য আর্থিক সাহায্য পুরো জীবনটা বদলে দিতে পারে। দাতা এবং গ্রহীতার মাঝের দূরত্ব ঘুচিয়ে একটি আস্থার সেতুবন্ধন তৈরি করতেই আমাদের এই পথচলা।
+        </p>
+      </div>
+    </div>
+
+    <!-- Vision & Mission -->
+    <div class="card-grid card-grid-2" style="margin-bottom:1.5rem;">
+      <div class="sidebar-box" style="margin-bottom:0;">
+        <div class="sidebar-box-body" style="text-align:center;">
+          <div style="font-size:2.5rem; margin-bottom:.75rem;">🎯</div>
+          <h4 style="color:var(--gray-900); font-weight:700; margin-bottom:.75rem;">আমাদের লক্ষ্য (Vision)</h4>
+          <p style="color:var(--gray-500); line-height:1.8; font-size:.92rem; margin:0;">একটি বৈষম্যহীন সমাজ গঠন, যেখানে প্রযুক্তির মাধ্যমে দেশের যেকোনো প্রান্তের অসহায় মানুষের কাছে দ্রুততম সময়ে সাহায্য পৌঁছে দেওয়া সম্ভব হয়।</p>
+        </div>
+      </div>
+      <div class="sidebar-box" style="margin-bottom:0;">
+        <div class="sidebar-box-body" style="text-align:center;">
+          <div style="font-size:2.5rem; margin-bottom:.75rem;">🚀</div>
+          <h4 style="color:var(--gray-900); font-weight:700; margin-bottom:.75rem;">আমাদের উদ্দেশ্য (Mission)</h4>
+          <p style="color:var(--gray-500); line-height:1.8; font-size:.92rem; margin:0;">শতভাগ স্বচ্ছতা ও জবাবদিহিতার মাধ্যমে ডোনেশন সংগ্রহ করা এবং ভলান্টিয়ারদের সরাসরি তত্ত্বাবধানে তা প্রকৃত হকদারের হাতে তুলে দেওয়া।</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Work Areas -->
+    <div class="sidebar-box" style="margin-bottom:1.5rem;">
+      <div class="sidebar-box-head" style="font-size:1.1rem;">আমাদের কাজের মূল পরিধি</div>
+      <div class="sidebar-box-body">
+        <div class="card-grid card-grid-2">
+          {% for item in area_list %}
+          <div style="background:var(--green-50); border-left:4px solid var(--green-700); padding:1rem; border-radius:var(--radius-sm);">
+            <h6 style="color:var(--gray-900); font-weight:700; margin-bottom:.3rem;">{{ item.icon }} {{ item.title }}</h6>
+            <div style="color:var(--gray-500); font-size:.85rem;">{{ item.desc }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Volunteer -->
+    <div class="sidebar-box">
+      <div class="sidebar-box-head" style="font-size:1.1rem;">🤝 আমাদের মূল শক্তি: ভলান্টিয়ার নেটওয়ার্ক</div>
+      <div class="sidebar-box-body">
+        <p style="color:var(--gray-700); line-height:1.9; font-size:.95rem; margin:0;">
+          'সহায়.bd'-এর আসল চালিকাশক্তি হলো আমাদের নিবেদিতপ্রাণ ভলান্টিয়াররা। দেশের বিভিন্ন প্রান্তে ছড়িয়ে থাকা আমাদের ভলান্টিয়ার টিম প্রতিটি কেস সরাসরি মাঠে গিয়ে যাচাই করে। ফান্ড কালেকশন থেকে শুরু করে অসহায় মানুষের হাতে সেই সাহায্য তুলে দেওয়া — পুরো প্রক্রিয়াটি আমাদের ভলান্টিয়ারদের প্রত্যক্ষ অংশগ্রহণে সম্পন্ন হয়।
+        </p>
+        <div style="margin-top:1.25rem;">
+          <a href="{% url 'volunteer_signup' %}" class="btn-big-donate" style="display:inline-flex; width:auto; padding:.7rem 1.75rem;">
+            <i class="bi bi-person-heart"></i> ভলান্টিয়ার হিসেবে যুক্ত হোন
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

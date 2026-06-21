@@ -186,6 +186,18 @@ a { text-decoration: none; color: inherit; }
   position: relative;
   overflow: hidden;
 }
+/* Hero background image — right side, fades into green */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 55%;
+  background: url('/static/img/hero-bg.png') center/cover no-repeat;
+  opacity: 0.22;
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 30%, rgba(0,0,0,0.9) 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 30%, rgba(0,0,0,0.9) 100%);
+}
+@media (max-width: 768px) { .hero::before { width: 100%; opacity: 0.12; } }
 .hero::after {
   content: '';
   position: absolute;
@@ -194,6 +206,31 @@ a { text-decoration: none; color: inherit; }
 }
 
 .hero-inner { position: relative; z-index: 2; }
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 2.5rem;
+  align-items: center;
+}
+.hero-text { max-width: 600px; }
+
+.hero-img-wrap {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,.25);
+}
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 1.75rem; }
+  .hero-img-wrap { order: -1; max-height: 240px; }
+}
 
 .hero-eyebrow {
   display: inline-flex;

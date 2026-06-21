@@ -183,13 +183,13 @@
         <a href="{% url 'home' %}">{% trans "হোম" %}</a>
         <a href="{% url 'campaign_list' %}">{% trans "সকল ক্যাম্পেইন" %}</a>
         <a href="{% url 'campaign_list' %}?status=urgent">{% trans "জরুরি সাহায্য" %}</a>
-        <a href="{% url 'campaign_list' %}?status=completed">{% trans "সম্পন্ন কার্যক্রম" %}</a>
+        <a href="{% url 'volunteer_signup' %}">🤝 {% trans "ভলান্টিয়ার হোন" %}</a>
       </div>
       <div>
-        <div class="footer-heading">{% trans "পেমেন্ট" %}</div>
-        <a href="#">{% trans "বিকাশ" %}</a>
-        <a href="#">{% trans "নগদ" %}</a>
-        <a href="#">{% trans "রকেট" %}</a>
+        <div class="footer-heading">{% trans "কোম্পানি" %}</div>
+        <a href="{% url 'about' %}">{% trans "আমাদের সম্পর্কে" %}</a>
+        <a href="{% url 'faq' %}">{% trans "সাধারণ জিজ্ঞাসা" %}</a>
+        <a href="{% url 'privacy' %}">{% trans "গোপনীয়তা নীতি" %}</a>
       </div>
       <div>
         <div class="footer-heading">{% trans "যোগাযোগ" %}</div>
@@ -199,7 +199,13 @@
       </div>
     </div>
     <hr class="footer-divider">
-    <p class="footer-copy">© ২০২৪ সহায়.bd — {% trans "সমাজের সেবায় নিবেদিত" %}</p>
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.75rem;">
+      <p class="footer-copy" style="margin:0;">© ২০২৪ সহায়.bd — {% trans "সমাজের সেবায় নিবেদিত" %}</p>
+      <p class="footer-copy" style="margin:0;">
+        <span style="color:rgba(255,255,255,.4);">A CSR Initiative by</span>
+        <a href="https://edumi.com" target="_blank" rel="noopener" style="color:var(--green-500); font-weight:700; text-decoration:none;">Edumi</a>
+      </p>
+    </div>
   </div>
 </footer>
 

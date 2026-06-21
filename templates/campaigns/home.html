@@ -7,17 +7,22 @@
 <!-- HERO -->
 <section class="hero">
   <div class="container hero-inner">
-    <div style="max-width:600px;">
-      <div class="hero-eyebrow"><span>💚</span> {% trans "বাংলাদেশের মানুষের জন্য" %}</div>
-      <h1>{% trans "মানুষের পাশে" %}<br>{% trans "দাঁড়ানোই" %} <span>{% trans "আমাদের কাজ" %}</span></h1>
-      <p class="hero-sub">{% trans "মানুষের সমস্যা তুলে ধরি, একসাথে সমাধান করি। আপনার একটু সহায়তা বদলে দিতে পারে একটি জীবন।" %}</p>
-      <div class="hero-cta">
-        <a href="{% url 'campaign_list' %}" class="btn-hero-primary">
-          <i class="bi bi-heart-fill"></i> {% trans "এখনই সহায়তা করুন" %}
-        </a>
-        <a href="{% url 'campaign_list' %}?status=urgent" class="btn-hero-ghost">
-          <i class="bi bi-exclamation-circle"></i> {% trans "জরুরি ক্যাম্পেইন" %}
-        </a>
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="hero-eyebrow"><span>💚</span> {% trans "বাংলাদেশের মানুষের জন্য" %}</div>
+        <h1>{% trans "মানুষের পাশে" %}<br>{% trans "দাঁড়ানোই" %} <span>{% trans "আমাদের কাজ" %}</span></h1>
+        <p class="hero-sub">{% trans "মানুষের সমস্যা তুলে ধরি, একসাথে সমাধান করি। আপনার একটু সহায়তা বদলে দিতে পারে একটি জীবন।" %}</p>
+        <div class="hero-cta">
+          <a href="{% url 'campaign_list' %}" class="btn-hero-primary">
+            <i class="bi bi-heart-fill"></i> {% trans "এখনই সহায়তা করুন" %}
+          </a>
+          <a href="{% url 'campaign_list' %}?status=urgent" class="btn-hero-ghost">
+            <i class="bi bi-exclamation-circle"></i> {% trans "জরুরি ক্যাম্পেইন" %}
+          </a>
+        </div>
+      </div>
+      <div class="hero-img-wrap">
+        <img src="{% static 'img/hero-bg.jpg' %}" alt="{% trans 'সহায়.bd — মানুষের পাশে দাঁড়ানো' %}" class="hero-img">
       </div>
     </div>
   </div>

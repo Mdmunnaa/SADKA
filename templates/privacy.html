@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}গোপনীয়তা নীতি — সহায়.bd{% endblock %}
+
+{% block content %}
+<section style="background: var(--green-700); padding: 3.5rem 0; text-align:center;">
+  <div class="container">
+    <span class="sec-eyebrow" style="background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.25);">Legal</span>
+    <h1 style="color:#fff; font-size:clamp(1.8rem,4vw,2.5rem); font-weight:800; margin:.75rem 0 .5rem;">গোপনীয়তা নীতি</h1>
+    <p style="color:rgba(255,255,255,.8); font-size:1rem;">আপনার ব্যক্তিগত তথ্যের নিরাপত্তা আমাদের সর্বোচ্চ অগ্রাধিকার</p>
+  </div>
+</section>
+
+<section class="sec" style="background:var(--gray-50);">
+  <div class="container" style="max-width:900px;">
+
+    <p style="color:var(--gray-500); font-size:.97rem; line-height:1.9; margin-bottom:2rem; background:var(--white); padding:1.25rem; border-radius:var(--radius); border:1px solid var(--gray-300);">
+      'সহায়.bd'-তে আপনার ব্যক্তিগত তথ্যের নিরাপত্তা ও গোপনীয়তা বজায় রাখা আমাদের আইনি ও নৈতিক দায়িত্ব। আমাদের প্ল্যাটফর্ম ব্যবহারের ক্ষেত্রে আমরা কীভাবে আপনার তথ্য সংগ্রহ, ব্যবহার এবং সুরক্ষিত রাখি, তা নিচে বিস্তারিত বর্ণনা করা হলো:
+    </p>
+
+    {% for section in privacy_sections %}
+    <div class="sidebar-box" style="margin-bottom:1.25rem;">
+      <div class="sidebar-box-head">
+        <i class="bi bi-{{ section.icon }} me-2" style="color:var(--green-700);"></i>{{ section.title }}
+      </div>
+      <div class="sidebar-box-body">
+        <p style="color:var(--gray-700); line-height:1.85; font-size:.95rem; margin:0;">{{ section.body }}</p>
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+</section>
+{% endblock %}

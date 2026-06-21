@@ -102,3 +102,31 @@ class CommentAdmin(admin.ModelAdmin):
     def message_short(self, obj):
         return obj.message[:60] + ('...' if len(obj.message) > 60 else '')
     message_short.short_description = "মন্তব্য"
+
+
+from .models import Volunteer
+
+@admin.register(Volunteer)
+class VolunteerAdmin(admin.ModelAdmin):
+    list_display = ['name', 'phone', 'profession', 'address_short', 'status', 'created_at']
+    list_filter = ['status']
+    search_fields = ['name', 'phone', 'nid', 'email']
+    list_editable = ['status']
+    readonly_fields = ['created_at']
+    ordering = ['-created_at']
+
+    fieldsets = (
+        ('ব্যক্তিগত তথ্য', {
+            'fields': ('name', 'phone', 'email', 'profession', 'address', 'nid')
+        }),
+        ('আবেদন', {
+            'fields': ('why_volunteer',)
+        }),
+        ('অ্যাডমিন সিদ্ধান্ত', {
+            'fields': ('status', 'note', 'created_at')
+        }),
+    )
+
+    def address_short(self, obj):
+        return obj.address[:40] + '…' if len(obj.address) > 40 else obj.address
+    address_short.short_description = 'ঠিকানা'
