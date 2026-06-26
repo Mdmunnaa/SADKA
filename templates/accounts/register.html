@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}নতুন অ্যাকাউন্ট — সহায়.bd{% endblock %}
+
+{% block content %}
+<div class="sec" style="background:var(--gray-50); min-height:80vh; display:flex; align-items:center; padding:2.5rem 0;">
+  <div class="container" style="max-width:520px;">
+
+    <div class="sidebar-box" style="border-top:4px solid var(--green-700);">
+      <div class="sidebar-box-body" style="padding:2rem;">
+
+        <div style="text-align:center;margin-bottom:1.75rem;">
+          <div style="width:56px;height:56px;background:var(--green-100);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;font-size:1.5rem;">🤝</div>
+          <h2 style="font-weight:800;font-size:1.4rem;color:var(--gray-900);">ডোনার অ্যাকাউন্ট খুলুন</h2>
+          <p style="color:var(--gray-500);font-size:.88rem;margin-top:.3rem;">আপনার সকল donation এক জায়গায় track করুন</p>
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+            <div class="form-field">
+              <label>নাম <span style="color:var(--red-600)">*</span></label>
+              <input type="text" name="first_name" value="{{ form_data.first_name|default:'' }}" placeholder="রহিম" required>
+            </div>
+            <div class="form-field">
+              <label>পদবি</label>
+              <input type="text" name="last_name" value="{{ form_data.last_name|default:'' }}" placeholder="উদ্দিন">
+            </div>
+          </div>
+
+          <div class="form-field" style="margin-bottom:.75rem;">
+            <label>ইমেইল অ্যাড্রেস <span style="color:var(--red-600)">*</span></label>
+            <input type="email" name="email" value="{{ form_data.email|default:'' }}" placeholder="you@example.com" required>
+          </div>
+
+          <div class="form-field" style="margin-bottom:.75rem;">
+            <label>মোবাইল নম্বর</label>
+            <input type="tel" name="phone" value="{{ form_data.phone|default:'' }}" placeholder="01XXXXXXXXX">
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem;">
+            <div class="form-field">
+              <label>পাসওয়ার্ড <span style="color:var(--red-600)">*</span></label>
+              <input type="password" name="password1" placeholder="কমপক্ষে ৬ অক্ষর" required>
+            </div>
+            <div class="form-field">
+              <label>পাসওয়ার্ড নিশ্চিত করুন <span style="color:var(--red-600)">*</span></label>
+              <input type="password" name="password2" placeholder="আবার লিখুন" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-big-donate" style="font-size:.95rem;">
+            <i class="bi bi-person-check-fill"></i> অ্যাকাউন্ট তৈরি করুন
+          </button>
+        </form>
+
+        <p style="text-align:center;margin-top:1.25rem;font-size:.85rem;color:var(--gray-500);">
+          আগে থেকে অ্যাকাউন্ট আছে?
+          <a href="{% url 'donor_login' %}" style="color:var(--green-700);font-weight:600;">লগইন করুন</a>
+        </p>
+
+        <div style="text-align:center;margin-top:.75rem;">
+          <a href="{% url 'campaign_list' %}" style="font-size:.82rem;color:var(--gray-400);">
+            অ্যাকাউন্ট ছাড়াই ডোনেট করুন →
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

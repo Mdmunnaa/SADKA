@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}লগইন — সহায়.bd{% endblock %}
+
+{% block content %}
+<div class="sec" style="background:var(--gray-50); min-height:80vh; display:flex; align-items:center;">
+  <div class="container" style="max-width:460px;">
+
+    <div class="sidebar-box" style="border-top:4px solid var(--green-700);">
+      <div class="sidebar-box-body" style="padding:2rem;">
+
+        <div style="text-align:center; margin-bottom:1.75rem;">
+          <div style="width:56px;height:56px;background:var(--green-100);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;font-size:1.5rem;">🔐</div>
+          <h2 style="font-weight:800;font-size:1.4rem;color:var(--gray-900);">ডোনার লগইন</h2>
+          <p style="color:var(--gray-500);font-size:.88rem;margin-top:.3rem;">আপনার donation history দেখতে লগইন করুন</p>
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ next }}">
+
+          <div class="form-field" style="margin-bottom:.85rem;">
+            <label>ইমেইল অ্যাড্রেস</label>
+            <input type="email" name="email" placeholder="you@example.com" required autofocus>
+          </div>
+          <div class="form-field" style="margin-bottom:1.25rem;">
+            <label>পাসওয়ার্ড</label>
+            <input type="password" name="password" placeholder="••••••••" required>
+          </div>
+
+          <button type="submit" class="btn-big-donate" style="font-size:.95rem;">
+            <i class="bi bi-box-arrow-in-right"></i> লগইন করুন
+          </button>
+        </form>
+
+        <p style="text-align:center;margin-top:1.25rem;font-size:.85rem;color:var(--gray-500);">
+          অ্যাকাউন্ট নেই?
+          <a href="{% url 'donor_register' %}" style="color:var(--green-700);font-weight:600;">নতুন অ্যাকাউন্ট খুলুন</a>
+        </p>
+
+        <div style="text-align:center;margin-top:.75rem;">
+          <a href="{% url 'campaign_list' %}" style="font-size:.82rem;color:var(--gray-400);">
+            লগইন ছাড়াই ডোনেট করুন →
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}প্রোফাইল এডিট — সহায়.bd{% endblock %}
+
+{% block content %}
+<div class="sec" style="background:var(--gray-50); min-height:70vh; display:flex; align-items:center;">
+  <div class="container" style="max-width:520px;">
+    <div class="sidebar-box" style="border-top:4px solid var(--green-700);">
+      <div class="sidebar-box-head"><i class="bi bi-person-gear me-2"></i>প্রোফাইল আপডেট</div>
+      <div class="sidebar-box-body">
+        <form method="post">
+          {% csrf_token %}
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin-bottom:.75rem;">
+            <div class="form-field">
+              <label>নাম</label>
+              <input type="text" name="first_name" value="{{ profile.user.first_name }}" placeholder="রহিম">
+            </div>
+            <div class="form-field">
+              <label>পদবি</label>
+              <input type="text" name="last_name" value="{{ profile.user.last_name }}" placeholder="উদ্দিন">
+            </div>
+          </div>
+          <div class="form-field" style="margin-bottom:.75rem;">
+            <label>মোবাইল নম্বর</label>
+            <input type="tel" name="phone" value="{{ profile.phone }}" placeholder="01XXXXXXXXX">
+          </div>
+          <div class="form-field" style="margin-bottom:1.25rem;">
+            <label>ঠিকানা</label>
+            <textarea name="address" rows="2" placeholder="বর্তমান ঠিকানা">{{ profile.address }}</textarea>
+          </div>
+          <div style="display:flex; gap:.75rem;">
+            <button type="submit" class="btn-big-donate" style="flex:1; font-size:.92rem;">
+              <i class="bi bi-check-lg"></i> সেভ করুন
+            </button>
+            <a href="{% url 'donor_dashboard' %}"
+               style="display:flex; align-items:center; justify-content:center; padding:.7rem 1rem; border:1.5px solid var(--gray-300); border-radius:var(--radius); color:var(--gray-700); font-size:.88rem; font-weight:600;">
+              বাতিল
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
