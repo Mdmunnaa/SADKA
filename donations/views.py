@@ -16,9 +16,9 @@ def donate(request, slug):
 
             donation = Donation.objects.create(
                 campaign=campaign,
-                donor_name=request.POST.get('donor_name', '').strip(),
-                donor_phone=request.POST.get('donor_phone', '').strip(),
-                donor_email=request.POST.get('donor_email', '').strip(),
+                donor_name=request.POST.get('donor_name', '').strip() or (request.user.get_full_name() if request.user.is_authenticated else ''),
+                donor_phone=request.POST.get('donor_phone', '').strip() or (getattr(request.user, 'donor_profile', None) and request.user.donor_profile.phone or ''),
+                donor_email=request.POST.get('donor_email', '').strip() or (request.user.email if request.user.is_authenticated else ''),
                 amount=amount,
                 payment_method=request.POST.get('payment_method', 'bkash'),
                 payment_reference=request.POST.get('payment_reference', '').strip(),
