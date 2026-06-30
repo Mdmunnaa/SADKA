@@ -45,8 +45,6 @@
         <li><a href="{% url 'home' %}"><i class="bi bi-house me-1"></i>{% trans "হোম" %}</a></li>
         <li><a href="{% url 'campaign_list' %}"><i class="bi bi-grid-3x3-gap me-1"></i>{% trans "ক্যাম্পেইন" %}</a></li>
         <li><a href="{% url 'campaign_list' %}?status=urgent" class="urgent"><i class="bi bi-exclamation-circle me-1"></i>{% trans "জরুরি" %}</a></li>
-        <li><a href="{% url 'zakat_calculator' %}"><i class="bi bi-calculator me-1"></i>{% trans "যাকাত হিসাব" %}</a></li>
-        <li><a href="{% url 'recurring_signup' %}"><i class="bi bi-arrow-repeat me-1"></i>{% trans "মাসিক সদকা" %}</a></li>
         <li><a href="{% url 'campaign_list' %}" class="btn-nav"><i class="bi bi-heart-fill me-1"></i>{% trans "ডোনেট করুন" %}</a></li>
         {% if user.is_authenticated %}
         <li>
@@ -140,7 +138,23 @@
           <input type="text" name="payment_reference" placeholder="{% trans 'যেমন: 8N7HD9XYZ (দিলে দ্রুত verify হবে)' %}">
         </div>
 
-        <!-- Name & Phone (minimal — As-Sunnah style) -->
+        <!-- Name & Phone — auto-filled if logged in -->
+        {% if user.is_authenticated %}
+        <input type="hidden" name="donor_email" value="{{ user.email }}">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem;">
+          <div class="form-field">
+            <label>{% trans "নাম" %}</label>
+            <input type="text" name="donor_name" value="{{ user.get_full_name }}" placeholder="{% trans 'আপনার নাম' %}">
+          </div>
+          <div class="form-field">
+            <label>{% trans "মোবাইল" %}</label>
+            <input type="tel" name="donor_phone" value="{{ user.donor_profile.phone|default:'' }}" placeholder="01XXXXXXXXX">
+          </div>
+        </div>
+        <p style="font-size:.75rem; color:var(--green-700); margin-top:.3rem;">
+          <i class="bi bi-person-check me-1"></i>{{ user.email }} {% trans "হিসেবে লগইন আছেন — ডোনেশন dashboard-এ track হবে" %}
+        </p>
+        {% else %}
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem;">
           <div class="form-field">
             <label>{% trans "নাম" %}</label>
@@ -151,6 +165,11 @@
             <input type="tel" name="donor_phone" placeholder="01XXXXXXXXX">
           </div>
         </div>
+        <p style="font-size:.75rem; color:var(--gray-400); margin-top:.3rem;">
+          <i class="bi bi-info-circle me-1"></i>
+          <a href="{% url 'donor_login' %}?next={{ request.path }}" style="color:var(--green-700); font-weight:600;">{% trans "লগইন করুন" %}</a> — {% trans "donation dashboard-এ track করতে" %}
+        </p>
+        {% endif %}
 
         <label class="anon-check">
           <input type="checkbox" name="is_anonymous">
@@ -193,6 +212,8 @@
         <a href="{% url 'home' %}">{% trans "হোম" %}</a>
         <a href="{% url 'campaign_list' %}">{% trans "সকল ক্যাম্পেইন" %}</a>
         <a href="{% url 'campaign_list' %}?status=urgent">{% trans "জরুরি সাহায্য" %}</a>
+        <a href="{% url 'zakat_calculator' %}">🧮 {% trans "যাকাত হিসাব" %}</a>
+        <a href="{% url 'recurring_signup' %}">🔁 {% trans "মাসিক সদকা" %}</a>
         <a href="{% url 'volunteer_signup' %}">🤝 {% trans "ভলান্টিয়ার হোন" %}</a>
       </div>
       <div>
