@@ -1,13 +1,22 @@
 from pathlib import Path
 import os
+from decouple import config, Csv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-sadaqah-platform-change-in-production-2024'
+# ── Security-sensitive settings now come from the environment ──
+# Locally, if you don't set these, sensible dev defaults are used so
+# `manage.py runserver` still works out of the box. In production
+# (PythonAnywhere etc.) set real values via a `.env` file or the host's
+# environment-variable panel — see .env.example.
+SECRET_KEY = config(
+    'SECRET_KEY',
+    default='django-insecure-DEV-ONLY-change-me-for-production',
+)
 
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
 INSTALLED_APPS = [
     'django.contrib.admin',

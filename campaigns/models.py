@@ -1,11 +1,40 @@
 from django.db import models
 from django.utils import timezone
-from django.utils.text import slugify
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
 import uuid
 import io
+import re
 import sys
+import unicodedata
+
+
+def unicode_safe_slugify(value):
+    """
+    Django's own slugify(..., allow_unicode=True) is broken for Bengali (and
+    other Indic scripts): it removes any character not matched by Python's
+    regex `\\w`, and combining vowel signs (matras) like ে/ি/ৈ/ো are Unicode
+    category 'Mn' (nonspacing mark), which `\\w` does NOT match. That silently
+    strips every vowel sign, e.g.:
+
+        slugify("রহিমের চিকিৎসা সহায়তা", allow_unicode=True)
+        -> "রহমর-চকৎস-সহযত"     (WRONG — vowels gone, unreadable)
+
+    This version keeps letters, digits, and combining marks so Bengali (and
+    other Indic-script) slugs stay readable:
+
+        unicode_safe_slugify("রহিমের চিকিৎসা সহায়তা")
+        -> "রহিমের-চিকিৎসা-সহায়তা"   (correct)
+    """
+    value = unicodedata.normalize('NFKC', str(value))
+    kept = []
+    for ch in value:
+        cat = unicodedata.category(ch)
+        if cat[0] in ('L', 'N') or cat in ('Mn', 'Mc') or ch in ' -_':
+            kept.append(ch)
+    value = ''.join(kept).strip().lower()
+    value = re.sub(r'[-\s]+', '-', value)
+    return value.strip('-_')
 
 
 def resize_image(image_field, max_width=1200, max_height=1200, quality=80):
@@ -87,7 +116,7 @@ class Campaign(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            base_slug = slugify(self.title, allow_unicode=True)
+            base_slug = unicode_safe_slugify(self.title)
             if not base_slug:
                 # Fallback if title produces an empty slug (e.g. only emoji/symbols)
                 base_slug = 'campaign'

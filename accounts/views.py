@@ -160,8 +160,11 @@ def donation_receipt(request, pk):
     except Donation.DoesNotExist:
         raise Http404
 
-    # Security: only the donor who submitted (by email) can download
-    if donation.donor_email and donation.donor_email != request.user.email:
+    # Security: only the donor who submitted (by email) can download.
+    # IMPORTANT: if donor_email is blank (guest/anonymous donation with no
+    # email on file), there is no way to prove ownership — deny by default
+    # instead of letting any logged-in user through.
+    if not donation.donor_email or donation.donor_email != request.user.email:
         raise Http404
 
     buf = generate_receipt_pdf(donation)
