@@ -115,32 +115,32 @@ def generate_receipt_pdf(donation):
     # Custom styles
     title_style = ParagraphStyle(
         'Title', parent=styles['Normal'],
-        fontSize=22, fontName='Helvetica-Bold',
+        fontSize=22, leading=27, fontName='Helvetica-Bold',
         textColor=GREEN, alignment=TA_CENTER, spaceAfter=2,
     )
     subtitle_style = ParagraphStyle(
         'Sub', parent=styles['Normal'],
-        fontSize=10, fontName='Helvetica',
+        fontSize=10, leading=13, fontName='Helvetica',
         textColor=GRAY, alignment=TA_CENTER, spaceAfter=4,
     )
     label_style = ParagraphStyle(
         'Label', parent=styles['Normal'],
-        fontSize=9, fontName='Helvetica',
+        fontSize=9, leading=12, fontName='Helvetica',
         textColor=GRAY,
     )
     value_style = ParagraphStyle(
         'Value', parent=styles['Normal'],
-        fontSize=10, fontName='Helvetica-Bold',
+        fontSize=10, leading=13, fontName='Helvetica-Bold',
         textColor=DARK,
     )
     amount_style = ParagraphStyle(
         'Amount', parent=styles['Normal'],
-        fontSize=26, fontName='Helvetica-Bold',
+        fontSize=26, leading=32, fontName='Helvetica-Bold',
         textColor=GREEN, alignment=TA_CENTER,
     )
     note_style = ParagraphStyle(
         'Note', parent=styles['Normal'],
-        fontSize=8, fontName='Helvetica',
+        fontSize=8, leading=11, fontName='Helvetica',
         textColor=GRAY, alignment=TA_CENTER,
     )
 
@@ -220,7 +220,7 @@ def generate_receipt_pdf(donation):
     story.append(Paragraph(
         "Jazakallahu Khayran — May Allah reward you abundantly!",
         ParagraphStyle('Thanks', parent=styles['Normal'],
-            fontSize=11, fontName='Helvetica-Bold',
+            fontSize=11, leading=14, fontName='Helvetica-Bold',
             textColor=GREEN, alignment=TA_CENTER, spaceAfter=4)
     ))
     story.append(Paragraph(
