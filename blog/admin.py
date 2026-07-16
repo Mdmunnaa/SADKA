@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import BlogCategory, BlogTag, BlogPost
+from .models import BlogCategory, BlogTag, BlogPost, Comment
 
 
 @admin.register(BlogCategory)
@@ -73,3 +73,16 @@ class BlogPostAdmin(admin.ModelAdmin):
             return format_html('<img src="{}" style="max-width:300px;border-radius:8px;" />', obj.featured_image.url)
         return "(কোনো ছবি নেই)"
     image_preview.short_description = 'প্রিভিউ'
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('commenter_name', 'post', 'short_content', 'is_approved', 'created_at')
+    list_filter = ('is_approved', 'created_at')
+    search_fields = ('content', 'user__username', 'user__email', 'post__title')
+    list_editable = ('is_approved',)
+    autocomplete_fields = ('post', 'user')
+
+    def short_content(self, obj):
+        return obj.content[:60] + ('...' if len(obj.content) > 60 else '')
+    short_content.short_description = 'মন্তব্য'

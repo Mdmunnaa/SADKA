@@ -67,8 +67,10 @@
         </div>
         {% endif %}
 
-        <!-- Top donate CTA -->
-        {% include 'blog/_donate_cta.html' %}
+        <!-- Top donate CTA — only shown when this post is explicitly tied to a campaign -->
+        {% if cta_campaign %}
+          {% include 'blog/_donate_cta.html' %}
+        {% endif %}
 
         <div class="blog-content">
           {{ post.content|safe }}
@@ -82,8 +84,10 @@
         </div>
         {% endif %}
 
-        <!-- Bottom donate CTA -->
-        {% include 'blog/_donate_cta.html' %}
+        <!-- Bottom donate CTA — only shown when this post is explicitly tied to a campaign -->
+        {% if cta_campaign %}
+          {% include 'blog/_donate_cta.html' %}
+        {% endif %}
 
         <!-- Share -->
         <div class="sidebar-box" style="margin-top:1.5rem;">
@@ -116,11 +120,54 @@
           </div>
         </div>
         {% endif %}
+
+        <!-- Comments -->
+        <div class="sidebar-box" style="margin-top:2.5rem;">
+          <div class="sidebar-box-head"><i class="bi bi-chat-dots me-2"></i>{% trans "মন্তব্য" %} ({{ comment_count }})</div>
+          <div class="sidebar-box-body">
+
+            {% if user.is_authenticated %}
+            <form method="post" style="margin-bottom:1.5rem;">
+              {% csrf_token %}
+              <textarea name="content" rows="3" required maxlength="1000"
+                placeholder="{% trans 'আপনার মন্তব্য লিখুন...' %}"
+                style="width:100%; padding:.7rem .9rem; border:1px solid var(--gray-300); border-radius:var(--radius-sm); font-family:inherit; font-size:.92rem; resize:vertical;"></textarea>
+              <button type="submit" class="btn-donate-card" style="margin-top:.6rem;">
+                <i class="bi bi-send"></i> {% trans "মন্তব্য পোস্ট করুন" %}
+              </button>
+            </form>
+            {% else %}
+            <div class="alert-green" style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+              <span>{% trans "মন্তব্য করতে হলে লগইন করুন।" %}</span>
+              <a href="{% url 'donor_login' %}?next={{ request.path }}" class="btn-donate-card" style="padding:.5rem 1.2rem; text-decoration:none;">
+                {% trans "লগইন করুন" %}
+              </a>
+            </div>
+            {% endif %}
+
+            {% for c in comments %}
+            <div style="padding:1rem 0; border-bottom:1px solid var(--gray-100);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.35rem; gap:.5rem;">
+                <span style="font-weight:700; font-size:.9rem; color:var(--gray-900);">{{ c.commenter_name }}</span>
+                <span style="font-size:.75rem; color:var(--gray-500); white-space:nowrap;">{{ c.created_at|timesince }} {% trans "আগে" %}</span>
+              </div>
+              <p style="font-size:.9rem; color:var(--gray-700); margin:0; line-height:1.65;">{{ c.content|linebreaksbr }}</p>
+            </div>
+            {% empty %}
+            <p style="font-size:.85rem; color:var(--gray-500); text-align:center; padding:1rem 0;">{% trans "প্রথম মন্তব্যকারী হোন!" %}</p>
+            {% endfor %}
+
+          </div>
+        </div>
       </div>
 
       <!-- ═══ RIGHT: SIDEBAR ═══ -->
       <div style="position:sticky; top:90px;">
-        {% include 'blog/_donate_cta.html' %}
+        {% if cta_campaign %}
+          {% include 'blog/_donate_cta.html' %}
+        {% else %}
+          {% include 'blog/_other_posts_widget.html' %}
+        {% endif %}
 
         <div class="sidebar-box">
           <div class="sidebar-box-head"><i class="bi bi-journal-text me-2"></i>{% trans "ব্লগ" %}</div>

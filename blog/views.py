@@ -1,18 +1,17 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404
+from django.urls import reverse
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q, F
 
-from .models import BlogPost, BlogCategory, BlogTag
+from .models import BlogPost, BlogCategory, BlogTag, Comment
 from campaigns.models import Campaign
 
 
-def _pick_cta_campaign(preferred=None):
-    """Choose which campaign the blog's Donate buttons should point to.
-    Prefers an explicitly related campaign (if still active/urgent),
-    otherwise falls back to the most urgent / featured active campaign."""
-    if preferred and preferred.status in ('active', 'urgent'):
-        return preferred
+def _pick_cta_campaign():
+    """Site-wide fallback used only on the blog LIST page (general, not tied
+    to any specific article) — picks the most urgent/featured active campaign."""
     return Campaign.objects.filter(status__in=['urgent', 'active']) \
         .order_by('-is_featured', '-created_at').first()
 
@@ -44,6 +43,8 @@ def blog_list(request):
     page_obj = paginator.get_page(request.GET.get('page'))
 
     categories = BlogCategory.objects.all()
+    # This is a page-level, general promotion — not tied to any specific
+    # article — so picking "the most urgent campaign" here is fine.
     cta_campaign = _pick_cta_campaign()
 
     seo_parts = []
@@ -79,6 +80,18 @@ def blog_detail(request, slug):
     if not post.is_visible and not (request.user.is_authenticated and request.user.is_staff):
         raise Http404
 
+    # ── Handle new comment submission ──
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            messages.error(request, 'মন্তব্য করতে হলে আগে লগইন করুন।')
+            return redirect(f"{reverse('donor_login')}?next={request.path}")
+
+        content = request.POST.get('content', '').strip()
+        if content:
+            Comment.objects.create(post=post, user=request.user, content=content[:1000])
+            messages.success(request, 'আপনার মন্তব্য যোগ করা হয়েছে।')
+        return redirect('blog_detail', slug=post.slug)
+
     # Best-effort view counter (fine if two requests race; not financial data)
     BlogPost.objects.filter(pk=post.pk).update(views_count=F('views_count') + 1)
 
@@ -87,11 +100,24 @@ def blog_detail(request, slug):
         related_posts = related_posts.filter(category=post.category)
     related_posts = related_posts.select_related('category')[:3]
 
-    cta_campaign = _pick_cta_campaign(post.related_campaign)
+    # IMPORTANT: only show a donate CTA tied to a campaign the editor
+    # explicitly linked to THIS post. We deliberately do NOT fall back to
+    # "whatever campaign is currently most urgent" here — doing that put an
+    # unrelated (and sometimes tonally jarring — e.g. an Iftar-distribution
+    # CTA under a news report about children drowning) campaign on posts that
+    # were never meant to fundraise. If there's no related campaign, the
+    # template shows "other posts" suggestions in that slot instead.
+    cta_campaign = post.related_campaign if (
+        post.related_campaign and post.related_campaign.status in ('active', 'urgent')
+    ) else None
+
+    comments = post.comments.filter(is_approved=True).select_related('user', 'user__donor_profile')
 
     context = {
         'post': post,
         'related_posts': related_posts,
         'cta_campaign': cta_campaign,
+        'comments': comments,
+        'comment_count': comments.count(),
     }
     return render(request, 'blog/detail.html', context)

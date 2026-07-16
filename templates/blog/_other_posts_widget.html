@@ -1,0 +1,18 @@
+{% load i18n %}
+<div class="donate-cta-card" style="background:linear-gradient(135deg, var(--gray-50), var(--white)); border-color:var(--gray-200);">
+  <span class="donate-cta-eyebrow" style="color:var(--gray-500);"><i class="bi bi-journal-text"></i> {% trans "আরও পড়ুন" %}</span>
+  {% if related_posts %}
+    {% for rp in related_posts %}
+    <a href="{% url 'blog_detail' rp.slug %}" class="blog-mini-post" style="margin-top:.8rem;">
+      {% if rp.featured_image %}<img src="{{ rp.featured_image.url }}" alt="{{ rp.title }}">
+      {% else %}<div class="placeholder">📝</div>{% endif %}
+      <span class="blog-mini-post-title">{{ rp.title }}</span>
+    </a>
+    {% endfor %}
+  {% else %}
+    <p style="font-size:.85rem; color:var(--gray-500); margin:.5rem 0;">{% trans "শীঘ্রই আরও পোস্ট আসছে।" %}</p>
+  {% endif %}
+  <a href="{% url 'blog_list' %}" style="display:block; margin-top:.6rem; font-size:.85rem; font-weight:700; color:var(--green-700); text-decoration:none;">
+    {% trans "সব পোস্ট দেখুন" %} →
+  </a>
+</div>

@@ -1,5 +1,6 @@
 import re
 
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django_ckeditor_5.fields import CKEditor5Field
@@ -179,3 +180,37 @@ class BlogPost(models.Model):
         ordering = ['-published_at', '-created_at']
         verbose_name = 'ব্লগ পোস্ট'
         verbose_name_plural = 'ব্লগ পোস্টসমূহ'
+
+
+class Comment(models.Model):
+    """A comment on a blog post. Only logged-in donor accounts can comment
+    (enforced in the view, not here) — this keeps discussion tied to real
+    accounts rather than anonymous drive-by comments."""
+
+    post = models.ForeignKey(BlogPost, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='blog_comments')
+    content = models.TextField(max_length=1000, verbose_name='মন্তব্য')
+
+    # Soft moderation: comments show immediately (so the conversation feels
+    # alive without Munna having to approve every single one), but he can
+    # untick this in admin to hide anything spammy/inappropriate after the fact.
+    is_approved = models.BooleanField(
+        default=True, verbose_name='দৃশ্যমান',
+        help_text='আপত্তিকর বা স্প্যাম মন্তব্য লুকাতে আনচেক করুন',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def commenter_name(self):
+        profile = getattr(self.user, 'donor_profile', None)
+        if profile:
+            return profile.display_name
+        return self.user.get_full_name() or self.user.username
+
+    def __str__(self):
+        return f"{self.commenter_name} → {self.post.title[:30]}"
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'মন্তব্য'
+        verbose_name_plural = 'মন্তব্যসমূহ'
