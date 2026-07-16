@@ -1168,3 +1168,95 @@ a { text-decoration: none; color: inherit; }
    ════════════════════════════ */
 .empty-state { text-align: center; padding: 4rem 1rem; color: var(--gray-500); }
 .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+
+/* ════════════════════════════
+   BLOG
+   ════════════════════════════ */
+
+/* Meta row (date · reading time · author) */
+.blog-meta-row { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; font-size:.75rem; color:var(--gray-500); }
+.blog-meta-row .dot { width:3px; height:3px; border-radius:50%; background:var(--gray-300); flex-shrink:0; }
+
+/* Category / tag pills */
+.blog-cat-pill { font-size:.72rem; font-weight:700; color:var(--green-700); background:var(--green-100); padding:.2rem .6rem; border-radius:999px; display:inline-block; }
+.blog-tag-pill { font-size:.72rem; font-weight:600; color:var(--gray-700); background:var(--gray-100); padding:.25rem .65rem; border-radius:999px; display:inline-block; text-decoration:none; }
+.blog-tag-pill:hover { background:var(--green-50); color:var(--green-700); }
+
+/* Hero image + header (detail page) */
+.blog-hero-img { width:100%; border-radius:var(--radius-lg); overflow:hidden; aspect-ratio:16/8; margin-bottom:1.5rem; background:var(--gray-100); }
+.blog-hero-img img { width:100%; height:100%; object-fit:cover; }
+.blog-title { font-size:1.9rem; font-weight:800; color:var(--gray-900); line-height:1.35; margin-bottom:.75rem; }
+.blog-excerpt { font-size:1.05rem; color:var(--gray-500); line-height:1.7; margin-bottom:1rem; }
+
+/* Rich text content (CKEditor output) */
+.blog-content { font-size:1.02rem; line-height:1.9; color:var(--gray-700); }
+.blog-content h2 { font-size:1.4rem; font-weight:800; color:var(--gray-900); margin:1.75rem 0 .75rem; }
+.blog-content h3 { font-size:1.2rem; font-weight:700; color:var(--gray-900); margin:1.5rem 0 .6rem; }
+.blog-content h4 { font-size:1.05rem; font-weight:700; color:var(--gray-900); margin:1.25rem 0 .5rem; }
+.blog-content p { margin-bottom:1.1rem; }
+.blog-content img, .blog-content figure { max-width:100%; height:auto; border-radius:var(--radius); margin:1rem 0; }
+.blog-content ul, .blog-content ol { margin:0 0 1.1rem 1.4rem; }
+.blog-content li { margin-bottom:.4rem; }
+.blog-content blockquote { border-left:4px solid var(--green-500); background:var(--green-50); padding:.9rem 1.2rem; border-radius:var(--radius-sm); margin:1.2rem 0; color:var(--gray-700); font-style:italic; }
+.blog-content a { color:var(--green-700); font-weight:600; text-decoration:underline; }
+.blog-content table { width:100%; border-collapse:collapse; margin:1.2rem 0; }
+.blog-content table td, .blog-content table th { border:1px solid var(--gray-300); padding:.6rem .8rem; }
+.blog-content hr { border:none; border-top:1px solid var(--gray-300); margin:2rem 0; }
+
+/* Blog card (list page) — image aspect + body reuse .c-card/.c-card-body/.c-title/.c-desc */
+.blog-card-img { aspect-ratio:16/10; display:block; }
+
+/* Donate CTA card — used at top/bottom of blog posts and in sidebars */
+.donate-cta-card {
+  background: linear-gradient(135deg, var(--green-50), var(--white));
+  border: 1.5px solid var(--green-100);
+  border-radius: var(--radius-lg);
+  padding: 1.4rem 1.5rem;
+  margin: 1.75rem 0;
+}
+.donate-cta-eyebrow {
+  display:inline-flex; align-items:center; gap:.35rem;
+  font-size:.72rem; font-weight:800; color:var(--green-700);
+  text-transform:uppercase; letter-spacing:.03em; margin-bottom:.5rem;
+}
+.donate-cta-title { font-size:1.15rem; font-weight:800; color:var(--gray-900); line-height:1.4; margin-bottom:.9rem; }
+.donate-cta-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem; text-align:center; margin-bottom:.75rem; }
+.donate-cta-stats .val { font-family:'Inter', sans-serif; font-size:1.05rem; font-weight:800; color:var(--gray-900); display:block; }
+.donate-cta-stats .lbl { font-size:.68rem; color:var(--gray-500); margin-top:.1rem; display:block; }
+
+/* Floating sticky donate button (site-wide on blog pages) */
+.floating-donate-btn {
+  position: fixed;
+  bottom: 22px;
+  left: 22px;
+  z-index: 500;
+  display:flex; align-items:center; gap:.5rem;
+  background: var(--green-700);
+  color:#fff;
+  font-weight:700;
+  font-size:.92rem;
+  padding: .85rem 1.3rem;
+  border-radius: 999px;
+  border:none;
+  box-shadow: var(--shadow-lg);
+  cursor:pointer;
+  text-decoration:none;
+  transition: background .15s, transform .15s;
+  animation: floatPulse 2.4s ease-in-out infinite;
+}
+.floating-donate-btn:hover { background:var(--green-600); transform:translateY(-2px); color:#fff; }
+@keyframes floatPulse {
+  0%, 100% { box-shadow: var(--shadow-lg); }
+  50% { box-shadow: 0 8px 32px rgba(21,128,61,.35); }
+}
+@media (max-width: 640px) {
+  .floating-donate-btn { left:14px; bottom:14px; width:52px; height:52px; padding:0; justify-content:center; border-radius:50%; }
+  .floating-donate-btn span { display:none; }
+}
+
+/* Blog sidebar */
+.blog-sidebar-title { font-size:.85rem; font-weight:800; color:var(--gray-900); margin-bottom:.85rem; text-transform:uppercase; letter-spacing:.02em; }
+.blog-mini-post { display:flex; gap:.7rem; margin-bottom:1rem; text-decoration:none; }
+.blog-mini-post img { width:56px; height:56px; object-fit:cover; border-radius:var(--radius-sm); flex-shrink:0; }
+.blog-mini-post .placeholder { width:56px; height:56px; border-radius:var(--radius-sm); flex-shrink:0; background:var(--green-50); display:flex; align-items:center; justify-content:center; font-size:1.3rem; }
+.blog-mini-post-title { font-size:.85rem; font-weight:700; color:var(--gray-900); line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }

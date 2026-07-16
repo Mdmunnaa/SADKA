@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ post.get_meta_title }} — সহায়.bd{% endblock %}
+
+{% block og_tags %}
+<meta property="og:site_name" content="সহায়.bd">
+<meta property="og:type" content="article">
+<meta property="og:title" content="{{ post.get_meta_title }}">
+<meta property="og:description" content="{{ post.get_meta_description }}">
+{% if post.featured_image %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.featured_image.url }}">
+{% endif %}
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta name="description" content="{{ post.get_meta_description }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ post.get_meta_title }}">
+<meta name="twitter:description" content="{{ post.get_meta_description }}">
+{% if post.featured_image %}<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.featured_image.url }}">{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="detail-wrap">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-custom" style="margin-bottom:1.5rem;">
+      <a href="{% url 'home' %}">{% trans "হোম" %}</a>
+      <span class="bc-sep">/</span>
+      <a href="{% url 'blog_list' %}">{% trans "ব্লগ" %}</a>
+      <span class="bc-sep">/</span>
+      <span>{{ post.title|truncatewords:6 }}</span>
+    </div>
+
+    {% if not post.is_visible %}
+    <div class="alert-red" style="margin-bottom:1.5rem;">
+      <i class="bi bi-eye-slash me-2"></i>
+      {% trans "এই পোস্টটি এখনো পাবলিক না — শুধু আপনি (Staff) প্রিভিউ হিসেবে দেখতে পাচ্ছেন।" %}
+      ({{ post.get_status_display }}{% if post.published_at %}, {{ post.published_at }}{% endif %})
+    </div>
+    {% endif %}
+
+    <div style="display:grid; grid-template-columns:1fr 360px; gap:2rem; align-items:start;">
+
+      <!-- ═══ LEFT: ARTICLE ═══ -->
+      <div>
+        {% if post.category %}<span class="blog-cat-pill" style="margin-bottom:.8rem; display:inline-block;">{{ post.category.name }}</span>{% endif %}
+        <h1 class="blog-title">{{ post.title }}</h1>
+        <p class="blog-excerpt">{{ post.excerpt }}</p>
+
+        <div class="blog-meta-row" style="margin-bottom:1.3rem;">
+          <span><i class="bi bi-person"></i> {{ post.author_name }}</span>
+          <span class="dot"></span>
+          <span><i class="bi bi-calendar3"></i> {{ post.published_at|date:"d M, Y"|default:"খসড়া" }}</span>
+          <span class="dot"></span>
+          <span><i class="bi bi-clock"></i> {{ post.reading_time }} {% trans "মিনিট পড়া" %}</span>
+          <span class="dot"></span>
+          <span><i class="bi bi-eye"></i> {{ post.views_count }} {% trans "বার দেখা হয়েছে" %}</span>
+        </div>
+
+        {% if post.featured_image %}
+        <div class="blog-hero-img">
+          <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+        </div>
+        {% endif %}
+
+        <!-- Top donate CTA -->
+        {% include 'blog/_donate_cta.html' %}
+
+        <div class="blog-content">
+          {{ post.content|safe }}
+        </div>
+
+        {% if post.tags.all %}
+        <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin:1.5rem 0;">
+          {% for tag in post.tags.all %}
+          <a href="{% url 'blog_list' %}?tag={{ tag.slug }}" class="blog-tag-pill">#{{ tag.name }}</a>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Bottom donate CTA -->
+        {% include 'blog/_donate_cta.html' %}
+
+        <!-- Share -->
+        <div class="sidebar-box" style="margin-top:1.5rem;">
+          <div class="sidebar-box-body" style="display:flex; align-items:center; gap:.8rem;">
+            <span style="font-weight:700; font-size:.85rem; color:var(--gray-700);">{% trans "শেয়ার করুন" %}:</span>
+            <button class="btn-icon wa" data-share="whatsapp" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'blog_detail' post.slug %}" data-title="{{ post.title }}"><i class="bi bi-whatsapp"></i></button>
+            <button class="btn-icon fb" data-share="facebook" data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'blog_detail' post.slug %}"><i class="bi bi-facebook"></i></button>
+          </div>
+        </div>
+
+        <!-- Related posts -->
+        {% if related_posts %}
+        <div style="margin-top:2.5rem;">
+          <div class="blog-sidebar-title">{% trans "আরও পড়ুন" %}</div>
+          <div class="card-grid card-grid-3">
+            {% for rp in related_posts %}
+            <div class="c-card">
+              <a href="{% url 'blog_detail' rp.slug %}" class="c-card-img blog-card-img" style="display:block;">
+                {% if rp.featured_image %}<img src="{{ rp.featured_image.url }}" alt="{{ rp.title }}">
+                {% else %}<div class="c-card-placeholder">📝</div>{% endif %}
+              </a>
+              <div class="c-card-body">
+                <a href="{% url 'blog_detail' rp.slug %}" style="display:block; color:inherit;">
+                  <div class="c-title">{{ rp.title }}</div>
+                </a>
+                <div class="c-desc">{{ rp.excerpt }}</div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- ═══ RIGHT: SIDEBAR ═══ -->
+      <div style="position:sticky; top:90px;">
+        {% include 'blog/_donate_cta.html' %}
+
+        <div class="sidebar-box">
+          <div class="sidebar-box-head"><i class="bi bi-journal-text me-2"></i>{% trans "ব্লগ" %}</div>
+          <div class="sidebar-box-body">
+            <a href="{% url 'blog_list' %}" style="font-size:.85rem; color:var(--green-700); font-weight:600; text-decoration:none;">
+              <i class="bi bi-arrow-left me-1"></i> {% trans "সব পোস্ট দেখুন" %}
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% include 'blog/_floating_donate.html' %}
+{% endblock %}

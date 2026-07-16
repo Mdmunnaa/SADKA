@@ -44,6 +44,7 @@
       <ul class="nav-links">
         <li><a href="{% url 'home' %}"><i class="bi bi-house me-1"></i>{% trans "হোম" %}</a></li>
         <li><a href="{% url 'campaign_list' %}"><i class="bi bi-grid-3x3-gap me-1"></i>{% trans "ক্যাম্পেইন" %}</a></li>
+        <li><a href="{% url 'blog_list' %}"><i class="bi bi-journal-text me-1"></i>{% trans "ব্লগ" %}</a></li>
         <li><a href="{% url 'campaign_list' %}?status=urgent" class="urgent"><i class="bi bi-exclamation-circle me-1"></i>{% trans "জরুরি" %}</a></li>
         <li><a href="{% url 'campaign_list' %}" class="btn-nav"><i class="bi bi-heart-fill me-1"></i>{% trans "ডোনেট করুন" %}</a></li>
         {% if user.is_authenticated %}

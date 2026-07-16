@@ -26,9 +26,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
+    'django_ckeditor_5',
     'campaigns',
     'accounts',
     'donations',
+    'blog',
 ]
 
 MIDDLEWARE = [
@@ -111,3 +113,47 @@ LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/accounts/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
+
+# ── Blog rich-text editor (CKEditor 5) ──
+# Only staff (admin) users can upload images through the editor.
+CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff"
+CKEDITOR_5_MAX_FILE_SIZE = 5  # MB
+
+CKEDITOR_5_CONFIGS = {
+    'extends': {
+        'blockToolbar': [
+            'paragraph', 'heading1', 'heading2', 'heading3',
+            '|', 'bulletedList', 'numberedList', '|', 'blockQuote',
+        ],
+        'toolbar': {
+            'items': [
+                'heading', '|',
+                'bold', 'italic', 'underline', 'strikethrough', '|',
+                'link', 'blockQuote', 'insertImage', 'mediaEmbed', '|',
+                'bulletedList', 'numberedList', 'todoList', '|',
+                'insertTable', 'horizontalLine', '|',
+                'outdent', 'indent', '|',
+                'removeFormat', 'sourceEditing',
+            ],
+            'shouldNotGroupWhenFull': True,
+        },
+        'image': {
+            'toolbar': [
+                'imageTextAlternative', '|',
+                'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', 'imageStyle:side',
+            ],
+            'styles': ['full', 'side', 'alignLeft', 'alignCenter', 'alignRight'],
+        },
+        'table': {
+            'contentToolbar': ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties'],
+        },
+        'heading': {
+            'options': [
+                {'model': 'paragraph', 'title': 'Paragraph', 'class': 'ck-heading_paragraph'},
+                {'model': 'heading1', 'view': 'h2', 'title': 'Heading 1', 'class': 'ck-heading_heading1'},
+                {'model': 'heading2', 'view': 'h3', 'title': 'Heading 2', 'class': 'ck-heading_heading2'},
+                {'model': 'heading3', 'view': 'h4', 'title': 'Heading 3', 'class': 'ck-heading_heading3'},
+            ]
+        },
+    },
+}

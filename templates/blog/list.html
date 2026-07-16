@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ seo_title }}{% endblock %}
+
+{% block og_tags %}
+<meta property="og:site_name" content="সহায়.bd">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ seo_title }}">
+<meta property="og:description" content="{{ seo_description }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta name="description" content="{{ seo_description }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ seo_title }}">
+<meta name="twitter:description" content="{{ seo_description }}">
+{% endblock %}
+
+{% block content %}
+<section class="sec sec-gray" style="min-height:80vh;">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-eyebrow">{% trans "ব্লগ" %}</span>
+      <h2 class="sec-title">{% trans "গল্প, আপডেট" %} <span>{% trans "ও অনুপ্রেরণা" %}</span></h2>
+    </div>
+
+    <!-- FILTER -->
+    <div class="filter-bar">
+      <form method="get">
+        <div class="ff">
+          <label>🔍 {% trans "খুঁজুন" %}</label>
+          <input type="text" name="q" value="{{ search|default:'' }}" placeholder="{% trans 'পোস্টের শিরোনাম...' %}">
+        </div>
+        <div class="ff">
+          <label>{% trans "ক্যাটাগরি" %}</label>
+          <select name="category">
+            <option value="">{% trans "সকল ক্যাটাগরি" %}</option>
+            {% for cat in categories %}
+            <option value="{{ cat.slug }}" {% if selected_category.slug == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="btn-filter">{% trans "খুঁজুন" %}</button>
+        {% if search or selected_category or selected_tag %}
+        <a href="{% url 'blog_list' %}" style="font-size:.85rem; color:var(--gray-500); align-self:center;">✕ {% trans "ফিল্টার মুছুন" %}</a>
+        {% endif %}
+      </form>
+    </div>
+
+    {% if selected_tag %}
+    <p style="margin-bottom:1.2rem; font-size:.9rem; color:var(--gray-500);">
+      {% trans "ট্যাগ" %}: <span class="blog-tag-pill">#{{ selected_tag.name }}</span>
+    </p>
+    {% endif %}
+
+    {% if posts %}
+    <div class="card-grid card-grid-3">
+      {% for post in posts %}
+      <div class="c-card">
+        <a href="{% url 'blog_detail' post.slug %}" class="c-card-img blog-card-img" style="display:block;">
+          {% if post.featured_image %}<img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+          {% else %}<div class="c-card-placeholder">📝</div>{% endif %}
+        </a>
+        <div class="c-card-body">
+          <div style="display:flex; gap:.4rem; flex-wrap:wrap;">
+            {% if post.category %}<span class="blog-cat-pill">{{ post.category.name }}</span>{% endif %}
+          </div>
+          <a href="{% url 'blog_detail' post.slug %}" style="display:block; color:inherit;">
+            <div class="c-title">{{ post.title }}</div>
+          </a>
+          <div class="c-desc">{{ post.excerpt }}</div>
+
+          <div class="blog-meta-row" style="margin:.7rem 0;">
+            <span><i class="bi bi-calendar3"></i> {{ post.published_at|date:"d M, Y" }}</span>
+            <span class="dot"></span>
+            <span><i class="bi bi-clock"></i> {{ post.reading_time }} {% trans "মিনিট পড়া" %}</span>
+          </div>
+
+          <div class="c-footer">
+            <span class="c-donors"><i class="bi bi-person"></i> {{ post.author_name }}</span>
+            <div class="c-actions">
+              {% if post.related_campaign %}
+              <button class="btn-donate-card"
+                data-donate-trigger
+                data-slug="{{ post.related_campaign.slug }}"
+                data-title="{{ post.related_campaign.title }}"
+                data-bkash="{{ post.related_campaign.bkash_number }}"
+                data-nagad="{{ post.related_campaign.nagad_number }}"
+                data-rocket="{{ post.related_campaign.rocket_number }}">
+                <i class="bi bi-heart-fill"></i> {% trans "দান" %}
+              </button>
+              {% endif %}
+              <a href="{% url 'blog_detail' post.slug %}" class="btn-icon" title="{% trans 'পড়ুন' %}"><i class="bi bi-arrow-left"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% if forloop.counter == 3 %}
+      </div>
+      <!-- Mid-list donate CTA -->
+      <div style="max-width:640px; margin:0 auto 2rem;">
+        {% include 'blog/_donate_cta.html' %}
+      </div>
+      <div class="card-grid card-grid-3">
+      {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div style="display:flex; justify-content:center; align-items:center; gap:.5rem; margin-top:2.5rem; flex-wrap:wrap;">
+      {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}{% if search %}&q={{ search }}{% endif %}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}"
+         class="btn-icon" style="width:auto; padding:.5rem 1rem;">
+        <i class="bi bi-chevron-right"></i> {% trans "আগের" %}
+      </a>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}
+        <span class="btn-donate-card" style="padding:.5rem 1rem; cursor:default;">{{ num }}</span>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <a href="?page={{ num }}{% if search %}&q={{ search }}{% endif %}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}"
+           class="btn-icon" style="width:auto; padding:.5rem .9rem;">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}{% if search %}&q={{ search }}{% endif %}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}"
+         class="btn-icon" style="width:auto; padding:.5rem 1rem;">
+        {% trans "পরের" %} <i class="bi bi-chevron-left"></i>
+      </a>
+      {% endif %}
+    </div>
+    <p style="text-align:center; font-size:.78rem; color:var(--gray-500); margin-top:.85rem;">
+      {% trans "পেজ" %} {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} — {% trans "মোট" %} {{ page_obj.paginator.count }}{% trans "টি পোস্ট" %}
+    </p>
+    {% endif %}
+
+    <!-- Bottom donate CTA -->
+    <div style="max-width:640px; margin:2.5rem auto 0;">
+      {% include 'blog/_donate_cta.html' %}
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+      <div class="icon">📝</div>
+      <h4>{% trans "কোনো পোস্ট পাওয়া যায়নি" %}</h4>
+      <p><a href="{% url 'blog_list' %}" style="color:var(--green-700);">{% trans "সব পোস্ট দেখুন" %}</a></p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% include 'blog/_floating_donate.html' %}
+{% endblock %}

@@ -1,0 +1,46 @@
+{% load i18n %}
+{% if cta_campaign %}
+<div class="donate-cta-card">
+  <span class="donate-cta-eyebrow"><i class="bi bi-heart-fill"></i> {% trans "এখনই সহায়তা করুন" %}</span>
+  <h4 class="donate-cta-title">{{ cta_campaign.title }}</h4>
+
+  <div class="donate-cta-stats">
+    <div>
+      <span class="val">৳{{ cta_campaign.raised_amount|floatformat:0 }}</span>
+      <span class="lbl">{% trans "সংগ্রহ হয়েছে" %}</span>
+    </div>
+    <div>
+      <span class="val">{{ cta_campaign.donor_count }}</span>
+      <span class="lbl">{% trans "দাতা" %}</span>
+    </div>
+    <div>
+      <span class="val">{{ cta_campaign.progress_percent }}%</span>
+      <span class="lbl">{% trans "সম্পন্ন" %}</span>
+    </div>
+  </div>
+
+  <div class="c-progress-bar-wrap">
+    <div class="c-progress-bar" style="width:{{ cta_campaign.progress_percent }}%;"></div>
+  </div>
+
+  <button
+    class="btn-big-donate"
+    style="margin-top:1rem; width:100%;"
+    data-donate-trigger
+    data-slug="{{ cta_campaign.slug }}"
+    data-title="{{ cta_campaign.title }}"
+    data-bkash="{{ cta_campaign.bkash_number }}"
+    data-nagad="{{ cta_campaign.nagad_number }}"
+    data-rocket="{{ cta_campaign.rocket_number }}">
+    <i class="bi bi-heart-fill"></i> {% trans "দান করুন" %}
+  </button>
+</div>
+{% else %}
+<div class="donate-cta-card">
+  <span class="donate-cta-eyebrow"><i class="bi bi-heart-fill"></i> {% trans "সহায়.bd" %}</span>
+  <h4 class="donate-cta-title">{% trans "আপনার ছোট্ট দান বদলে দিতে পারে একটি জীবন" %}</h4>
+  <a href="{% url 'campaign_list' %}" class="btn-big-donate" style="margin-top:.5rem; width:100%; display:block; text-align:center; text-decoration:none;">
+    <i class="bi bi-heart-fill"></i> {% trans "ক্যাম্পেইন দেখুন" %}
+  </a>
+</div>
+{% endif %}

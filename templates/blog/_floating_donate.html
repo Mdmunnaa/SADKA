@@ -1,0 +1,18 @@
+{% load i18n %}
+{% if cta_campaign %}
+<button
+  class="floating-donate-btn"
+  data-donate-trigger
+  data-slug="{{ cta_campaign.slug }}"
+  data-title="{{ cta_campaign.title }}"
+  data-bkash="{{ cta_campaign.bkash_number }}"
+  data-nagad="{{ cta_campaign.nagad_number }}"
+  data-rocket="{{ cta_campaign.rocket_number }}"
+  aria-label="{% trans 'দান করুন' %}">
+  <i class="bi bi-heart-fill"></i> <span>{% trans "দান করুন" %}</span>
+</button>
+{% else %}
+<a href="{% url 'campaign_list' %}" class="floating-donate-btn" aria-label="{% trans 'দান করুন' %}">
+  <i class="bi bi-heart-fill"></i> <span>{% trans "দান করুন" %}</span>
+</a>
+{% endif %}
