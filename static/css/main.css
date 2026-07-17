@@ -46,7 +46,7 @@
 }
 
 body {
-  font-family: 'Hind Siliguri', 'Inter', sans-serif;
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', 'Inter', sans-serif;
   background: var(--gray-50);
   color: var(--gray-900);
   line-height: 1.65;
@@ -139,7 +139,7 @@ a { text-decoration: none; color: inherit; }
   cursor: pointer;
   transition: all .15s;
   white-space: nowrap;
-  font-family: 'Hind Siliguri', 'Inter', sans-serif;
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', 'Inter', sans-serif;
 }
 .lang-switch-btn:hover { border-color: var(--green-500); color: var(--green-700); background: var(--green-50); }
 
@@ -948,7 +948,7 @@ a { text-decoration: none; color: inherit; }
   border: 1.5px solid var(--gray-300);
   border-radius: var(--radius-sm);
   font-size: .92rem;
-  font-family: 'Hind Siliguri', sans-serif;
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
   background: var(--white);
   color: var(--gray-900);
   transition: border-color .15s, box-shadow .15s;
@@ -1061,7 +1061,7 @@ a { text-decoration: none; color: inherit; }
   border: 1.5px solid var(--gray-300);
   border-radius: var(--radius-sm);
   font-size: .88rem;
-  font-family: 'Hind Siliguri', sans-serif;
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
   outline: none;
   transition: border-color .15s;
   background: var(--white);
