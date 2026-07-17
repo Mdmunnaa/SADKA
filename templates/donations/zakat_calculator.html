@@ -23,41 +23,41 @@
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem;">
           <div class="form-field">
             <label>হাতে নগদ টাকা</label>
-            <input type="number" name="cash" step="0.01" value="{{ breakdown.cash|default:'' }}" placeholder="৳০">
+            <input type="number" name="cash" step="0.01" value="{{ breakdown.cash|default:'' }}" placeholder="0">
           </div>
           <div class="form-field">
             <label>ব্যাংক/সঞ্চয়</label>
-            <input type="number" name="bank_savings" step="0.01" value="{{ breakdown.bank_savings|default:'' }}" placeholder="৳০">
+            <input type="number" name="bank_savings" step="0.01" value="{{ breakdown.bank_savings|default:'' }}" placeholder="0">
           </div>
           <div class="form-field">
             <label>স্বর্ণের বাজার মূল্য</label>
-            <input type="number" name="gold_value" step="0.01" value="{{ breakdown.gold_value|default:'' }}" placeholder="৳০">
+            <input type="number" name="gold_value" step="0.01" value="{{ breakdown.gold_value|default:'' }}" placeholder="0">
           </div>
           <div class="form-field">
             <label>রুপার বাজার মূল্য</label>
-            <input type="number" name="silver_value" step="0.01" value="{{ breakdown.silver_value|default:'' }}" placeholder="৳০">
+            <input type="number" name="silver_value" step="0.01" value="{{ breakdown.silver_value|default:'' }}" placeholder="0">
           </div>
           <div class="form-field">
             <label>ব্যবসায়িক পণ্য/সম্পদ</label>
-            <input type="number" name="business_assets" step="0.01" value="{{ breakdown.business_assets|default:'' }}" placeholder="৳০">
+            <input type="number" name="business_assets" step="0.01" value="{{ breakdown.business_assets|default:'' }}" placeholder="0">
           </div>
           <div class="form-field">
             <label>বিনিয়োগ/শেয়ার</label>
-            <input type="number" name="investments" step="0.01" value="{{ breakdown.investments|default:'' }}" placeholder="৳০">
+            <input type="number" name="investments" step="0.01" value="{{ breakdown.investments|default:'' }}" placeholder="0">
           </div>
           <div class="form-field">
             <label>প্রাপ্য ঋণ (অন্যের কাছে পাওনা)</label>
-            <input type="number" name="receivables" step="0.01" value="{{ breakdown.receivables|default:'' }}" placeholder="৳০">
+            <input type="number" name="receivables" step="0.01" value="{{ breakdown.receivables|default:'' }}" placeholder="0">
           </div>
           <div class="form-field">
             <label>আপনার দেনা (যা পরিশোধ করতে হবে)</label>
-            <input type="number" name="debts" step="0.01" value="{{ breakdown.debts|default:'' }}" placeholder="৳০">
+            <input type="number" name="debts" step="0.01" value="{{ breakdown.debts|default:'' }}" placeholder="0">
           </div>
         </div>
 
         <div class="form-field" style="margin-top:.5rem;">
           <label>নিসাবের মান (ঐচ্ছিক — আজকের বাজার অনুযায়ী)</label>
-          <input type="number" name="nisab_threshold" step="0.01" placeholder="ডিফল্ট: ৳{{ default_nisab|floatformat:0 }}">
+          <input type="number" name="nisab_threshold" step="0.01" placeholder="ডিফল্ট: {{ default_nisab|floatformat:0 }}">
         </div>
 
         <button type="submit" class="btn-modal-submit" style="margin-top:1rem;">

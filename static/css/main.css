@@ -960,6 +960,17 @@ a { text-decoration: none; color: inherit; }
   border-color: var(--green-700);
   box-shadow: 0 0 0 3px rgba(22,163,74,.12);
 }
+/* Browsers render placeholder text lighter/thinner by default, which makes
+   some Bengali glyphs (e.g. the ৳ Taka sign) look faint or unclear. Nudge
+   the weight up slightly so placeholder text stays legible sitewide. */
+.form-field input::placeholder,
+.form-field textarea::placeholder,
+input::placeholder,
+textarea::placeholder {
+  font-weight: 500;
+  color: var(--gray-400);
+  opacity: 1;
+}
 
 /* Payment method tabs inside modal */
 .pay-tabs { display: flex; gap: .4rem; margin-bottom: .75rem; flex-wrap: wrap; }
