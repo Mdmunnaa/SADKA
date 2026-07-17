@@ -5,6 +5,22 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
 
+/* The site's font stack references 'Noto Sans Bengali' everywhere, but that
+   family was never actually loaded — there was no @font-face for it, so
+   each browser/OS silently substituted whatever font happened to already be
+   installed locally under that name. Different systems ship different
+   (sometimes outdated) versions of Noto Sans Bengali, so digits like ১
+   ended up rendering with a different, inconsistent shape depending on the
+   visitor's device. This @font-face pins the family to the exact file
+   bundled in static/fonts/, so every visitor sees the same correct glyphs. */
+@font-face {
+  font-family: 'Noto Sans Bengali';
+  src: url('../fonts/NotoSansBengali-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --green-700: #15803d;
   --green-600: #16a34a;
