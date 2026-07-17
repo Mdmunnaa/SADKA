@@ -27,7 +27,7 @@ class BlogTagAdmin(admin.ModelAdmin):
 
 @admin.register(BlogPost)
 class BlogPostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'status_badge', 'category', 'author_name',
+    list_display = ('title', 'status_badge', 'has_english_badge', 'category', 'author_name',
                     'related_campaign', 'published_at', 'views_count')
     list_filter = ('status', 'category', 'tags')
     search_fields = ('title', 'title_en', 'excerpt', 'content')
@@ -35,10 +35,16 @@ class BlogPostAdmin(admin.ModelAdmin):
     filter_horizontal = ('tags',)
     readonly_fields = ('views_count', 'created_at', 'updated_at', 'image_preview')
     date_hierarchy = 'published_at'
+    actions = ['translate_to_english']
 
     fieldsets = (
-        ('বিষয়বস্তু', {
-            'fields': ('title', 'title_en', 'slug', 'excerpt', 'content', 'featured_image', 'image_preview')
+        ('বিষয়বস্তু (বাংলা)', {
+            'fields': ('title', 'slug', 'excerpt', 'content', 'featured_image', 'image_preview')
+        }),
+        ('English Version', {
+            'fields': ('title_en', 'excerpt_en', 'content_en'),
+            'description': 'নিচে সিলেক্ট করে "Translate to English" action চালালে এই ফিল্ডগুলো স্বয়ংক্রিয়ভাবে ভরে যাবে। '
+                           'তারপর চাইলে হাতে ঠিক করে নিতে পারেন। খালি রাখলে English mode-এও বাংলা কন্টেন্টই দেখাবে।',
         }),
         ('সংগঠন', {
             'fields': ('category', 'tags', 'author_name')
@@ -68,11 +74,36 @@ class BlogPostAdmin(admin.ModelAdmin):
         )
     status_badge.short_description = 'অবস্থা'
 
+    def has_english_badge(self, obj):
+        if obj.title_en:
+            return format_html('<span style="color:#15803d;">✓ EN</span>')
+        return format_html('<span style="color:#9ca3af;">— EN</span>')
+    has_english_badge.short_description = 'English?'
+
     def image_preview(self, obj):
         if obj.featured_image:
             return format_html('<img src="{}" style="max-width:300px;border-radius:8px;" />', obj.featured_image.url)
         return "(কোনো ছবি নেই)"
     image_preview.short_description = 'প্রিভিউ'
+
+    def translate_to_english(self, request, queryset):
+        success_count = 0
+        fail_count = 0
+        for post in queryset:
+            if post.auto_translate_to_english():
+                success_count += 1
+            else:
+                fail_count += 1
+
+        if success_count:
+            self.message_user(request, f"{success_count} টি পোস্ট সফলভাবে English-এ অনুবাদ হয়েছে।")
+        if fail_count:
+            self.message_user(
+                request,
+                f"{fail_count} টি পোস্ট অনুবাদ করা যায়নি (সম্ভবত ইন্টারনেট/translation সার্ভিস সমস্যা)। পরে আবার চেষ্টা করুন।",
+                level='WARNING'
+            )
+    translate_to_english.short_description = "🌐 Translate selected posts to English"
 
 
 @admin.register(Comment)

@@ -1174,7 +1174,7 @@ a { text-decoration: none; color: inherit; }
    ════════════════════════════ */
 
 /* Meta row (date · reading time · author) */
-.blog-meta-row { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; font-size:.75rem; color:var(--gray-500); }
+.blog-meta-row { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; font-size:.75rem; color:var(--gray-500); font-family:'Noto Sans Bengali', 'Hind Siliguri', 'Inter', sans-serif; }
 .blog-meta-row .dot { width:3px; height:3px; border-radius:50%; background:var(--gray-300); flex-shrink:0; }
 
 /* Category / tag pills */
@@ -1185,11 +1185,17 @@ a { text-decoration: none; color: inherit; }
 /* Hero image + header (detail page) */
 .blog-hero-img { width:100%; border-radius:var(--radius-lg); overflow:hidden; aspect-ratio:16/8; margin-bottom:1.5rem; background:var(--gray-100); }
 .blog-hero-img img { width:100%; height:100%; object-fit:cover; }
-.blog-title { font-size:1.9rem; font-weight:800; color:var(--gray-900); line-height:1.35; margin-bottom:.75rem; }
-.blog-excerpt { font-size:1.05rem; color:var(--gray-500); line-height:1.7; margin-bottom:1rem; }
+.blog-title { font-family:'Noto Sans Bengali', 'Hind Siliguri', 'Inter', sans-serif; font-size:1.9rem; font-weight:800; color:var(--gray-900); line-height:1.35; margin-bottom:.75rem; }
+.blog-excerpt { font-family:'Noto Sans Bengali', 'Hind Siliguri', 'Inter', sans-serif; font-size:1.05rem; color:var(--gray-500); line-height:1.7; margin-bottom:1rem; }
 
 /* Rich text content (CKEditor output) */
-.blog-content { font-size:1.02rem; line-height:1.9; color:var(--gray-700); }
+.blog-content {
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', 'Inter', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.95;
+  color: var(--gray-700);
+  font-variant-numeric: normal;
+}
 .blog-content h2 { font-size:1.4rem; font-weight:800; color:var(--gray-900); margin:1.75rem 0 .75rem; }
 .blog-content h3 { font-size:1.2rem; font-weight:700; color:var(--gray-900); margin:1.5rem 0 .6rem; }
 .blog-content h4 { font-size:1.05rem; font-weight:700; color:var(--gray-900); margin:1.25rem 0 .5rem; }

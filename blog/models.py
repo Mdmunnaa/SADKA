@@ -76,12 +76,16 @@ class BlogPost(models.Model):
     # ── Content ──
     title = models.CharField(max_length=255, verbose_name='শিরোনাম (বাংলা)')
     title_en = models.CharField(max_length=255, blank=True, verbose_name='Title (English)',
-                                 help_text='ঐচ্ছিক — English ভার্সনে দেখাতে চাইলে দিন')
+                                 help_text='ঐচ্ছিক — English ভার্সনে দেখাতে চাইলে দিন, অথবা নিচের "Translate to English" action ব্যবহার করুন')
     slug = models.SlugField(unique=True, blank=True, max_length=255, allow_unicode=True)
 
     excerpt = models.CharField(max_length=300, verbose_name='সংক্ষিপ্ত বিবরণ',
                                 help_text='লিস্টিং পেজ ও সার্চ ইঞ্জিনে (SEO) এই লেখাটি দেখাবে')
+    excerpt_en = models.CharField(max_length=300, blank=True, verbose_name='Excerpt (English)',
+                                   help_text='স্বয়ংক্রিয় অনুবাদ — admin action দিয়ে ভরা যায়')
     content = CKEditor5Field('বিস্তারিত লেখা', config_name='extends')
+    content_en = CKEditor5Field('বিস্তারিত লেখা (English)', config_name='extends', blank=True,
+                                 help_text='স্বয়ংক্রিয় অনুবাদ — admin action দিয়ে ভরা যায়, পরে ঠিক করে নেওয়া যায়')
 
     featured_image = models.ImageField(upload_to='blog/', blank=True, null=True, verbose_name='কভার ছবি')
 
@@ -167,11 +171,69 @@ class BlogPost(models.Model):
             return self.title_en
         return self.title
 
-    def get_meta_title(self):
+    def display_excerpt(self, language='bn'):
+        if language == 'en' and self.excerpt_en:
+            return self.excerpt_en
+        return self.excerpt
+
+    def display_content(self, language='bn'):
+        if language == 'en' and self.content_en:
+            return self.content_en
+        return self.content
+
+    def get_meta_title(self, language='bn'):
+        if language == 'en' and self.title_en:
+            return self.title_en
         return self.meta_title or self.title
 
-    def get_meta_description(self):
+    def get_meta_description(self, language='bn'):
+        if language == 'en' and self.excerpt_en:
+            return self.excerpt_en
         return self.meta_description or self.excerpt
+
+    def auto_translate_to_english(self):
+        """Translates title/excerpt/content to English using Google Translate
+        (via deep-translator) and saves them into the _en fields. Fails
+        silently and returns False if the translation service is unavailable
+        (e.g. no internet access), so this never breaks the site — it's meant
+        to be triggered manually from the admin, same pattern as Campaign's
+        auto_translate_to_english()."""
+        try:
+            from deep_translator import GoogleTranslator
+            translator = GoogleTranslator(source='bn', target='en')
+
+            if self.title:
+                self.title_en = translator.translate(self.title)[:255]
+            if self.excerpt:
+                self.excerpt_en = translator.translate(self.excerpt)[:300]
+            if self.content:
+                self.content_en = self._translate_html_blocks(self.content, translator)
+
+            self.save(update_fields=['title_en', 'excerpt_en', 'content_en'])
+            return True
+        except Exception:
+            return False
+
+    @staticmethod
+    def _translate_html_blocks(html, translator):
+        """Translates the text inside each top-level block tag (h1-h4, p, li,
+        blockquote) while preserving the surrounding tag structure, so basic
+        rich-text formatting (headings, paragraphs, lists, quotes) survives
+        translation instead of collapsing into one flat translated blob."""
+        block_pattern = re.compile(r'<(h[1-4]|p|li|blockquote)([^>]*)>(.*?)</\1>', re.DOTALL)
+
+        def _translate_one(match):
+            tag, attrs, inner = match.group(1), match.group(2), match.group(3)
+            plain_text = re.sub(r'<[^>]+>', ' ', inner).strip()
+            if not plain_text:
+                return match.group(0)
+            try:
+                translated = translator.translate(plain_text[:4500])
+                return f"<{tag}{attrs}>{translated}</{tag}>"
+            except Exception:
+                return match.group(0)
+
+        return block_pattern.sub(_translate_one, html)
 
     def __str__(self):
         return self.title
