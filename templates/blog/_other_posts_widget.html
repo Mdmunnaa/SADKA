@@ -1,12 +1,13 @@
 {% load i18n %}
+{% load blog_extras %}
 <div class="donate-cta-card" style="background:linear-gradient(135deg, var(--gray-50), var(--white)); border-color:var(--gray-200);">
   <span class="donate-cta-eyebrow" style="color:var(--gray-500);"><i class="bi bi-journal-text"></i> {% trans "আরও পড়ুন" %}</span>
   {% if related_posts %}
     {% for rp in related_posts %}
     <a href="{% url 'blog_detail' rp.slug %}" class="blog-mini-post" style="margin-top:.8rem;">
-      {% if rp.featured_image %}<img src="{{ rp.featured_image.url }}" alt="{{ rp.title }}">
+      {% if rp.featured_image %}<img src="{{ rp.featured_image.url }}" alt="{{ rp|localized_blog_title }}">
       {% else %}<div class="placeholder">📝</div>{% endif %}
-      <span class="blog-mini-post-title">{{ rp.title }}</span>
+      <span class="blog-mini-post-title">{{ rp|localized_blog_title }}</span>
     </a>
     {% endfor %}
   {% else %}

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load blog_extras %}
+{% load campaign_extras %}
 {% block title %}{{ seo_title }}{% endblock %}
 
 {% block og_tags %}
@@ -56,7 +58,7 @@
       {% for post in posts %}
       <div class="c-card">
         <a href="{% url 'blog_detail' post.slug %}" class="c-card-img blog-card-img" style="display:block;">
-          {% if post.featured_image %}<img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+          {% if post.featured_image %}<img src="{{ post.featured_image.url }}" alt="{{ post|localized_blog_title }}">
           {% else %}<div class="c-card-placeholder">📝</div>{% endif %}
         </a>
         <div class="c-card-body">
@@ -64,9 +66,9 @@
             {% if post.category %}<span class="blog-cat-pill">{{ post.category.name }}</span>{% endif %}
           </div>
           <a href="{% url 'blog_detail' post.slug %}" style="display:block; color:inherit;">
-            <div class="c-title">{{ post.title }}</div>
+            <div class="c-title">{{ post|localized_blog_title }}</div>
           </a>
-          <div class="c-desc">{{ post.excerpt }}</div>
+          <div class="c-desc">{{ post|localized_blog_excerpt }}</div>
 
           <div class="blog-meta-row" style="margin:.7rem 0;">
             <span><i class="bi bi-calendar3"></i> {{ post.published_at|date:"d M, Y" }}</span>
@@ -81,7 +83,7 @@
               <button class="btn-donate-card"
                 data-donate-trigger
                 data-slug="{{ post.related_campaign.slug }}"
-                data-title="{{ post.related_campaign.title }}"
+                data-title="{{ post.related_campaign|localized_title }}"
                 data-bkash="{{ post.related_campaign.bkash_number }}"
                 data-nagad="{{ post.related_campaign.nagad_number }}"
                 data-rocket="{{ post.related_campaign.rocket_number }}">

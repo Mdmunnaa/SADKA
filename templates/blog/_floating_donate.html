@@ -1,10 +1,11 @@
 {% load i18n %}
+{% load campaign_extras %}
 {% if cta_campaign %}
 <button
   class="floating-donate-btn"
   data-donate-trigger
   data-slug="{{ cta_campaign.slug }}"
-  data-title="{{ cta_campaign.title }}"
+  data-title="{{ cta_campaign|localized_title }}"
   data-bkash="{{ cta_campaign.bkash_number }}"
   data-nagad="{{ cta_campaign.nagad_number }}"
   data-rocket="{{ cta_campaign.rocket_number }}"
