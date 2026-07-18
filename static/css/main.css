@@ -1171,6 +1171,17 @@ textarea::placeholder {
   padding: 3.5rem 0 1.5rem;
   margin-top: 5rem;
 }
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2rem;
+}
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 1.75rem 1.25rem; }
+}
+@media (max-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 1.75rem; }
+}
 .footer-brand { font-family: 'Inter', sans-serif; font-size: 1.35rem; font-weight: 800; color: #fff; display: flex; align-items: center; }
 .footer-tag { font-size: .82rem; color: rgba(255,255,255,.4); margin-top: .25rem; }
 .footer-about { font-size: .84rem; margin-top: .85rem; max-width: 260px; line-height: 1.7; }

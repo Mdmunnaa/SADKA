@@ -362,6 +362,11 @@
 
   /* Prevent the floating bar from covering page content/footer */
   body { padding-bottom: 70px; }
+
+  /* Give the stats row a little breathing room above the fixed bar, since
+     on mobile it now sits directly in the document flow right where the
+     bar overlaps the initial viewport. */
+  .stat-3 { margin-bottom: .75rem; }
 }
 </style>
 {% endblock %}
