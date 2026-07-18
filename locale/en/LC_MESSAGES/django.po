@@ -20,7 +20,7 @@ msgstr ""
 
 #: templates/base.html:11
 msgid "সহায়.bd — সমাজের পাশে"
-msgstr ""
+msgstr "Sahay.bd — Standing with society"
 
 #: templates/base.html:12
 msgid "মানুষের সমস্যা তুলে ধরি, একসাথে সমাধান করি।"
@@ -115,7 +115,7 @@ msgstr "Mobile"
 
 #: templates/base.html:156
 msgid "হিসেবে লগইন আছেন — ডোনেশন dashboard-এ track হবে"
-msgstr ""
+msgstr "Logged in as — your donations will be tracked in the dashboard"
 
 #: templates/base.html:171 templates/blog/detail.html:144
 msgid "লগইন করুন"
@@ -123,7 +123,7 @@ msgstr "Log In"
 
 #: templates/base.html:171
 msgid "donation dashboard-এ track করতে"
-msgstr ""
+msgstr "to track it in your donation dashboard"
 
 #: templates/base.html:177
 msgid "নাম গোপন রাখুন (Anonymous)"
@@ -187,15 +187,15 @@ msgstr "Company"
 
 #: templates/base.html:222
 msgid "আমাদের সম্পর্কে"
-msgstr ""
+msgstr "About Us"
 
 #: templates/base.html:223
 msgid "সাধারণ জিজ্ঞাসা"
-msgstr ""
+msgstr "FAQ"
 
 #: templates/base.html:224
 msgid "গোপনীয়তা নীতি"
-msgstr ""
+msgstr "Privacy Policy"
 
 #: templates/base.html:227
 msgid "যোগাযোগ"
@@ -595,7 +595,7 @@ msgstr "Send via bKash/Nagad"
 
 #: templates/campaigns/home.html:276
 msgid "দেখানো নম্বরে Send Money করুন এবং Transaction ID দিয়ে ফর্ম সাবমিট করুন"
-msgstr ""
+msgstr "Send Money to the number shown and submit the form with the Transaction ID"
 "Send Money to the number shown and submit the form with the Transaction ID"
 
 #: templates/campaigns/home.html:280
