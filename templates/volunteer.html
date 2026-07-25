@@ -20,9 +20,9 @@
     <div style="background:var(--white); border:1px solid var(--gray-300); border-top:4px solid var(--green-700); border-radius:var(--radius-xl); padding:3rem 2rem; text-align:center; box-shadow:var(--shadow-md);">
       <div style="width:72px;height:72px;background:var(--green-100);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1.25rem;">✅</div>
       <h2 style="font-size:1.5rem;font-weight:800;color:var(--gray-900);margin-bottom:.5rem;">আবেদন সফলভাবে জমা হয়েছে!</h2>
-      <p style="color:var(--gray-500);margin-bottom:1.75rem;">আমরা আপনার আবেদন পর্যালোচনা করে শীঘ্রই যোগাযোগ করবো। জাযাকাল্লাহ খায়রান 🤲</p>
-      <a href="{% url 'home' %}" class="btn-big-donate" style="display:inline-flex;width:auto;padding:.7rem 1.75rem;">
-        <i class="bi bi-house"></i> হোমে ফিরে যান
+      <p style="color:var(--gray-500);margin-bottom:1.75rem;">আমরা আপনার আবেদন পর্যালোচনা করে শীঘ্রই যোগাযোগ করবো। অনুমোদন হলে আপনার ড্যাশবোর্ডে ID Card পাবেন। জাযাকাল্লাহ খায়রান 🤲</p>
+      <a href="{% url 'volunteer_dashboard' %}" class="btn-big-donate" style="display:inline-flex;width:auto;padding:.7rem 1.75rem;">
+        <i class="bi bi-person-vcard"></i> আমার আবেদনের স্ট্যাটাস দেখুন
       </a>
     </div>
 
@@ -58,7 +58,7 @@
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
             <div class="form-field">
               <label>পুরো নাম <span style="color:var(--red-600)">*</span></label>
-              <input type="text" name="name" placeholder="মোঃ রহিম উদ্দিন" required>
+              <input type="text" name="name" placeholder="মোঃ রহিম উদ্দিন" value="{{ user.get_full_name }}" required>
             </div>
             <div class="form-field">
               <label>মোবাইল নম্বর <span style="color:var(--red-600)">*</span></label>
@@ -69,7 +69,7 @@
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
             <div class="form-field">
               <label>ইমেইল (ঐচ্ছিক)</label>
-              <input type="email" name="email" placeholder="example@gmail.com">
+              <input type="email" name="email" placeholder="example@gmail.com" value="{{ user.email }}">
             </div>
             <div class="form-field">
               <label>পেশা <span style="color:var(--red-600)">*</span></label>
