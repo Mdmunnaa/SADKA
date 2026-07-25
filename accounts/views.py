@@ -122,6 +122,7 @@ def donor_dashboard(request):
         'pending_count': pending.count(),
         'total_amount': total_amount,
         'campaign_summary': list(campaign_summary.values()),
+        'volunteer': getattr(user, 'volunteer_profile', None),
     }
     return render(request, 'accounts/dashboard.html', context)
 

@@ -262,6 +262,27 @@ class Volunteer(models.Model):
         ('rejected', 'প্রত্যাখ্যাত'),
     ]
 
+    # Linked to the same login system donors use (accounts app) — a person
+    # applies for volunteering while logged into their own account, so they
+    # can later log back in to check status and download their ID card.
+    # Nullable so this doesn't break on top of any pre-existing rows that
+    # predate this field.
+    user = models.OneToOneField(
+        'auth.User', on_delete=models.CASCADE, null=True, blank=True,
+        related_name='volunteer_profile', verbose_name='অ্যাকাউন্ট',
+    )
+
+    # Auto-assigned only once a volunteer is approved (see save()) — this is
+    # the number printed on the ID card and looked up on the public verify page.
+    volunteer_id = models.CharField(
+        max_length=30, unique=True, blank=True, null=True,
+        verbose_name='ভলান্টিয়ার আইডি',
+    )
+    photo = models.ImageField(
+        upload_to='volunteers/', blank=True, null=True,
+        verbose_name='ছবি (ID card ও verify পেজে দেখাবে)',
+    )
+
     name = models.CharField(max_length=200, verbose_name='পুরো নাম')
     phone = models.CharField(max_length=20, verbose_name='মোবাইল নম্বর')
     email = models.EmailField(blank=True, verbose_name='ইমেইল (ঐচ্ছিক)')
@@ -275,7 +296,47 @@ class Volunteer(models.Model):
     )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
+    approved_at = models.DateTimeField(null=True, blank=True, verbose_name='অনুমোদনের তারিখ')
     note = models.TextField(blank=True, verbose_name='Admin নোট')
+
+    def save(self, *args, **kwargs):
+        # Auto-assign a permanent volunteer_id the first time status becomes
+        # 'approved'. Once assigned it's never regenerated (even if someone
+        # is later set back to pending/rejected and re-approved), so an ID
+        # card or verify-page link never silently points to the wrong person.
+        if self.status == 'approved' and not self.volunteer_id:
+            self.volunteer_id = self._generate_volunteer_id()
+            if not self.approved_at:
+                self.approved_at = timezone.now()
+
+        if self.photo and hasattr(self.photo, 'file'):
+            try:
+                if self.photo.size > 1 * 1024 * 1024:
+                    self.photo = resize_image(self.photo, max_width=600, max_height=600, quality=85)
+            except Exception:
+                pass
+
+        super().save(*args, **kwargs)
+
+    @staticmethod
+    def _generate_volunteer_id():
+        year = timezone.now().year
+        prefix = f"SHY-V-{year}-"
+        last = Volunteer.objects.filter(
+            volunteer_id__startswith=prefix
+        ).order_by('-volunteer_id').first()
+        if last and last.volunteer_id:
+            try:
+                next_num = int(last.volunteer_id.rsplit('-', 1)[-1]) + 1
+            except ValueError:
+                next_num = 1
+        else:
+            next_num = 1
+        return f"{prefix}{next_num:04d}"
+
+    @property
+    def is_active_volunteer(self):
+        return self.status == 'approved'
 
     def __str__(self):
         return f"{self.name} ({self.phone}) — {self.get_status_display()}"

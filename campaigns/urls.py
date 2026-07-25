@@ -14,5 +14,8 @@ urlpatterns = [
     path('privacy/', views.privacy, name='privacy'),
     path('faq/', views.faq, name='faq'),
     path('volunteer/', views.volunteer_signup, name='volunteer_signup'),
+    path('volunteer/dashboard/', views.volunteer_dashboard, name='volunteer_dashboard'),
+    path('volunteer/id-card/download/', views.volunteer_id_card_download, name='volunteer_id_card_download'),
+    path('volunteer/verify/<str:volunteer_id>/', views.volunteer_verify, name='volunteer_verify'),
     path('campaigns/<uslug:slug>/', views.campaign_detail, name='campaign_detail'),
 ]

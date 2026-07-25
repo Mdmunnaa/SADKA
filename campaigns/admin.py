@@ -108,25 +108,46 @@ from .models import Volunteer
 
 @admin.register(Volunteer)
 class VolunteerAdmin(admin.ModelAdmin):
-    list_display = ['name', 'phone', 'profession', 'address_short', 'status', 'created_at']
+    list_display = ['name', 'phone', 'volunteer_id', 'profession', 'address_short', 'status', 'created_at']
     list_filter = ['status']
-    search_fields = ['name', 'phone', 'nid', 'email']
+    search_fields = ['name', 'phone', 'nid', 'email', 'volunteer_id']
     list_editable = ['status']
-    readonly_fields = ['created_at']
+    readonly_fields = ['created_at', 'volunteer_id', 'approved_at', 'photo_preview', 'user']
     ordering = ['-created_at']
 
     fieldsets = (
         ('ব্যক্তিগত তথ্য', {
-            'fields': ('name', 'phone', 'email', 'profession', 'address', 'nid')
+            'fields': ('user', 'name', 'phone', 'email', 'profession', 'address', 'nid')
+        }),
+        ('ছবি (ID card ও verify পেজে দেখাবে)', {
+            'fields': ('photo', 'photo_preview'),
         }),
         ('আবেদন', {
             'fields': ('why_volunteer',)
         }),
         ('অ্যাডমিন সিদ্ধান্ত', {
-            'fields': ('status', 'note', 'created_at')
+            'fields': ('status', 'note', 'created_at', 'approved_at', 'volunteer_id'),
+            'description': 'Status "অনুমোদিত" করে সেভ করলে Volunteer ID স্বয়ংক্রিয়ভাবে তৈরি হবে। '
+                           'ID card এ ছবি দেখাতে চাইলে অনুমোদনের আগে/সাথে ছবি আপলোড করুন।',
         }),
     )
 
     def address_short(self, obj):
         return obj.address[:40] + '…' if len(obj.address) > 40 else obj.address
     address_short.short_description = 'ঠিকানা'
+
+    def photo_preview(self, obj):
+        if obj.photo:
+            return format_html('<img src="{}" style="max-width:150px;border-radius:8px;" />', obj.photo.url)
+        return "(কোনো ছবি আপলোড করা হয়নি)"
+    photo_preview.short_description = 'প্রিভিউ'
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if obj.status == 'approved' and not obj.photo:
+            self.message_user(
+                request,
+                f"{obj.name} অনুমোদিত হয়েছে (ID: {obj.volunteer_id}), কিন্তু কোনো ছবি আপলোড করা হয়নি — "
+                f"ID card এ ছবির জায়গায় '?' দেখাবে। ছবি যোগ করে আবার সেভ করুন।",
+                level='WARNING',
+            )

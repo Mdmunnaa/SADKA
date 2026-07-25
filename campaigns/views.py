@@ -190,7 +190,20 @@ def faq(request):
 
 
 def volunteer_signup(request):
+    from django.urls import reverse
     from .models import Volunteer
+
+    if not request.user.is_authenticated:
+        # Consistent with the blog-comment login gate elsewhere on the site:
+        # volunteering is tied to the same donor account system, so a person
+        # can later log back in to check status / download their ID card.
+        messages.info(request, 'ভলান্টিয়ার আবেদন করতে হলে আগে লগইন বা রেজিস্ট্রেশন করুন।')
+        return redirect(f"{reverse('donor_login')}?next={request.path}")
+
+    existing = Volunteer.objects.filter(user=request.user).first()
+    if existing:
+        return redirect('volunteer_dashboard')
+
     success = False
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -203,13 +216,65 @@ def volunteer_signup(request):
 
         if name and phone and profession and address and nid:
             Volunteer.objects.create(
+                user=request.user,
                 name=name, phone=phone, email=email,
                 profession=profession, address=address,
                 nid=nid, why_volunteer=why,
             )
             success = True
         else:
-            from django.contrib import messages
             messages.error(request, 'অনুগ্রহ করে সব তারকা (*) চিহ্নিত ঘর পূরণ করুন।')
 
     return render(request, 'volunteer.html', {'success': success})
+
+
+@login_required(login_url='donor_login')
+def volunteer_dashboard(request):
+    from .models import Volunteer
+    volunteer = Volunteer.objects.filter(user=request.user).first()
+    if not volunteer:
+        return redirect('volunteer_signup')
+
+    verify_url = request.build_absolute_uri(
+        f"/volunteer/verify/{volunteer.volunteer_id}/"
+    ) if volunteer.volunteer_id else None
+
+    return render(request, 'volunteer_dashboard.html', {
+        'volunteer': volunteer,
+        'verify_url': verify_url,
+    })
+
+
+@login_required(login_url='donor_login')
+def volunteer_id_card_download(request):
+    from django.http import HttpResponse, Http404
+    from .models import Volunteer
+    from .id_card import generate_volunteer_id_card_pdf
+
+    volunteer = Volunteer.objects.filter(user=request.user).first()
+    if not volunteer or volunteer.status != 'approved':
+        raise Http404
+
+    verify_url = request.build_absolute_uri(f"/volunteer/verify/{volunteer.volunteer_id}/")
+    pdf_buf = generate_volunteer_id_card_pdf(volunteer, verify_url)
+
+    response = HttpResponse(pdf_buf.read(), content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="sahay-volunteer-{volunteer.volunteer_id}.pdf"'
+    return response
+
+
+def volunteer_verify(request, volunteer_id):
+    """Public page — no login required. Anyone (a donor, a beneficiary, a
+    curious neighbour) can scan the QR code on a volunteer's card or type in
+    the ID to confirm it's a real, currently-approved Sahay.bd volunteer.
+    Deliberately shows only name/photo/status — never phone, NID, address,
+    or email, since this page is public."""
+    from .models import Volunteer
+    volunteer = Volunteer.objects.filter(volunteer_id=volunteer_id).first()
+    return render(request, 'volunteer_verify.html', {
+        'volunteer': volunteer,
+        'volunteer_id': volunteer_id,
+    })
+
+
+
