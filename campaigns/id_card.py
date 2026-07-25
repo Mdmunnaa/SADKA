@@ -14,6 +14,9 @@ from reportlab.lib import colors
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
+from reportlab.pdfgen.pathobject import PDFPathObject
+from django.contrib.staticfiles import finders
+from PIL import Image as PILImage
 
 from accounts.receipt import _contains_non_ascii, _render_unicode_text_image
 
@@ -59,25 +62,100 @@ def _make_qr_image(url, box_size=6):
     return buf
 
 
+# Cached so we only read + re-process the logo file once per process, not
+# once per PDF generated.
+_LOGO_PIL_CACHE = None
+
+
+def _get_logo_pil():
+    global _LOGO_PIL_CACHE
+    if _LOGO_PIL_CACHE is None:
+        path = finders.find('img/logo_transparent.png')
+        if path:
+            _LOGO_PIL_CACHE = PILImage.open(path).convert('RGBA')
+        else:
+            _LOGO_PIL_CACHE = False  # tried and failed — don't keep retrying
+    return _LOGO_PIL_CACHE or None
+
+
+def _logo_reader():
+    logo = _get_logo_pil()
+    if not logo:
+        return None
+    buf = BytesIO()
+    logo.save(buf, format='PNG')
+    buf.seek(0)
+    return ImageReader(buf)
+
+
+def _watermark_logo_reader(opacity=0.06):
+    """A large, very faint copy of the logo for the card background — the
+    same kind of subtle security/branding texture real ID cards use, so the
+    card doesn't read as flat/empty behind the main text."""
+    logo = _get_logo_pil()
+    if not logo:
+        return None
+    faded = logo.copy()
+    r, g, b, a = faded.split()
+    a = a.point(lambda v: int(v * opacity))
+    faded.putalpha(a)
+    buf = BytesIO()
+    faded.save(buf, format='PNG')
+    buf.seek(0)
+    return ImageReader(buf)
+
+
 def generate_volunteer_id_card_pdf(volunteer, verify_url):
     """Returns a BytesIO containing a single-page, credit-card-sized PDF
     (front side only) for the given approved Volunteer."""
     buf = BytesIO()
     c = canvas.Canvas(buf, pagesize=(CARD_WIDTH, CARD_HEIGHT))
 
+    # ── Rounded-corner card body — clip everything else to this shape, like
+    # a real plastic ID card instead of a plain rectangle. ──
+    radius = 3 * mm
+    clip_path = c.beginPath()
+    clip_path.roundRect(0, 0, CARD_WIDTH, CARD_HEIGHT, radius)
+    c.clipPath(clip_path, stroke=0, fill=0)
+
     # ── Background ──
     c.setFillColor(WHITE)
     c.rect(0, 0, CARD_WIDTH, CARD_HEIGHT, fill=1, stroke=0)
+
+    # ── Faint logo watermark, behind everything else ──
+    watermark = _watermark_logo_reader(opacity=0.07)
+    if watermark:
+        wm_size = 40 * mm
+        c.drawImage(
+            watermark, CARD_WIDTH - wm_size + 6 * mm, -8 * mm,
+            width=wm_size, height=wm_size, mask='auto',
+        )
 
     # ── Header bar ──
     header_h = 12 * mm
     c.setFillColor(GREEN)
     c.rect(0, CARD_HEIGHT - header_h, CARD_WIDTH, header_h, fill=1, stroke=0)
+
+    # White circular badge with the real Sahay.bd logo inside it
+    badge_d = 9 * mm
+    badge_cx = 4 * mm + badge_d / 2
+    badge_cy = CARD_HEIGHT - header_h / 2
+    c.setFillColor(WHITE)
+    c.circle(badge_cx, badge_cy, badge_d / 2, fill=1, stroke=0)
+    logo = _logo_reader()
+    if logo:
+        logo_d = badge_d - 1.6 * mm
+        c.drawImage(
+            logo, badge_cx - logo_d / 2, badge_cy - logo_d / 2,
+            width=logo_d, height=logo_d, mask='auto', preserveAspectRatio=True,
+        )
+
+    text_start_x = 4 * mm + badge_d + 2.5 * mm
     c.setFillColor(WHITE)
     c.setFont('Helvetica-Bold', 11)
-    c.drawString(4 * mm, CARD_HEIGHT - header_h + 3.7 * mm, "Sahay.bd")
+    c.drawString(text_start_x, CARD_HEIGHT - header_h + 3.7 * mm, "Sahay.bd")
     c.setFont('Helvetica', 6)
-    c.drawString(4 * mm, CARD_HEIGHT - header_h + 1 * mm, "VOLUNTEER IDENTITY CARD")
+    c.drawString(text_start_x, CARD_HEIGHT - header_h + 1 * mm, "VOLUNTEER IDENTITY CARD")
 
     # ── Footer bar ──
     footer_h = 6 * mm
@@ -114,7 +192,13 @@ def generate_volunteer_id_card_pdf(volunteer, verify_url):
     y = text_top
     _bengali_safe_text(c, text_x, y, volunteer.name, font_size=10.5, color_rgb=(17, 24, 39), bold=True, max_width_pt=max_w)
 
-    y -= 5.2 * mm
+    # Small accent rule under the name for a bit of visual structure
+    y -= 1.6 * mm
+    c.setStrokeColor(GREEN)
+    c.setLineWidth(1)
+    c.line(text_x, y, text_x + 14 * mm, y)
+
+    y -= 3.6 * mm
     c.setFont('Helvetica', 6.3)
     c.setFillColor(GRAY)
     c.drawString(text_x, y, "VOLUNTEER ID")
@@ -145,7 +229,16 @@ def generate_volunteer_id_card_pdf(volunteer, verify_url):
     qr_x = CARD_WIDTH - qr_size - 4 * mm
     qr_y = footer_h + 3 * mm
     qr_buf = _make_qr_image(verify_url)
+    c.setFillColor(WHITE)
+    c.rect(qr_x - 1 * mm, qr_y - 1 * mm, qr_size + 2 * mm, qr_size + 2 * mm, fill=1, stroke=0)
     c.drawImage(ImageReader(qr_buf), qr_x, qr_y, width=qr_size, height=qr_size)
+
+    # ── Thin overall border so the rounded-corner edge reads crisply ──
+    c.setStrokeColor(colors.HexColor('#d1d5db'))
+    c.setLineWidth(0.75)
+    border_path = c.beginPath()
+    border_path.roundRect(0.5, 0.5, CARD_WIDTH - 1, CARD_HEIGHT - 1, radius)
+    c.drawPath(border_path, fill=0, stroke=1)
 
     c.showPage()
     c.save()
