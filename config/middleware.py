@@ -6,6 +6,8 @@ import logging
 
 from django.conf import settings
 
+from .security_utils import get_client_ip
+
 logger = logging.getLogger(__name__)
 
 # Load the GeoIP2 country database once, at process start — not per-request.
@@ -23,16 +25,6 @@ try:
         logger.warning("GeoLite2-Country.mmdb not found at %s — geo-based default language is disabled.", _GEOIP_PATH)
 except ImportError:
     logger.warning("geoip2 package not installed — geo-based default language is disabled.")
-
-
-def _get_client_ip(request):
-    """Real client IP, accounting for the reverse proxy PythonAnywhere (and
-    most hosts) sit behind. X-Forwarded-For can contain a comma-separated
-    chain (client, proxy1, proxy2, ...) — the first entry is the original client."""
-    xff = request.META.get('HTTP_X_FORWARDED_FOR')
-    if xff:
-        return xff.split(',')[0].strip()
-    return request.META.get('REMOTE_ADDR')
 
 
 class GeoDefaultLanguageMiddleware:
@@ -86,7 +78,7 @@ class GeoDefaultLanguageMiddleware:
         if not _GEOIP_READER:
             return 'bn'
 
-        ip = _get_client_ip(request)
+        ip = get_client_ip(request)
         if not ip:
             return 'bn'
 

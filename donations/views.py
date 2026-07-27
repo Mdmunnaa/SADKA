@@ -2,12 +2,19 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from campaigns.models import Campaign
 from .models import Donation, RecurringReminder
+from config.spam_protection import is_bot_submission, is_rate_limited
 
 
 def donate(request, slug):
     campaign = get_object_or_404(Campaign, slug=slug)
 
     if request.method == 'POST':
+        if is_bot_submission(request):
+            return redirect('campaign_detail', slug=slug)
+        if is_rate_limited(request, 'donate', limit=8, window_seconds=600):
+            messages.error(request, 'একটু পর আবার চেষ্টা করুন — অনেকগুলো অনুরোধ একসাথে জমা হয়েছে।')
+            return redirect('campaign_detail', slug=slug)
+
         try:
             amount = request.POST.get('amount', '').strip()
             if not amount or float(amount) < 10:

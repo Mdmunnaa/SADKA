@@ -141,6 +141,7 @@
         <div id="tab-comments" class="tab-panel">
           <form method="post" style="margin-bottom:1.5rem; background:var(--gray-50); border:1px solid var(--gray-300); border-radius:var(--radius); padding:1.1rem;">
             {% csrf_token %}
+            {% include '_spam_fields.html' %}
             <div class="form-field" style="margin-bottom:.7rem;">
               <label>{% trans "নাম" %}</label>
               <input type="text" name="comment_name" placeholder="{% trans 'আপনার নাম' %}">

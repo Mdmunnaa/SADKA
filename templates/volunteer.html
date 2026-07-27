@@ -54,6 +54,7 @@
       <div class="sidebar-box-body">
         <form method="post">
           {% csrf_token %}
+          {% include '_spam_fields.html' %}
 
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
             <div class="form-field">
