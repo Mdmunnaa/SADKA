@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
 from .models import Campaign, Category, Comment
+from config.spam_protection import is_bot_submission, is_rate_limited
 
 
 def custom_404(request, exception=None):
@@ -107,6 +108,14 @@ def campaign_detail(request, slug):
     ).exclude(pk=campaign.pk)[:3]
 
     if request.method == 'POST' and 'comment_message' in request.POST:
+        if is_bot_submission(request):
+            # Pretend it worked — never tell a bot *why* it failed, or it
+            # just adapts. A genuine visitor never sees this branch at all.
+            return redirect('campaign_detail', slug=slug)
+        if is_rate_limited(request, 'campaign_comment', limit=5, window_seconds=600):
+            messages.error(request, 'একটু পর আবার চেষ্টা করুন — অনেকগুলো মন্তব্য একসাথে জমা হয়েছে।')
+            return redirect('campaign_detail', slug=slug)
+
         message_text = request.POST.get('comment_message', '').strip()
         name = request.POST.get('comment_name', '').strip() or 'অজ্ঞাত'
         if message_text:
@@ -136,6 +145,62 @@ def about(request):
         {'icon': '🤲', 'title': 'সাধারণ তহবিল ও সাদাকাহ', 'desc': 'এতিমখানা, বৃদ্ধাশ্রম এবং অতি দরিদ্র পরিবারের কর্মসংস্থানের ব্যবস্থা।'},
     ]
     return render(request, 'about.html', {'area_list': area_list})
+
+
+def terms_of_service(request):
+    terms_sections = [
+        {
+            'icon': 'check2-circle',
+            'title': '১. শর্তাবলি গ্রহণ',
+            'body': '\'সহায়.bd\' ওয়েবসাইট ভিজিট, দান, ভলান্টিয়ার আবেদন বা যেকোনোভাবে ব্যবহার করার মাধ্যমে আপনি এই শর্তাবলি মেনে নিচ্ছেন বলে ধরে নেওয়া হবে। শর্তাবলির সাথে দ্বিমত থাকলে অনুগ্রহ করে এই প্ল্যাটফর্ম ব্যবহার থেকে বিরত থাকুন।',
+        },
+        {
+            'icon': 'building',
+            'title': '২. প্ল্যাটফর্ম পরিচিতি',
+            'body': '\'সহায়.bd\' একটি অলাভজনক, দাতব্য উদ্দেশ্যে পরিচালিত ডিজিটাল প্ল্যাটফর্ম, যেখানে সাধারণ মানুষের দান/সদকা/যাকাত সংগ্রহ করে যাচাইকৃত উপায়ে অসহায় ও সুবিধাবঞ্চিত মানুষের কল্যাণে ব্যয় করা হয়। প্ল্যাটফর্মের পরিচালনাগত ও নিবন্ধন সংক্রান্ত হালনাগাদ তথ্য "আমাদের সম্পর্কে" পাতায় পাওয়া যাবে।',
+        },
+        {
+            'icon': 'cash-coin',
+            'title': '৩. দান, ফেরত ও যাচাইকরণ নীতি',
+            'body': 'সকল দান স্বেচ্ছাপ্রণোদিত এবং সাধারণত অ-ফেরতযোগ্য। প্রতিটি দান নিশ্চিত হওয়ার আগে প্রদত্ত Transaction ID/Reference যাচাই করে দেখা হয় — তাই ড্যাশবোর্ডে "যাচাইকৃত" স্ট্যাটাস দেখতে কিছুটা সময় লাগতে পারে। ভুলবশত ডাবল পেমেন্ট বা স্পষ্ট টেকনিক্যাল ত্রুটির ক্ষেত্রে আমাদের সাথে যোগাযোগ করলে যথাযথ যাচাই সাপেক্ষে সমাধানের চেষ্টা করা হবে।',
+        },
+        {
+            'icon': 'moon-stars-fill',
+            'title': '৪. যাকাত ও সদকা সংক্রান্ত বিশেষ শর্ত',
+            'body': 'যাকাত হিসেবে প্রদত্ত অর্থ ইসলামি শরিয়াহ অনুমোদিত নির্দিষ্ট আটটি খাতেই ব্যয় করা হয়, অন্য কোনো খাতে নয়। সাধারণ সদকা/দান নমনীয়ভাবে প্রয়োজন অনুযায়ী সংশ্লিষ্ট ক্যাম্পেইনে ব্যয় করা হয়।',
+        },
+        {
+            'icon': 'piggy-bank',
+            'title': '৫. তহবিল বরাদ্দে বিচক্ষণতা',
+            'body': 'কোনো নির্দিষ্ট ক্যাম্পেইনের জন্য সংগৃহীত অর্থ প্রয়োজনের তুলনায় বেশি হয়ে গেলে, উদ্বৃত্ত অর্থ একই ধরনের ভবিষ্যৎ ক্যাম্পেইনে বা সাধারণ তহবিলে ব্যবহারের এখতিয়ার কর্তৃপক্ষের থাকবে। এই নীতি ওয়েবসাইটে প্রকাশিত থাকবে।',
+        },
+        {
+            'icon': 'person-badge',
+            'title': '৬. ভলান্টিয়ার সংক্রান্ত শর্ত',
+            'body': 'ভলান্টিয়ার হিসেবে যুক্ত হওয়া সম্পূর্ণ স্বেচ্ছাসেবামূলক ও অবৈতনিক। ভলান্টিয়ার আইডি কার্ড শুধুমাত্র পরিচয় যাচাইয়ের উদ্দেশ্যে ইস্যু করা হয় এবং যেকোনো সময় কর্তৃপক্ষ তা বাতিল/স্থগিত করার অধিকার রাখে। আইডি কার্ডের মালিকানা \'সহায়.bd\'-এর, এবং তা অপব্যবহার আইনি ব্যবস্থার আওতাভুক্ত হতে পারে।',
+        },
+        {
+            'icon': 'shield-exclamation',
+            'title': '৭. নিষিদ্ধ কার্যকলাপ',
+            'body': 'ভুয়া/মিথ্যা পেমেন্ট রেফারেন্স প্রদান, মন্তব্য বিভাগে স্প্যাম বা বিজ্ঞাপন পোস্ট করা, অন্য কারো পরিচয়ে ভলান্টিয়ার/দাতা সেজে প্রতারণা, বা ওয়েবসাইটের স্বাভাবিক কার্যক্রমে বাধা সৃষ্টি করার যেকোনো চেষ্টা কঠোরভাবে নিষিদ্ধ এবং তা সংশ্লিষ্ট আইন অনুযায়ী ব্যবস্থার আওতাভুক্ত হতে পারে।',
+        },
+        {
+            'icon': 'exclamation-diamond',
+            'title': '৮. দায়বদ্ধতার সীমাবদ্ধতা',
+            'body': 'বিকাশ/নগদ/রকেটের মতো তৃতীয়-পক্ষীয় মোবাইল ব্যাংকিং সেবার সাময়িক বিভ্রাট বা ত্রুটির জন্য \'সহায়.bd\' দায়ী থাকবে না। ওয়েবসাইট "যেমন আছে" ভিত্তিতে প্রদান করা হয়; কারিগরি ত্রুটিমুক্ত থাকার নিশ্চয়তা দেওয়া হয় না, তবে যেকোনো সমস্যা দ্রুত সমাধানের চেষ্টা করা হবে।',
+        },
+        {
+            'icon': 'arrow-repeat',
+            'title': '৯. শর্তাবলির পরিবর্তন',
+            'body': 'প্রয়োজন অনুযায়ী এই শর্তাবলি যেকোনো সময় হালনাগাদ করা হতে পারে। উল্লেখযোগ্য পরিবর্তন হলে ওয়েবসাইটে জানিয়ে দেওয়া হবে। পরিবর্তনের পরেও প্ল্যাটফর্ম ব্যবহার চালিয়ে গেলে তা নতুন শর্তাবলি মেনে নেওয়া হিসেবে গণ্য হবে।',
+        },
+        {
+            'icon': 'bank',
+            'title': '১০. প্রযোজ্য আইন',
+            'body': 'এই শর্তাবলি বাংলাদেশের প্রচলিত আইন অনুযায়ী পরিচালিত ও ব্যাখ্যাযোগ্য। যেকোনো আইনি বিরোধের ক্ষেত্রে বাংলাদেশের আদালতের এখতিয়ার প্রযোজ্য হবে।',
+        },
+    ]
+    return render(request, 'terms.html', {'terms_sections': terms_sections})
 
 
 def privacy(request):
@@ -206,6 +271,12 @@ def volunteer_signup(request):
 
     success = False
     if request.method == 'POST':
+        if is_bot_submission(request):
+            return redirect('volunteer_signup')
+        if is_rate_limited(request, 'volunteer_signup', limit=3, window_seconds=3600):
+            messages.error(request, 'একটু পর আবার চেষ্টা করুন।')
+            return redirect('volunteer_signup')
+
         name = request.POST.get('name', '').strip()
         phone = request.POST.get('phone', '').strip()
         email = request.POST.get('email', '').strip()

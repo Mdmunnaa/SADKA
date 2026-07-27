@@ -7,6 +7,7 @@ from django.db.models import Q, F
 
 from .models import BlogPost, BlogCategory, BlogTag, Comment
 from campaigns.models import Campaign
+from config.spam_protection import is_bot_submission, is_rate_limited
 
 
 def _pick_cta_campaign():
@@ -85,6 +86,12 @@ def blog_detail(request, slug):
         if not request.user.is_authenticated:
             messages.error(request, 'মন্তব্য করতে হলে আগে লগইন করুন।')
             return redirect(f"{reverse('donor_login')}?next={request.path}")
+
+        if is_bot_submission(request):
+            return redirect('blog_detail', slug=post.slug)
+        if is_rate_limited(request, 'blog_comment', limit=10, window_seconds=600):
+            messages.error(request, 'একটু পর আবার চেষ্টা করুন।')
+            return redirect('blog_detail', slug=post.slug)
 
         content = request.POST.get('content', '').strip()
         if content:
