@@ -1,5 +1,7 @@
-{# Anti-spam fields — invisible to real visitors, catches simple bots.
-   See config/spam_protection.py for how these are checked server-side. #}
+{% comment %}
+Anti-spam fields — invisible to real visitors, catches simple bots.
+See config/spam_protection.py for how these are checked server-side.
+{% endcomment %}
 <div style="position:absolute; left:-9999px; top:-9999px; height:0; overflow:hidden;" aria-hidden="true">
   <label>Leave this field blank</label>
   <input type="text" name="website_url" tabindex="-1" autocomplete="off">
