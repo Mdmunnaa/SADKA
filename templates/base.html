@@ -120,6 +120,7 @@
           <input type="number" name="amount" placeholder="{% trans 'অথবা নিজে লিখুন...' %}" min="10" required>
         </div>
 
+        {% if payment_gateway_is_manual %}
         <!-- Payment Method -->
         <div class="form-field">
           <label>{% trans "পেমেন্ট মাধ্যম বেছে নিন" %}</label>
@@ -139,6 +140,14 @@
           <label>{% trans "Transaction ID / Reference" %}</label>
           <input type="text" name="payment_reference" placeholder="{% trans 'যেমন: 8N7HD9XYZ (দিলে দ্রুত verify হবে)' %}">
         </div>
+        {% else %}
+        <!-- Automated gateway active: no manual reference needed — donor
+             pays on the gateway's own secure page after submitting this form. -->
+        <div class="alert-green">
+          <i class="bi bi-shield-lock me-1"></i>
+          {% trans "সাবমিট করার পর আপনাকে একটি নিরাপদ পেমেন্ট পেজে নিয়ে যাওয়া হবে, যেখানে কার্ড বা মোবাইল ব্যাংকিং দিয়ে পেমেন্ট সম্পন্ন করতে পারবেন।" %}
+        </div>
+        {% endif %}
 
         <!-- Name & Phone — auto-filled if logged in -->
         {% if user.is_authenticated %}

@@ -6,3 +6,4 @@ python-decouple>=3.8
 django-ckeditor-5>=0.2.18
 geoip2>=4.8
 qrcode[pil]>=7.4
+requests>=2.31

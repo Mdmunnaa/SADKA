@@ -1,8 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from campaigns.models import Campaign
 from .models import Donation, RecurringReminder
 from config.spam_protection import is_bot_submission, is_rate_limited
+from .gateways import get_active_gateway, get_gateway_by_name
 
 
 def donate(request, slug):
@@ -45,6 +48,16 @@ def donate(request, slug):
                     frequency=request.POST.get('recurring_frequency', 'monthly'),
                     is_active=True,
                 )
+
+            # ── Payment gateway branch ──
+            # Default ('manual', no credentials configured): unchanged —
+            # donor already typed their own reference above, just show the
+            # thank-you/receipt page. Only takes a different path once a
+            # real gateway is configured (see donations/gateways/).
+            gateway = get_active_gateway()
+            result = gateway.initiate(donation, request)
+            if result.get('mode') == 'redirect':
+                return redirect(result['url'])
 
             return redirect('donation_success', pk=donation.pk)
 
@@ -95,3 +108,85 @@ def recurring_signup(request):
 
     campaigns = Campaign.objects.exclude(status__in=['paused', 'completed'])
     return render(request, 'donations/recurring_signup.html', {'campaigns': campaigns})
+
+
+# ── Payment gateway callbacks ──
+# Only ever reached once a real gateway (aamarpay/sslcommerz) is actually
+# configured and a donor was redirected there — irrelevant while
+# ACTIVE_PAYMENT_GATEWAY stays at its default 'manual' value.
+
+@csrf_exempt
+def payment_success(request, gateway_name):
+    gateway = get_gateway_by_name(gateway_name)
+    if not gateway:
+        return redirect('home')
+
+    result = gateway.handle_callback(request)
+    donation = result.get('donation')
+
+    if result.get('success') and donation:
+        donation.is_verified = True
+        if result.get('gateway_txn_id'):
+            donation.payment_reference = result['gateway_txn_id']
+        donation.save()
+        return redirect('donation_success', pk=donation.pk)
+
+    if donation:
+        messages.error(request, 'পেমেন্ট নিশ্চিত করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন অথবা আমাদের সাথে যোগাযোগ করুন।')
+        return redirect('campaign_detail', slug=donation.campaign.slug)
+
+    messages.error(request, 'পেমেন্ট নিশ্চিত করা যায়নি।')
+    return redirect('home')
+
+
+@csrf_exempt
+def payment_fail(request, gateway_name):
+    gateway = get_gateway_by_name(gateway_name)
+    if not gateway:
+        return redirect('home')
+
+    result = gateway.handle_callback(request)
+    donation = result.get('donation')
+
+    messages.error(request, 'দুঃখিত, পেমেন্টটি সম্পন্ন হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।')
+    if donation:
+        return redirect('campaign_detail', slug=donation.campaign.slug)
+    return redirect('home')
+
+
+@csrf_exempt
+def payment_cancel(request, gateway_name):
+    gateway = get_gateway_by_name(gateway_name)
+    if not gateway:
+        return redirect('home')
+
+    result = gateway.handle_callback(request)
+    donation = result.get('donation')
+
+    messages.info(request, 'পেমেন্ট বাতিল করা হয়েছে।')
+    if donation:
+        return redirect('campaign_detail', slug=donation.campaign.slug)
+    return redirect('home')
+
+
+@csrf_exempt
+def payment_ipn(request, gateway_name):
+    """Server-to-server notification (used by SSLCommerz especially) —
+    the reliable confirmation channel that still works even if the donor
+    closes their browser tab right after paying, before success_url's
+    redirect finishes loading. Returns plain text, not a page — no browser
+    is on the other end."""
+    gateway = get_gateway_by_name(gateway_name)
+    if not gateway:
+        return HttpResponse('unknown gateway', status=404)
+
+    result = gateway.handle_callback(request)
+    donation = result.get('donation')
+
+    if result.get('success') and donation and not donation.is_verified:
+        donation.is_verified = True
+        if result.get('gateway_txn_id'):
+            donation.payment_reference = result['gateway_txn_id']
+        donation.save()
+
+    return HttpResponse('OK')

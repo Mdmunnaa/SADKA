@@ -60,6 +60,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
                 'config.context_processors.spam_protection',
+                'config.context_processors.payment_gateway_info',
             ],
         },
     },
@@ -159,3 +160,22 @@ CKEDITOR_5_CONFIGS = {
         },
     },
 }
+
+# ── Payment Gateway ──
+# 'manual' (default, today's live behavior): donor sends money themselves to
+#   a displayed bKash/Nagad/Rocket number and types in a reference; admin
+#   verifies by hand against the real mobile-banking statement.
+# 'aamarpay' / 'sslcommerz': automatic checkout — donor is redirected to the
+#   gateway's own hosted payment page and the donation is auto-verified when
+#   the gateway confirms it. Only takes effect once the matching credentials
+#   below are also filled in — otherwise the site quietly keeps using the
+#   manual flow (see donations/gateways/__init__.py:get_active_gateway).
+ACTIVE_PAYMENT_GATEWAY = config('ACTIVE_PAYMENT_GATEWAY', default='manual')
+
+AAMARPAY_STORE_ID = config('AAMARPAY_STORE_ID', default='')
+AAMARPAY_SIGNATURE_KEY = config('AAMARPAY_SIGNATURE_KEY', default='')
+AAMARPAY_SANDBOX = config('AAMARPAY_SANDBOX', default=True, cast=bool)
+
+SSLCOMMERZ_STORE_ID = config('SSLCOMMERZ_STORE_ID', default='')
+SSLCOMMERZ_STORE_PASSWORD = config('SSLCOMMERZ_STORE_PASSWORD', default='')
+SSLCOMMERZ_SANDBOX = config('SSLCOMMERZ_SANDBOX', default=True, cast=bool)
