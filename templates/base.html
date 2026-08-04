@@ -46,7 +46,21 @@
         <li><a href="{% url 'campaign_list' %}"><i class="bi bi-grid-3x3-gap me-1"></i>{% trans "ক্যাম্পেইন" %}</a></li>
         <li><a href="{% url 'blog_list' %}"><i class="bi bi-journal-text me-1"></i>{% trans "ব্লগ" %}</a></li>
         <li><a href="{% url 'campaign_list' %}?status=urgent" class="urgent"><i class="bi bi-exclamation-circle me-1"></i>{% trans "জরুরি" %}</a></li>
-        <li><a href="{% url 'campaign_list' %}" class="btn-nav"><i class="bi bi-heart-fill me-1"></i>{% trans "ডোনেট করুন" %}</a></li>
+        <li>
+          {% if general_fund_campaign %}
+          <button class="btn-nav"
+            data-donate-trigger
+            data-slug="{{ general_fund_campaign.slug }}"
+            data-title="{{ general_fund_campaign.title }}"
+            data-bkash="{{ general_fund_campaign.bkash_number }}"
+            data-nagad="{{ general_fund_campaign.nagad_number }}"
+            data-rocket="{{ general_fund_campaign.rocket_number }}">
+            <i class="bi bi-heart-fill me-1"></i>{% trans "ডোনেট করুন" %}
+          </button>
+          {% else %}
+          <a href="{% url 'campaign_list' %}" class="btn-nav"><i class="bi bi-heart-fill me-1"></i>{% trans "ডোনেট করুন" %}</a>
+          {% endif %}
+        </li>
         {% if user.is_authenticated %}
         <li>
           <a href="{% url 'donor_dashboard' %}" style="display:flex; align-items:center; gap:.4rem; font-size:.85rem; font-weight:600; color:var(--green-700); padding:.4rem .8rem; border:1.5px solid var(--green-300); border-radius:999px; background:var(--green-50);">

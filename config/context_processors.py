@@ -19,3 +19,16 @@ def payment_gateway_info(request):
     from donations.gateways import get_active_gateway, ManualGateway
     is_manual = isinstance(get_active_gateway(), ManualGateway)
     return {'payment_gateway_is_manual': is_manual}
+
+
+def general_fund_campaign(request):
+    """Makes the permanent 'সাধারণ সদকা তহবিল' (General Sadaqah Fund)
+    campaign available in every template, so the navbar's 'ডোনেট করুন'
+    button can open the donate modal directly for it instead of sending
+    people to browse the campaign list first. Returns None (rather than
+    raising) if that campaign has been deleted/renamed for any reason —
+    base.html falls back to linking to the campaign list in that case, so
+    the site never breaks over this."""
+    from campaigns.models import Campaign
+    campaign = Campaign.objects.filter(slug='general-sadaqah-fund').first()
+    return {'general_fund_campaign': campaign}

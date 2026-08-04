@@ -61,6 +61,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'config.context_processors.spam_protection',
                 'config.context_processors.payment_gateway_info',
+                'config.context_processors.general_fund_campaign',
             ],
         },
     },

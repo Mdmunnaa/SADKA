@@ -139,13 +139,32 @@
 
         <!-- Comments -->
         <div id="tab-comments" class="tab-panel">
+          {% if not user.is_authenticated %}
+          <div class="alert-green" style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem;">
+            <span><i class="bi bi-lock me-1"></i>{% trans "মন্তব্য করতে হলে আগে লগইন করুন এবং এই ক্যাম্পেইনে দান করুন।" %}</span>
+            <a href="{% url 'donor_login' %}?next={{ request.path }}" class="btn-donate-card" style="padding:.5rem 1.2rem; text-decoration:none; white-space:nowrap;">
+              {% trans "লগইন করুন" %}
+            </a>
+          </div>
+          {% elif not has_donated_here %}
+          <div class="alert-green" style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem;">
+            <span><i class="bi bi-heart me-1"></i>{% trans "এই ক্যাম্পেইনে মন্তব্য করতে হলে আগে এখানে দান করতে হবে (যেকোনো পরিমাণ)।" %}</span>
+            {% if campaign.status != 'completed' %}
+            <button class="btn-donate-card" style="white-space:nowrap;"
+              data-donate-trigger
+              data-slug="{{ campaign.slug }}"
+              data-title="{{ campaign.title }}"
+              data-bkash="{{ campaign.bkash_number }}"
+              data-nagad="{{ campaign.nagad_number }}"
+              data-rocket="{{ campaign.rocket_number }}">
+              <i class="bi bi-heart-fill"></i> {% trans "দান করুন" %}
+            </button>
+            {% endif %}
+          </div>
+          {% else %}
           <form method="post" style="margin-bottom:1.5rem; background:var(--gray-50); border:1px solid var(--gray-300); border-radius:var(--radius); padding:1.1rem;">
             {% csrf_token %}
             {% include '_spam_fields.html' %}
-            <div class="form-field" style="margin-bottom:.7rem;">
-              <label>{% trans "নাম" %}</label>
-              <input type="text" name="comment_name" placeholder="{% trans 'আপনার নাম' %}">
-            </div>
             <div class="form-field" style="margin-bottom:.7rem;">
               <label>{% trans "মন্তব্য" %}</label>
               <textarea name="comment_message" rows="3" placeholder="{% trans 'আপনার মন্তব্য লিখুন...' %}" required></textarea>
@@ -153,14 +172,21 @@
             <button type="submit" class="btn-donate-card" style="border-radius:var(--radius-sm);">
               <i class="bi bi-chat-dots"></i> {% trans "মন্তব্য পাঠান" %}
             </button>
+            <p style="font-size:.78rem; color:var(--gray-500); margin:.6rem 0 0;">
+              <i class="bi bi-patch-check-fill" style="color:var(--green-700);"></i> {% trans "যাচাইকৃত দাতা হিসেবে মন্তব্য করছেন" %}
+            </p>
           </form>
+          {% endif %}
 
           {% if comments %}
             {% for c in comments %}
             <div class="donor-row">
               <div class="donor-av">{{ c.name|first|upper }}</div>
               <div style="flex:1;">
-                <div class="donor-name">{{ c.name }}</div>
+                <div class="donor-name">
+                  {{ c.name }}
+                  {% if c.user %}<i class="bi bi-patch-check-fill" style="color:var(--green-700); font-size:.8rem;" title="{% trans 'যাচাইকৃত দাতা' %}"></i>{% endif %}
+                </div>
                 <div class="donor-msg" style="font-style:normal;">{{ c.message }}</div>
                 <div class="donor-time">{{ c.created_at|date:"d M, Y, h:i A" }}</div>
               </div>

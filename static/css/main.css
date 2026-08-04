@@ -155,6 +155,11 @@ a { text-decoration: none; color: inherit; }
   border-radius: 999px;
   transition: background .15s, transform .15s;
   white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
 }
 .btn-nav:hover { background: var(--green-600); transform: translateY(-1px); }
 
