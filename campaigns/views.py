@@ -3,10 +3,12 @@ from django.db.models import Q, Sum, Count
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta
 from .models import Campaign, Category, Comment
 from config.spam_protection import is_bot_submission, is_rate_limited
+from donations.models import Donation
 
 
 def custom_404(request, exception=None):
@@ -107,7 +109,24 @@ def campaign_detail(request, slug):
         category=campaign.category, status__in=['active', 'urgent']
     ).exclude(pk=campaign.pk)[:3]
 
+    # Commenting is limited to people who have actually donated (any
+    # verified amount) to *this* campaign — turns the comment section into
+    # genuine donor testimonials instead of an open, anonymous guestbook.
+    has_donated_here = False
+    if request.user.is_authenticated:
+        has_donated_here = Donation.objects.filter(
+            campaign=campaign, donor_email=request.user.email, is_verified=True,
+        ).exists()
+
     if request.method == 'POST' and 'comment_message' in request.POST:
+        if not request.user.is_authenticated:
+            messages.error(request, 'মন্তব্য করতে হলে আগে লগইন করুন এবং এই ক্যাম্পেইনে দান করুন।')
+            return redirect(f"{reverse('donor_login')}?next={request.path}")
+
+        if not has_donated_here:
+            messages.error(request, 'এই ক্যাম্পেইনে মন্তব্য করতে হলে আগে এখানে দান করতে হবে (যেকোনো পরিমাণ)।')
+            return redirect('campaign_detail', slug=slug)
+
         if is_bot_submission(request):
             # Pretend it worked — never tell a bot *why* it failed, or it
             # just adapts. A genuine visitor never sees this branch at all.
@@ -117,9 +136,14 @@ def campaign_detail(request, slug):
             return redirect('campaign_detail', slug=slug)
 
         message_text = request.POST.get('comment_message', '').strip()
-        name = request.POST.get('comment_name', '').strip() or 'অজ্ঞাত'
         if message_text:
-            Comment.objects.create(campaign=campaign, name=name, message=message_text)
+            donor_profile = getattr(request.user, 'donor_profile', None)
+            display_name = (
+                (donor_profile.display_name if donor_profile else '')
+                or request.user.get_full_name()
+                or request.user.username
+            )
+            Comment.objects.create(campaign=campaign, user=request.user, name=display_name, message=message_text)
             messages.success(request, 'আপনার মন্তব্য যুক্ত হয়েছে। জাযাকাল্লাহ খায়রান!')
         else:
             messages.error(request, 'মন্তব্য খালি রাখা যাবে না।')
@@ -131,6 +155,7 @@ def campaign_detail(request, slug):
         'recent_donors': recent_donors,
         'comments': comments,
         'related': related,
+        'has_donated_here': has_donated_here,
     }
     return render(request, 'campaigns/detail.html', context)
 

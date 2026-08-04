@@ -241,6 +241,11 @@ class CampaignUpdate(models.Model):
 
 class Comment(models.Model):
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(
+        'auth.User', on_delete=models.CASCADE, null=True, blank=True,
+        related_name='campaign_comments',
+        help_text='যেই যাচাইকৃত দাতা অ্যাকাউন্ট থেকে মন্তব্যটি করা হয়েছে',
+    )
     name = models.CharField(max_length=100, default='অজ্ঞাত')
     message = models.TextField(max_length=1000)
     is_approved = models.BooleanField(default=True, help_text="অনুপযুক্ত মন্তব্য হলে আনচেক করুন")

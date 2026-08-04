@@ -93,11 +93,11 @@ class CampaignAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ['name', 'campaign', 'message_short', 'is_approved', 'created_at']
+    list_display = ['name', 'campaign', 'user', 'message_short', 'is_approved', 'created_at']
     list_filter = ['is_approved', 'campaign']
     search_fields = ['name', 'message']
     list_editable = ['is_approved']
-    readonly_fields = ['created_at']
+    readonly_fields = ['created_at', 'user']
 
     def message_short(self, obj):
         return obj.message[:60] + ('...' if len(obj.message) > 60 else '')
