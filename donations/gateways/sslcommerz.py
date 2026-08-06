@@ -114,7 +114,11 @@ class SSLCommerzGateway(PaymentGateway):
                 except (InvalidOperation, TypeError):
                     verified_amount = None
 
-        success = verified_ok or (post.get('status') == 'VALID')
+        # SECURITY: never fall back to trusting post['status'] alone — that
+        # field arrives via a browser redirect and can be forged by anyone
+        # who knows a donation's transaction_id. Only the server-to-server
+        # _validate() call above (verified_ok) can be trusted.
+        success = verified_ok
 
         return {
             'success': success,

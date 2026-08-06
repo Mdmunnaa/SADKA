@@ -8,7 +8,10 @@
         <span class="sec-eyebrow">অ্যাডমিন</span>
         <h2 class="sec-title">ড্যাশবোর্ড <span class="accent">সামারি</span></h2>
       </div>
-      <a href="/admin/" class="link-all"><i class="bi bi-gear"></i> পুরো Admin Panel</a>
+      <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center;">
+        <a href="{% url 'audit_report' %}" class="link-all"><i class="bi bi-file-earmark-pdf"></i> অডিট রিপোর্ট (PDF)</a>
+        <a href="/admin/" class="link-all"><i class="bi bi-gear"></i> পুরো Admin Panel</a>
+      </div>
     </div>
 
     <!-- TOP STATS -->

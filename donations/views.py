@@ -124,7 +124,14 @@ def payment_success(request, gateway_name):
     result = gateway.handle_callback(request)
     donation = result.get('donation')
 
-    if result.get('success') and donation:
+    # SECURITY: only mark verified if the gateway's own server-to-server
+    # check succeeded AND the amount actually paid matches what the donor
+    # pledged — otherwise a donor could pledge a large amount, pay a small
+    # one at the gateway, and still have the full pledged amount counted.
+    verified_amount = result.get('amount')
+    amount_ok = verified_amount is not None and donation and verified_amount == donation.amount
+
+    if result.get('success') and donation and amount_ok:
         donation.is_verified = True
         if result.get('gateway_txn_id'):
             donation.payment_reference = result['gateway_txn_id']
@@ -183,7 +190,10 @@ def payment_ipn(request, gateway_name):
     result = gateway.handle_callback(request)
     donation = result.get('donation')
 
-    if result.get('success') and donation and not donation.is_verified:
+    verified_amount = result.get('amount')
+    amount_ok = verified_amount is not None and donation and verified_amount == donation.amount
+
+    if result.get('success') and donation and amount_ok and not donation.is_verified:
         donation.is_verified = True
         if result.get('gateway_txn_id'):
             donation.payment_reference = result['gateway_txn_id']

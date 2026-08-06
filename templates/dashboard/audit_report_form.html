@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}অডিট রিপোর্ট — সহায়.bd অ্যাডমিন{% endblock %}
+{% block content %}
+<section class="sec sec-cream" style="padding-top:2rem;">
+  <div class="container" style="max-width:700px;">
+    <div class="sec-head" style="margin-bottom:1.5rem;">
+      <span class="sec-eyebrow">অ্যাডমিন</span>
+      <h2 class="sec-title">অডিট <span class="accent">রিপোর্ট</span></h2>
+      <p class="sec-sub">তারিখ ও ক্যাম্পেইন বেছে নিয়ে একটা PDF হিসাব তৈরি করুন — শুধু ভেরিফায়েড ডোনেশনই এতে থাকবে।</p>
+    </div>
+
+    <div class="donate-form-card" style="background:var(--white); border:1px solid var(--gray-300); border-radius:var(--radius-xl); padding:2rem; box-shadow:var(--shadow-md);">
+      <form method="get" action="{% url 'audit_report' %}">
+        <input type="hidden" name="generate" value="1">
+
+        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+          <div class="form-field" style="flex:1; min-width:180px;">
+            <label>শুরুর তারিখ (ঐচ্ছিক)</label>
+            <input type="date" name="date_from">
+          </div>
+          <div class="form-field" style="flex:1; min-width:180px;">
+            <label>শেষের তারিখ (ঐচ্ছিক)</label>
+            <input type="date" name="date_to">
+          </div>
+        </div>
+        <p style="font-size:.8rem; color:var(--gray-500); margin-top:-.5rem; margin-bottom:1rem;">
+          খালি রাখলে — শুরুর তারিখ না দিলে একদম শুরু থেকে, শেষের তারিখ না দিলে আজ পর্যন্ত ধরা হবে।
+        </p>
+
+        <div class="form-field">
+          <label>ক্যাম্পেইন বেছে নিন (কিছু না বাছলে সব ক্যাম্পেইন ধরা হবে)</label>
+          <div style="max-height:260px; overflow-y:auto; border:1px solid var(--gray-300); border-radius:var(--radius-md); padding:.75rem 1rem; background:var(--gray-50, #f9fafb);">
+            {% for c in campaigns %}
+            <label style="display:flex; align-items:center; gap:.5rem; padding:.35rem 0; font-weight:400; cursor:pointer;">
+              <input type="checkbox" name="campaign" value="{{ c.id }}" style="width:auto;">
+              <span>{{ c.title }}</span>
+            </label>
+            {% empty %}
+            <span style="color:var(--gray-500); font-size:.85rem;">কোনো ক্যাম্পেইন পাওয়া যায়নি।</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <button type="submit" class="btn-modal-submit" style="margin-top:1rem;">
+          <i class="bi bi-file-earmark-pdf"></i>&nbsp; PDF রিপোর্ট তৈরি করুন
+        </button>
+      </form>
+    </div>
+
+    <p style="text-align:center; margin-top:1.5rem;">
+      <a href="{% url 'admin_dashboard' %}" class="link-all">← ড্যাশবোর্ডে ফিরে যান</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

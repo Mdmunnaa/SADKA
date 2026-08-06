@@ -108,7 +108,11 @@ class AamarPayGateway(PaymentGateway):
             except Exception:
                 pass
 
-        success = verified_ok or (pay_status == 'Successful')
+        # SECURITY: never fall back to trusting pay_status alone — that
+        # field arrives via a browser redirect and can be forged by anyone
+        # who knows a donation's transaction_id. Only the server-to-server
+        # Search Transaction API call above (verified_ok) can be trusted.
+        success = verified_ok
 
         return {
             'success': success,
