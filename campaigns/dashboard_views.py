@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Sum, Count
+from django.http import HttpResponse
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, datetime
 from campaigns.models import Campaign
 from donations.models import Donation
+from campaigns.audit_report import generate_audit_report_pdf
 
 
 @staff_member_required
@@ -63,3 +65,60 @@ def admin_dashboard(request):
         'total_campaigns': Campaign.objects.exclude(status='paused').count(),
     }
     return render(request, 'dashboard/dashboard.html', context)
+
+
+def _parse_date(value):
+    """'YYYY-MM-DD' from a <input type=date> -> date object, or None."""
+    if not value:
+        return None
+    try:
+        return datetime.strptime(value, '%Y-%m-%d').date()
+    except ValueError:
+        return None
+
+
+@staff_member_required
+def audit_report(request):
+    """
+    Lets a logged-in admin pick a date range and one or more campaigns
+    (or 'all'), then either shows the filter form (no params yet) or
+    streams back a PDF audit report for exactly what was selected.
+    Only verified donations are ever included — see the note printed
+    at the bottom of the PDF itself.
+    """
+    all_campaigns = Campaign.objects.order_by('title')
+
+    # No filters submitted yet -> just show the form.
+    if 'generate' not in request.GET:
+        return render(request, 'dashboard/audit_report_form.html', {
+            'campaigns': all_campaigns,
+        })
+
+    date_from = _parse_date(request.GET.get('date_from', ''))
+    date_to = _parse_date(request.GET.get('date_to', ''))
+    selected_ids = request.GET.getlist('campaign')  # empty list == "all campaigns"
+
+    donations = Donation.objects.filter(is_verified=True).select_related('campaign')
+    if date_from:
+        donations = donations.filter(created_at__date__gte=date_from)
+    if date_to:
+        donations = donations.filter(created_at__date__lte=date_to)
+    if selected_ids:
+        donations = donations.filter(campaign_id__in=selected_ids)
+
+    if selected_ids:
+        names = list(all_campaigns.filter(id__in=selected_ids).values_list('title', flat=True))
+        campaign_filter_label = ', '.join(names) if len(names) <= 3 else f"{len(names)}টি নির্বাচিত ক্যাম্পেইন"
+    else:
+        campaign_filter_label = 'সব ক্যাম্পেইন'
+
+    generated_by = request.user.get_full_name() or request.user.username
+
+    pdf_buf = generate_audit_report_pdf(
+        donations, date_from, date_to, campaign_filter_label, generated_by,
+    )
+
+    filename = f"sahay-audit-report-{timezone.now().strftime('%Y%m%d-%H%M')}.pdf"
+    response = HttpResponse(pdf_buf.read(), content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="{filename}"'
+    return response

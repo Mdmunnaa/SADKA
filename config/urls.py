@@ -6,7 +6,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
 from campaigns.sitemaps import CampaignSitemap, StaticViewSitemap
 from blog.sitemaps import BlogSitemap
-from campaigns.dashboard_views import admin_dashboard
+from campaigns.dashboard_views import admin_dashboard, audit_report
 from campaigns.converters import UnicodeSlugConverter
 
 # Register the Unicode-aware slug converter once, before any app urls (which use it) are included.
@@ -27,6 +27,7 @@ urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
     path('dashboard/', admin_dashboard, name='admin_dashboard'),
+    path('dashboard/audit-report/', audit_report, name='audit_report'),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain'), name='robots_txt'),
     path('accounts/', include('accounts.urls')),
