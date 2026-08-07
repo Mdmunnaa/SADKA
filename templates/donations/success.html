@@ -15,11 +15,19 @@
         <div class="detail-row"><span class="dr-label">অবস্থা</span><span class="badge-active">যাচাই চলছে</span></div>
       </div>
 
-      <p style="font-size:.83rem;color:var(--gray-500);margin-bottom:1.25rem;">
+      <p style="font-size:.83rem;color:var(--gray-500);margin-bottom:1rem;">
         <i class="bi bi-megaphone me-1"></i>বন্ধুদের শেয়ার করুন, আরও সাহায্য আসুক!
       </p>
 
+      <div style="margin-bottom:1.25rem; border-radius:var(--radius); overflow:hidden; border:1px solid var(--gray-300);">
+        <img src="{% url 'donation_share_card' donation.pk %}" alt="Share card" style="width:100%; display:block;">
+      </div>
+
       <div style="display:flex;flex-direction:column;gap:.6rem;">
+        <a href="{% url 'donation_share_card' donation.pk %}" download="sohay-donation.png"
+          class="btn-share-copy" style="justify-content:center;border-radius:var(--radius-sm);padding:.75rem;font-size:.95rem;">
+          <i class="bi bi-download me-1"></i> কার্ডটি ডাউনলোড করুন
+        </a>
         <button class="btn-share-wa" style="justify-content:center;border-radius:var(--radius-sm);padding:.75rem;font-size:.95rem;"
           data-share="whatsapp"
           data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' donation.campaign.slug %}"
