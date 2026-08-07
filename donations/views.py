@@ -6,6 +6,7 @@ from campaigns.models import Campaign
 from .models import Donation, RecurringReminder
 from config.spam_protection import is_bot_submission, is_rate_limited
 from .gateways import get_active_gateway, get_gateway_by_name
+from .share_card import generate_share_card
 
 
 def donate(request, slug):
@@ -71,6 +72,20 @@ def donate(request, slug):
 def donation_success(request, pk):
     donation = get_object_or_404(Donation, pk=pk)
     return render(request, 'donations/success.html', {'donation': donation})
+
+
+def donation_share_card(request, pk):
+    """
+    Streams a PNG share card for this donation — generated fresh on every
+    request, never written to disk (see donations/share_card.py's module
+    docstring). Deliberately not gated on is_verified: this is a personal
+    "I gave" card for the donor's own feed, not a public verification of
+    payment, and campaign totals themselves only ever move once verified.
+    """
+    donation = get_object_or_404(Donation.objects.select_related('campaign'), pk=pk)
+    show_amount = request.GET.get('amount') == '1' and not donation.is_anonymous
+    buf = generate_share_card(donation, show_amount=show_amount)
+    return HttpResponse(buf.read(), content_type='image/png')
 
 
 def recurring_signup(request):
