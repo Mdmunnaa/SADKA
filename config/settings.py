@@ -18,6 +18,11 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
+# Shown on receipts, ID cards, share cards, audit reports, etc. Change this
+# ONE line (or set SITE_DOMAIN in .env) once the site moves to sohay.bd —
+# nothing else in the codebase should ever hardcode a domain name.
+SITE_DOMAIN = config('SITE_DOMAIN', default='sohay.pythonanywhere.com')
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

@@ -10,6 +10,9 @@ To activate this gateway once you have real credentials from SSLCommerz:
          SSLCOMMERZ_SANDBOX=False        (True while testing)
     2. In your SSLCommerz merchant panel, set the IPN URL to:
          https://sohay.pythonanywhere.com/payments/ipn/sslcommerz/
+         (update this to your live domain, e.g. https://sohay.bd/..., once
+         the site moves off PythonAnywhere — this one has to be re-entered
+         by hand in SSLCommerz's own dashboard, it can't read settings.SITE_DOMAIN)
     3. Reload the web app. Nothing else needs to change.
 
 Until those are set, is_configured() returns False and the donate view

@@ -147,9 +147,8 @@ def generate_receipt_pdf(donation):
     story = []
 
     # ── HEADER ──
-    story.append(Paragraph("Sahay.bd", title_style))
-    story.append(Paragraph("Donation Receipt | sohay.pythonanywhere.com", subtitle_style))
-    story.append(Paragraph("A CSR Initiative by Edumi", subtitle_style))
+    story.append(Paragraph("Sohay.bd", title_style))
+    story.append(Paragraph(f"Donation Receipt | {settings.SITE_DOMAIN}", subtitle_style))
     story.append(HRFlowable(width='100%', thickness=2, color=GREEN, spaceAfter=10))
 
     # ── RECEIPT ID + DATE ──
@@ -225,7 +224,7 @@ def generate_receipt_pdf(donation):
     ))
     story.append(Paragraph(
         "This is a computer-generated receipt and does not require a signature.\n"
-        "For queries: sahay@example.com | sohay.pythonanywhere.com",
+        f"For queries: sohay@example.com | {settings.SITE_DOMAIN}",
         note_style,
     ))
 

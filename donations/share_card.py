@@ -195,7 +195,7 @@ def generate_share_card(donation, show_amount=False):
         [pad, footer_top, CARD_SIZE - pad, footer_top + 66],
         radius=14, fill=GRAY_BG,
     )
-    domain = getattr(settings, 'SITE_DOMAIN', 'sohay.pythonanywhere.com')
+    domain = settings.SITE_DOMAIN
     text_w = _text_width(domain, 28)
     tri_gap = 14
     total_w = 18 + tri_gap + text_w

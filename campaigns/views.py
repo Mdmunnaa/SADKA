@@ -355,14 +355,14 @@ def volunteer_id_card_download(request):
     pdf_buf = generate_volunteer_id_card_pdf(volunteer, verify_url)
 
     response = HttpResponse(pdf_buf.read(), content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="sahay-volunteer-{volunteer.volunteer_id}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="sohay-volunteer-{volunteer.volunteer_id}.pdf"'
     return response
 
 
 def volunteer_verify(request, volunteer_id):
     """Public page — no login required. Anyone (a donor, a beneficiary, a
     curious neighbour) can scan the QR code on a volunteer's card or type in
-    the ID to confirm it's a real, currently-approved Sahay.bd volunteer.
+    the ID to confirm it's a real, currently-approved Sohay.bd volunteer.
     Deliberately shows only name/photo/status — never phone, NID, address,
     or email, since this page is public."""
     from .models import Volunteer
@@ -380,7 +380,7 @@ def volunteer_verify(request, volunteer_id):
 
 def trustees(request):
     trust_info = {
-        'trust_name': '[Sahay.bd Trust]',
+        'trust_name': '[Sohay.bd Trust]',
         'registration_no': '[রেজিস্ট্রেশন নম্বর বসান]',
         'registration_date': '[রেজিস্ট্রেশনের তারিখ বসান]',
         'registered_office': '[রেজিস্টার্ড অফিসের সম্পূর্ণ ঠিকানা বসান — সাভার, ঢাকা]',

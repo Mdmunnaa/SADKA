@@ -116,7 +116,7 @@ def audit_report(request):
 
     if request.GET.get('format') == 'csv':
         csv_buf = generate_audit_report_csv(donations, date_from, date_to)
-        filename = f"sahay-audit-report-{timezone.now().strftime('%Y%m%d-%H%M')}.csv"
+        filename = f"sohay-audit-report-{timezone.now().strftime('%Y%m%d-%H%M')}.csv"
         response = HttpResponse(csv_buf.read(), content_type='text/csv; charset=utf-8')
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         return response
@@ -125,7 +125,7 @@ def audit_report(request):
         donations, date_from, date_to, campaign_filter_label, generated_by,
     )
 
-    filename = f"sahay-audit-report-{timezone.now().strftime('%Y%m%d-%H%M')}.pdf"
+    filename = f"sohay-audit-report-{timezone.now().strftime('%Y%m%d-%H%M')}.pdf"
     response = HttpResponse(pdf_buf.read(), content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename="{filename}"'
     return response

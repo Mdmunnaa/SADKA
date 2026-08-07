@@ -171,6 +171,6 @@ def donation_receipt(request, pk):
     buf = generate_receipt_pdf(donation)
     response = HttpResponse(buf, content_type='application/pdf')
     response['Content-Disposition'] = (
-        f'attachment; filename="sahay-receipt-{pk:06d}.pdf"'
+        f'attachment; filename="sohay-receipt-{pk:06d}.pdf"'
     )
     return response

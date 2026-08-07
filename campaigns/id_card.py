@@ -15,6 +15,7 @@ from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen.pathobject import PDFPathObject
+from django.conf import settings
 from django.contrib.staticfiles import finders
 from PIL import Image as PILImage
 
@@ -136,7 +137,7 @@ def generate_volunteer_id_card_pdf(volunteer, verify_url):
     c.setFillColor(GREEN)
     c.rect(0, CARD_HEIGHT - header_h, CARD_WIDTH, header_h, fill=1, stroke=0)
 
-    # White circular badge with the real Sahay.bd logo inside it
+    # White circular badge with the real Sohay.bd logo inside it
     badge_d = 9 * mm
     badge_cx = 4 * mm + badge_d / 2
     badge_cy = CARD_HEIGHT - header_h / 2
@@ -153,7 +154,7 @@ def generate_volunteer_id_card_pdf(volunteer, verify_url):
     text_start_x = 4 * mm + badge_d + 2.5 * mm
     c.setFillColor(WHITE)
     c.setFont('Helvetica-Bold', 11)
-    c.drawString(text_start_x, CARD_HEIGHT - header_h + 3.7 * mm, "Sahay.bd")
+    c.drawString(text_start_x, CARD_HEIGHT - header_h + 3.7 * mm, "Sohay.bd")
     c.setFont('Helvetica', 6)
     c.drawString(text_start_x, CARD_HEIGHT - header_h + 1 * mm, "VOLUNTEER IDENTITY CARD")
 
@@ -163,7 +164,7 @@ def generate_volunteer_id_card_pdf(volunteer, verify_url):
     c.rect(0, 0, CARD_WIDTH, footer_h, fill=1, stroke=0)
     c.setFillColor(WHITE)
     c.setFont('Helvetica', 6)
-    c.drawCentredString(CARD_WIDTH / 2, 2 * mm, "sohay.pythonanywhere.com  |  Verify: scan QR")
+    c.drawCentredString(CARD_WIDTH / 2, 2 * mm, f"{settings.SITE_DOMAIN}  |  Verify: scan QR")
 
     # ── Photo ──
     photo_x = 4 * mm
