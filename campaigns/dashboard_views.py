@@ -6,7 +6,7 @@ from django.utils import timezone
 from datetime import timedelta, datetime
 from campaigns.models import Campaign
 from donations.models import Donation
-from campaigns.audit_report import generate_audit_report_pdf
+from campaigns.audit_report import generate_audit_report_pdf, generate_audit_report_csv
 
 
 @staff_member_required
@@ -113,6 +113,13 @@ def audit_report(request):
         campaign_filter_label = 'সব ক্যাম্পেইন'
 
     generated_by = request.user.get_full_name() or request.user.username
+
+    if request.GET.get('format') == 'csv':
+        csv_buf = generate_audit_report_csv(donations, date_from, date_to)
+        filename = f"sahay-audit-report-{timezone.now().strftime('%Y%m%d-%H%M')}.csv"
+        response = HttpResponse(csv_buf.read(), content_type='text/csv; charset=utf-8')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
 
     pdf_buf = generate_audit_report_pdf(
         donations, date_from, date_to, campaign_filter_label, generated_by,

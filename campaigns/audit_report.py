@@ -10,7 +10,7 @@ glyphs, so any Bengali text must go through _cell()/_render_unicode_text_image()
 below — never through a plain Paragraph(bengali_text, ...) call, or it
 silently renders as blank boxes instead of raising an error.
 """
-from io import BytesIO
+from io import BytesIO, StringIO
 from decimal import Decimal
 
 from django.utils import timezone
@@ -238,5 +238,45 @@ def generate_audit_report_pdf(donations, date_from, date_to, campaign_filter_lab
         story.append(img)
 
     doc.build(story)
+    buf.seek(0)
+    return buf
+
+
+def generate_audit_report_csv(donations, date_from, date_to):
+    """
+    Same underlying data as the PDF report, but as plain CSV — for admins
+    who want to open it in Excel/Sheets themselves rather than read a PDF.
+    Only ever called with an already is_verified=True filtered queryset,
+    same as the PDF path.
+    """
+    import csv
+
+    donations = list(donations.order_by('campaign__title', 'created_at'))
+
+    buf = StringIO()
+    writer = csv.writer(buf)
+
+    writer.writerow(['Sahay.bd Audit Report'])
+    writer.writerow(['Period', f"{date_from or 'start'} to {date_to or 'today'}"])
+    writer.writerow(['Generated', timezone.now().strftime('%Y-%m-%d %H:%M')])
+    writer.writerow([])
+
+    writer.writerow(['Date', 'Campaign', 'Donor', 'Payment Method', 'Reference', 'Amount (BDT)'])
+    total = Decimal('0')
+    for d in donations:
+        writer.writerow([
+            d.created_at.strftime('%Y-%m-%d'),
+            d.campaign.title,
+            d.display_name,
+            d.get_payment_method_display(),
+            d.payment_reference or '',
+            str(d.amount),
+        ])
+        total += d.amount
+
+    writer.writerow([])
+    writer.writerow(['', '', '', '', 'TOTAL', str(total)])
+    writer.writerow(['', '', '', '', 'COUNT', str(len(donations))])
+
     buf.seek(0)
     return buf

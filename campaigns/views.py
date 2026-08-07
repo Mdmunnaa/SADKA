@@ -373,4 +373,66 @@ def volunteer_verify(request, volunteer_id):
     })
 
 
+# ════ TRUST/INSTITUTIONAL INFO PAGES ════
+# NOTE: these three pages are scaffolded with placeholder [বন্ধনীর] text —
+# fill in real details once Trust registration is complete. Nothing here
+# should go live with placeholder text still showing.
+
+def trustees(request):
+    trust_info = {
+        'trust_name': '[Sahay.bd Trust]',
+        'registration_no': '[রেজিস্ট্রেশন নম্বর বসান]',
+        'registration_date': '[রেজিস্ট্রেশনের তারিখ বসান]',
+        'registered_office': '[রেজিস্টার্ড অফিসের সম্পূর্ণ ঠিকানা বসান — সাভার, ঢাকা]',
+    }
+    trustee_list = [
+        {'name': '[Trustee ১ এর নাম]', 'role': 'Chairperson / Managing Trustee', 'bio': '[সংক্ষিপ্ত পরিচিতি বসান]'},
+        {'name': '[Trustee ২ এর নাম]', 'role': 'Trustee', 'bio': '[সংক্ষিপ্ত পরিচিতি বসান]'},
+        {'name': '[Trustee ৩ এর নাম]', 'role': 'Trustee', 'bio': '[সংক্ষিপ্ত পরিচিতি বসান]'},
+    ]
+    return render(request, 'trustees.html', {
+        'trust_info': trust_info,
+        'trustee_list': trustee_list,
+    })
+
+
+def contact(request):
+    contact_info = {
+        'registered_office': '[রেজিস্টার্ড অফিসের সম্পূর্ণ ঠিকানা বসান]',
+        'phone': '[ফোন নম্বর বসান]',
+        'email': '[ইমেইল ঠিকানা বসান]',
+        'facebook': '[Facebook পেজ লিংক বসান]',
+        'office_hours': '[অফিস সময় বসান, যেমন: রবি-বৃহস্পতি, সকাল ৯টা - বিকাল ৫টা]',
+    }
+    return render(request, 'contact.html', {'contact_info': contact_info})
+
+
+def transparency(request):
+    policy_sections = [
+        {
+            'icon': 'pie-chart-fill',
+            'title': '১. তহবিল ব্যবহারের নীতি (Admin Cap)',
+            'body': 'সংগৃহীত অর্থের সর্বোচ্চ [২০%] প্রশাসনিক ও পরিচালন খরচে (পেমেন্ট গেটওয়ে চার্জ, অফিস ভাড়া, ভলান্টিয়ার সম্মানী, প্ল্যাটফর্ম রক্ষণাবেক্ষণ) ব্যবহৃত হয়। কমপক্ষে [৮০%] সরাসরি ক্যাম্পেইনের মূল উদ্দেশ্যে ব্যয় হয়। এই নীতি Trust Deed-এর ধারা ৯ অনুযায়ী নির্ধারিত।',
+        },
+        {
+            'icon': 'arrow-left-right',
+            'title': '২. উদ্বৃত্ত তহবিল নীতি (Surplus Fund Policy)',
+            'body': 'কোনো ক্যাম্পেইনে প্রয়োজনের তুলনায় বেশি অর্থ সংগৃহীত হলে, উদ্বৃত্ত অর্থ একই ধরনের ভবিষ্যৎ ক্যাম্পেইনে অথবা সাধারণ তহবিলে ব্যবহৃত হবে।',
+        },
+        {
+            'icon': 'file-earmark-bar-graph-fill',
+            'title': '৩. বার্ষিক অডিট রিপোর্ট',
+            'body': '[এখানে সর্বশেষ বার্ষিক অডিট রিপোর্টের PDF লিংক/ডাউনলোড বাটন বসান — Chartered Accountant দ্বারা অডিট সম্পন্ন হওয়ার পর]',
+        },
+        {
+            'icon': 'file-earmark-pdf-fill',
+            'title': '৪. ক্যাম্পেইন-ভিত্তিক হিসাব',
+            'body': 'নির্দিষ্ট কোনো ক্যাম্পেইনের বিস্তারিত আয়-ব্যয়ের হিসাব জানতে চাইলে আমাদের সাথে যোগাযোগ করুন।',
+        },
+    ]
+    return render(request, 'transparency.html', {'policy_sections': policy_sections})
+
+
+
+
 
