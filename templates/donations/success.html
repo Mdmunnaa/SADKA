@@ -24,20 +24,29 @@
       </div>
 
       <div style="display:flex;flex-direction:column;gap:.6rem;">
+        <button data-share="image"
+          data-image-url="{{ request.scheme }}://{{ request.get_host }}{% url 'donation_share_card' donation.pk %}"
+          data-text="আমি সহায়.bd-তে '{{ donation.campaign.title }}' ক্যাম্পেইনে দান করেছি — আপনিও করুন!"
+          class="btn-share-wa" style="justify-content:center;border-radius:var(--radius-sm);padding:.75rem;font-size:.95rem;">
+          <i class="bi bi-share-fill"></i> ছবিসহ শেয়ার করুন
+        </button>
         <a href="{% url 'donation_share_card' donation.pk %}" download="sohay-donation.png"
           class="btn-share-copy" style="justify-content:center;border-radius:var(--radius-sm);padding:.75rem;font-size:.95rem;">
           <i class="bi bi-download me-1"></i> কার্ডটি ডাউনলোড করুন
         </a>
-        <button class="btn-share-wa" style="justify-content:center;border-radius:var(--radius-sm);padding:.75rem;font-size:.95rem;"
+
+        <p style="font-size:.78rem;color:var(--gray-400);text-align:center;margin:.4rem 0 -.1rem;">অথবা শুধু লিংক শেয়ার করুন</p>
+
+        <button class="btn-share-wa" style="justify-content:center;border-radius:var(--radius-sm);padding:.6rem;font-size:.88rem;opacity:.85;"
           data-share="whatsapp"
           data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' donation.campaign.slug %}"
           data-title="{{ donation.campaign.title }}">
-          <i class="bi bi-whatsapp"></i> WhatsApp-এ শেয়ার করুন
+          <i class="bi bi-whatsapp"></i> WhatsApp
         </button>
-        <button class="btn-share-fb" style="justify-content:center;border-radius:var(--radius-sm);padding:.75rem;font-size:.95rem;"
+        <button class="btn-share-fb" style="justify-content:center;border-radius:var(--radius-sm);padding:.6rem;font-size:.88rem;opacity:.85;"
           data-share="facebook"
           data-url="{{ request.scheme }}://{{ request.get_host }}{% url 'campaign_detail' donation.campaign.slug %}">
-          <i class="bi bi-facebook"></i> Facebook-এ শেয়ার করুন
+          <i class="bi bi-facebook"></i> Facebook
         </button>
         <a href="{% url 'home' %}" class="btn-share-copy" style="justify-content:center;border-radius:var(--radius-sm);padding:.75rem;font-size:.95rem;">
           <i class="bi bi-house me-1"></i> হোমে ফিরে যান

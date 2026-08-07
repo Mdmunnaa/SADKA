@@ -170,4 +170,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  /* Share the actual image file (not just a link) via the native OS share
+     sheet — this is the only way a browser is allowed to hand a real image
+     to WhatsApp/Instagram/etc. Falls back to a plain download + instructions
+     on browsers that don't support file sharing (mostly desktop). */
+  document.querySelectorAll('[data-share="image"]').forEach(btn => {
+    btn.addEventListener('click', async e => {
+      e.preventDefault();
+      const imgUrl = btn.dataset.imageUrl;
+      const shareText = btn.dataset.text || document.title;
+      const origHtml = btn.innerHTML;
+      btn.innerHTML = '<i class="bi bi-hourglass-split"></i> প্রস্তুত হচ্ছে...';
+
+      try {
+        const resp = await fetch(imgUrl);
+        const blob = await resp.blob();
+        const file = new File([blob], 'sohay-donation.png', { type: 'image/png' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          btn.innerHTML = origHtml;
+          await navigator.share({ files: [file], text: shareText });
+          return;
+        }
+
+        // No native file-share support (typical on desktop browsers) —
+        // download it and tell the person what to do next.
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'sohay-donation.png';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        alert('আপনার ব্রাউজারে সরাসরি শেয়ার সাপোর্ট নেই, তাই ছবিটা ডাউনলোড হয়ে গেছে — এবার WhatsApp/Facebook/Instagram-এ গিয়ে ছবিটা যোগ করে শেয়ার করুন।');
+      } catch (err) {
+        if (err && err.name === 'AbortError') {
+          // person just closed the share sheet — not an error
+        } else {
+          alert('ছবি লোড করতে সমস্যা হয়েছে, একটু পর আবার চেষ্টা করুন।');
+        }
+      } finally {
+        btn.innerHTML = origHtml;
+      }
+    });
+  });
+
 });
