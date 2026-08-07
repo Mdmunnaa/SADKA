@@ -41,9 +41,14 @@
           </div>
         </div>
 
-        <button type="submit" class="btn-modal-submit" style="margin-top:1rem;">
-          <i class="bi bi-file-earmark-pdf"></i>&nbsp; PDF রিপোর্ট তৈরি করুন
-        </button>
+        <div style="display:flex; gap:.75rem; flex-wrap:wrap; margin-top:1rem;">
+          <button type="submit" name="format" value="pdf" class="btn-modal-submit">
+            <i class="bi bi-file-earmark-pdf"></i>&nbsp; PDF রিপোর্ট
+          </button>
+          <button type="submit" name="format" value="csv" class="btn-modal-submit" style="background:var(--gray-700);">
+            <i class="bi bi-file-earmark-spreadsheet"></i>&nbsp; CSV ডাউনলোড
+          </button>
+        </div>
       </form>
     </div>
 

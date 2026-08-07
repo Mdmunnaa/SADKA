@@ -244,12 +244,15 @@
       <div>
         <div class="footer-heading">{% trans "কোম্পানি" %}</div>
         <a href="{% url 'about' %}">{% trans "আমাদের সম্পর্কে" %}</a>
+        <a href="{% url 'trustees' %}">{% trans "পরিচালনা পর্ষদ" %}</a>
+        <a href="{% url 'transparency' %}">{% trans "তহবিল ব্যবহার নীতি" %}</a>
         <a href="{% url 'faq' %}">{% trans "সাধারণ জিজ্ঞাসা" %}</a>
         <a href="{% url 'privacy' %}">{% trans "গোপনীয়তা নীতি" %}</a>
         <a href="{% url 'terms' %}">{% trans "শর্তাবলি" %}</a>
       </div>
       <div>
         <div class="footer-heading">{% trans "যোগাযোগ" %}</div>
+        <a href="{% url 'contact' %}"><i class="bi bi-geo-alt me-1"></i>{% trans "যোগাযোগ পাতা" %}</a>
         <a href="mailto:sahay@example.com"><i class="bi bi-envelope me-1"></i>sahay@example.com</a>
         <a href="#"><i class="bi bi-telephone me-1"></i>+880 1XXX-XXXXXX</a>
         <a href="#"><i class="bi bi-facebook me-1"></i>Facebook</a>

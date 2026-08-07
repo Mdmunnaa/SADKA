@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}পরিচালনা পর্ষদ — সহায়.bd{% endblock %}
+
+{% block content %}
+<section style="background: var(--green-700); padding: 3.5rem 0; text-align:center;">
+  <div class="container">
+    <span class="sec-eyebrow" style="background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.25);">স্বচ্ছতা</span>
+    <h1 style="color:#fff; font-size:clamp(1.8rem,4vw,2.5rem); font-weight:800; margin:.75rem 0 .5rem;">পরিচালনা পর্ষদ ও প্রাতিষ্ঠানিক তথ্য</h1>
+    <p style="color:rgba(255,255,255,.8); font-size:1rem;">আমাদের ট্রাস্ট কীভাবে গঠিত ও নিবন্ধিত, কারা এটি পরিচালনা করেন</p>
+  </div>
+</section>
+
+<section class="sec" style="background:var(--gray-50);">
+  <div class="container" style="max-width:900px;">
+
+    <!-- Registration info -->
+    <div class="sidebar-box" style="margin-bottom:1.5rem;">
+      <div class="sidebar-box-head"><i class="bi bi-patch-check-fill me-2" style="color:var(--green-700);"></i>নিবন্ধন তথ্য</div>
+      <div class="sidebar-box-body">
+        <div class="card-grid card-grid-2">
+          <div>
+            <div style="color:var(--gray-500); font-size:.8rem;">ট্রাস্টের নাম</div>
+            <div style="color:var(--gray-900); font-weight:700;">{{ trust_info.trust_name }}</div>
+          </div>
+          <div>
+            <div style="color:var(--gray-500); font-size:.8rem;">রেজিস্ট্রেশন নম্বর</div>
+            <div style="color:var(--gray-900); font-weight:700;">{{ trust_info.registration_no }}</div>
+          </div>
+          <div>
+            <div style="color:var(--gray-500); font-size:.8rem;">রেজিস্ট্রেশনের তারিখ</div>
+            <div style="color:var(--gray-900); font-weight:700;">{{ trust_info.registration_date }}</div>
+          </div>
+          <div>
+            <div style="color:var(--gray-500); font-size:.8rem;">রেজিস্টার্ড অফিস</div>
+            <div style="color:var(--gray-900); font-weight:700;">{{ trust_info.registered_office }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trustees -->
+    <div class="sidebar-box" style="margin-bottom:1.5rem;">
+      <div class="sidebar-box-head"><i class="bi bi-people-fill me-2" style="color:var(--green-700);"></i>ট্রাস্টি বৃন্দ</div>
+      <div class="sidebar-box-body">
+        <div class="card-grid card-grid-2">
+          {% for t in trustee_list %}
+          <div style="background:var(--green-50); border-left:4px solid var(--green-700); padding:1rem; border-radius:var(--radius-sm);">
+            <h6 style="color:var(--gray-900); font-weight:700; margin-bottom:.15rem;">{{ t.name }}</h6>
+            <div style="color:var(--green-700); font-size:.8rem; font-weight:600; margin-bottom:.35rem;">{{ t.role }}</div>
+            <div style="color:var(--gray-500); font-size:.85rem;">{{ t.bio }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <p style="color:var(--gray-400); font-size:.85rem; text-align:center;">
+      সংশ্লিষ্ট আরও তথ্যের জন্য দেখুন — <a href="{% url 'transparency' %}" style="color:var(--green-700); font-weight:600;">তহবিল ব্যবহার নীতি</a> ও <a href="{% url 'contact' %}" style="color:var(--green-700); font-weight:600;">যোগাযোগ</a>
+    </p>
+
+  </div>
+</section>
+{% endblock %}

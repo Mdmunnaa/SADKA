@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}তহবিল ব্যবহার নীতি — সহায়.bd{% endblock %}
+
+{% block content %}
+<section style="background: var(--green-700); padding: 3.5rem 0; text-align:center;">
+  <div class="container">
+    <span class="sec-eyebrow" style="background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.25);">স্বচ্ছতা</span>
+    <h1 style="color:#fff; font-size:clamp(1.8rem,4vw,2.5rem); font-weight:800; margin:.75rem 0 .5rem;">আপনার দান কোথায় যায়?</h1>
+    <p style="color:rgba(255,255,255,.8); font-size:1rem;">তহবিল ব্যবহারের নীতি ও জবাবদিহিতা</p>
+  </div>
+</section>
+
+<section class="sec" style="background:var(--gray-50);">
+  <div class="container" style="max-width:900px;">
+
+    <p style="color:var(--gray-500); font-size:.97rem; line-height:1.9; margin-bottom:2rem; background:var(--white); padding:1.25rem; border-radius:var(--radius); border:1px solid var(--gray-300);">
+      'সহায়.bd' জনগণের বিশ্বাসের ওপর দাঁড়িয়ে আছে। তাই প্রতিটি টাকা কীভাবে ব্যবহৃত হয় তা এখানে স্পষ্টভাবে জানানো হলো। এই নীতি আমাদের নিবন্ধিত Trust Deed-এর ভিত্তিতে নির্ধারিত।
+    </p>
+
+    {% for section in policy_sections %}
+    <div class="sidebar-box" style="margin-bottom:1.25rem;">
+      <div class="sidebar-box-head">
+        <i class="bi bi-{{ section.icon }} me-2" style="color:var(--green-700);"></i>{{ section.title }}
+      </div>
+      <div class="sidebar-box-body">
+        <p style="color:var(--gray-700); line-height:1.85; font-size:.95rem; margin:0;">{{ section.body }}</p>
+      </div>
+    </div>
+    {% endfor %}
+
+    <p style="color:var(--gray-400); font-size:.85rem; text-align:center; margin-top:1.5rem;">
+      দেখুন — <a href="{% url 'trustees' %}" style="color:var(--green-700); font-weight:600;">পরিচালনা পর্ষদ</a> | কোনো প্রশ্ন থাকলে <a href="{% url 'contact' %}" style="color:var(--green-700); font-weight:600;">যোগাযোগ করুন</a>
+    </p>
+
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}যোগাযোগ — সহায়.bd{% endblock %}
+
+{% block content %}
+<section style="background: var(--green-700); padding: 3.5rem 0; text-align:center;">
+  <div class="container">
+    <span class="sec-eyebrow" style="background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.25);">যোগাযোগ</span>
+    <h1 style="color:#fff; font-size:clamp(1.8rem,4vw,2.5rem); font-weight:800; margin:.75rem 0 .5rem;">আমাদের সাথে যোগাযোগ করুন</h1>
+    <p style="color:rgba(255,255,255,.8); font-size:1rem;">প্রশ্ন, অভিযোগ বা পরামর্শ থাকলে জানান</p>
+  </div>
+</section>
+
+<section class="sec" style="background:var(--gray-50);">
+  <div class="container" style="max-width:700px;">
+
+    <div class="sidebar-box" style="margin-bottom:1.5rem;">
+      <div class="sidebar-box-head"><i class="bi bi-geo-alt-fill me-2" style="color:var(--green-700);"></i>রেজিস্টার্ড অফিস</div>
+      <div class="sidebar-box-body">
+        <p style="color:var(--gray-700); line-height:1.8; margin:0;">{{ contact_info.registered_office }}</p>
+      </div>
+    </div>
+
+    <div class="card-grid card-grid-2" style="margin-bottom:1.5rem;">
+      <div class="sidebar-box" style="margin-bottom:0;">
+        <div class="sidebar-box-body" style="text-align:center;">
+          <i class="bi bi-telephone-fill" style="font-size:1.5rem; color:var(--green-700);"></i>
+          <div style="color:var(--gray-500); font-size:.8rem; margin-top:.5rem;">ফোন</div>
+          <div style="color:var(--gray-900); font-weight:700;">{{ contact_info.phone }}</div>
+        </div>
+      </div>
+      <div class="sidebar-box" style="margin-bottom:0;">
+        <div class="sidebar-box-body" style="text-align:center;">
+          <i class="bi bi-envelope-fill" style="font-size:1.5rem; color:var(--green-700);"></i>
+          <div style="color:var(--gray-500); font-size:.8rem; margin-top:.5rem;">ইমেইল</div>
+          <div style="color:var(--gray-900); font-weight:700;">{{ contact_info.email }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-box" style="margin-bottom:1.5rem;">
+      <div class="sidebar-box-head"><i class="bi bi-clock-fill me-2" style="color:var(--green-700);"></i>অফিস সময়</div>
+      <div class="sidebar-box-body">
+        <p style="color:var(--gray-700); margin:0;">{{ contact_info.office_hours }}</p>
+      </div>
+    </div>
+
+    <div class="sidebar-box">
+      <div class="sidebar-box-head"><i class="bi bi-share-fill me-2" style="color:var(--green-700);"></i>সোশ্যাল মিডিয়া</div>
+      <div class="sidebar-box-body">
+        <p style="color:var(--gray-700); margin:0;">{{ contact_info.facebook }}</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
