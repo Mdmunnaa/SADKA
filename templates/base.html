@@ -253,18 +253,14 @@
       <div>
         <div class="footer-heading">{% trans "যোগাযোগ" %}</div>
         <a href="{% url 'contact' %}"><i class="bi bi-geo-alt me-1"></i>{% trans "যোগাযোগ পাতা" %}</a>
-        <a href="mailto:sahay@example.com"><i class="bi bi-envelope me-1"></i>sahay@example.com</a>
+        <a href="mailto:sohay@example.com"><i class="bi bi-envelope me-1"></i>sohay@example.com</a>
         <a href="#"><i class="bi bi-telephone me-1"></i>+880 1XXX-XXXXXX</a>
         <a href="#"><i class="bi bi-facebook me-1"></i>Facebook</a>
       </div>
     </div>
     <hr class="footer-divider">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.75rem;">
-      <p class="footer-copy" style="margin:0;">© ২০২৪ সহায়.bd — {% trans "সমাজের সেবায় নিবেদিত" %}</p>
-      <p class="footer-copy" style="margin:0;">
-        <span style="color:rgba(255,255,255,.4);">A CSR Initiative by</span>
-        <a href="https://edumi.com" target="_blank" rel="noopener" style="color:var(--green-500); font-weight:700; text-decoration:none;">Edumi</a>
-      </p>
+    <div style="text-align:center;">
+      <p class="footer-copy" style="margin:0;">© {% now "Y" %} সহায়.bd — {% trans "সমাজের সেবায় নিবেদিত" %}</p>
     </div>
   </div>
 </footer>
